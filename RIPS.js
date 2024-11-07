@@ -1,4 +1,4 @@
-const servidor = "HPRED241";
+const servidor = "HPRED240";
 
 const checkboxParticular = document.getElementById('checkbox1')
 const checkboxPrepagada = document.getElementById('checkbox2')
@@ -1672,7 +1672,9 @@ document.addEventListener('DOMContentLoaded', () => {
             case 1:
                 // Nivel 1: Mostrar todos los botones y enlaces
                 descargarRIPSButton.style.display = 'flex';
-                generadorRIPSLink.style.display = 'flex';
+                generadorRIPSLink.style.display = 'None';
+                // generadorRIPSLink.style.display = 'flex';
+                // asignarRIPSLink.style.display = 'none';
                 asignarRIPSLink.style.display = 'flex';
                 break;
             case 2:

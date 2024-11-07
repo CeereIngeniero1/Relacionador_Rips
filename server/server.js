@@ -11,6 +11,7 @@ const descargarArchivosRIPSRoutes = require('./routes/descargarArchivosRIPSRoute
 const DescargarXMLSPorLaAPIDeFacturaTechRoutes = require('./routes/descargarXMLSporAPIFacturatechRoutes');
 const InfoPacientesRoutes = require('./routes/infoPacientesRoutes');
 const epsRoutes = require('./routes/epsRoutes');
+const AsignarRips = require('./routes/Asignar_RipsRoutes');
 
 
 /* =========================================================================================================== */
@@ -105,6 +106,8 @@ app.use('/XMLS', DescargarXMLSPorLaAPIDeFacturaTechRoutes);
 app.use('/api', InfoPacientesRoutes);
 
 app.use('/api', epsRoutes);
+
+app.use('/api', AsignarRips);
 
 const port = 3000;
 // app.listen(port, () => {

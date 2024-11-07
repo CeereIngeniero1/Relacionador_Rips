@@ -1,4 +1,23 @@
-const servidor = 'HPRED241'
+const servidor = "HPRED240";
+
+console.log("Hola")
+const ejecutar = async () => {
+    try {
+        const abc = await fetch(`http://${servidor}:3000/api/pruebahc`);
+        
+        if (!abc.ok) {
+            // Captura un error en caso de que la respuesta no sea 'ok'
+            throw new Error(`Error en la solicitud: ${abc.status} ${abc.statusText}`);
+        }
+
+        const Datos = await abc.json();
+        console.log('Pacientes:', Datos);
+        
+    } catch (error) {
+        // Manejo de errores de red o de la API
+        console.error('Ocurrió un error al realizar la solicitud:', error.message);
+    }
+};
 
 const radioAC = document.getElementById('AC');
 const radioAP = document.getElementById('AP');
@@ -432,12 +451,21 @@ const getEvaluaciones = async (fechaInicio, fechaFin) => {
         if (!response.ok) {
             throw new Error(`Error al obtener los datos de evaluaciones: ${response.statusText}`);
         }
-
+        console.log(response);
         const evaluaciones = await response.json();
 
         updateEvaluacionesTablet(evaluaciones); // Llama a la función para actualizar la tabla
 
     } catch (ex) {
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            html: `
+                <p><strong>Mensaje:</strong> ${ex.message}</p>
+                <p><strong>Nombre:</strong> ${ex.name}</p>
+                <p><strong>Pila:</strong> <pre>${ex.stack}</pre></p>
+            `
+        });
         console.error(ex);
         alert(`Error: ${ex.message}`);
     }
@@ -920,4 +948,5 @@ const alerta = async () => {
 
 window.addEventListener('load', async () => {
     alerta();
+    ejecutar();
 });
