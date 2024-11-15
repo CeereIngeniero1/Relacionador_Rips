@@ -1,4 +1,4 @@
-const servidor = "HPRED240";
+const servidor = "192.168.1.23";
 
 console.log("Hola")
 const ejecutar = async () => {
@@ -18,6 +18,26 @@ const ejecutar = async () => {
         console.error('Ocurrió un error al realizar la solicitud:', error.message);
     }
 };
+ejecutar();
+
+
+const BotonConsultar = document.getElementById('BotonConsultar');
+const ModalConsultar = document.getElementById('ModalConsultar');
+
+function Consultar() {
+    // var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+    // myModal.show();
+
+    var myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {
+        backdrop: 'static', // Evita el cierre al hacer clic fuera del modal
+        keyboard: false // Impide el cierre con la tecla Escape
+    });
+    myModal.show();
+}
+
+BotonConsultar.addEventListener('click', function (e) {
+    Consultar();
+})
 
 const radioAC = document.getElementById('AC');
 const radioAP = document.getElementById('AP');
@@ -30,37 +50,49 @@ const codDiagnosticoRelacionado2 = document.getElementById('codDiagnosticoRelaci
 const codDiagnosticoRelacionado3 = document.querySelector('.codDiagnosticoRelacionado3')
 const tipoDiagnosticoPrincipal = document.querySelector('.tipoDiagnosticoPrincipal')
 
+const ContenedorTipoAC = document.getElementById('TipoAC');
+const ContenedorTipoAP = document.getElementById('TipoAP');
+
+ContenedorTipoAC.style.display = 'none';
+ContenedorTipoAP.style.display = 'none';
+
 // Event listener para el radio button AC
 radioAC.addEventListener('change', () => {
-    if (radioAC.checked) {
-        procedimientoRIPS.textContent = 'codConsulta'; // Limpiar el valor si es necesario
-        causaViaIngreso.textContent = 'causaMotivoAtencion';
-        listaCausa.style.display = 'block'
-        listaViaIngreso.style.display = 'none'
-        codDiagnosticoRelacionado.textContent = 'codDiagnosticoRelacionado1'
-        codDiagnosticoRelacionado2.textContent = 'codDiagnosticoRelacionado2'
-        codDiagnosticoRelacionado3.style.display = 'flex'
-        tipoDiagnosticoPrincipal.style.display = 'grid'
 
-        ejecutarConsultasAC();
-    }
+    ContenedorTipoAC.style.display = 'block';
+    ContenedorTipoAP.style.display = 'none';
+    // if (radioAC.checked) {
+    //     procedimientoRIPS.textContent = 'codConsulta'; // Limpiar el valor si es necesario
+    //     causaViaIngreso.textContent = 'causaMotivoAtencion';
+    //     listaCausa.style.display = 'block'
+    //     listaViaIngreso.style.display = 'none'
+    //     codDiagnosticoRelacionado.textContent = 'codDiagnosticoRelacionado1'
+    //     codDiagnosticoRelacionado2.textContent = 'codDiagnosticoRelacionado2'
+    //     codDiagnosticoRelacionado3.style.display = 'flex'
+    //     tipoDiagnosticoPrincipal.style.display = 'grid'
+
+    //     ejecutarConsultasAC();
+    // }
 });
 
 // Event listener para el radio button AP
 radioAP.addEventListener('change', () => {
-    if (radioAP.checked) {
 
-        procedimientoRIPS.textContent = 'codProcedimiento'; // Asignar el valor deseado
-        causaViaIngreso.textContent = 'viaIngresoServicioSalud';
-        listaCausa.style.display = 'none'
-        listaViaIngreso.style.display = 'block'
-        codDiagnosticoRelacionado.textContent = 'codDiagnosticoRelacionado'
-        codDiagnosticoRelacionado2.textContent = 'codComplicación'
-        codDiagnosticoRelacionado3.style.display = 'none'
-        tipoDiagnosticoPrincipal.style.display = 'none'
+    ContenedorTipoAP.style.display = 'block';
+    ContenedorTipoAC.style.display = 'none';
+    // if (radioAP.checked) {
 
-        ejecutarConsultasAP();
-    }
+    //     procedimientoRIPS.textContent = 'codProcedimiento'; // Asignar el valor deseado
+    //     causaViaIngreso.textContent = 'viaIngresoServicioSalud';
+    //     listaCausa.style.display = 'none'
+    //     listaViaIngreso.style.display = 'block'
+    //     codDiagnosticoRelacionado.textContent = 'codDiagnosticoRelacionado'
+    //     codDiagnosticoRelacionado2.textContent = 'codComplicación'
+    //     codDiagnosticoRelacionado3.style.display = 'none'
+    //     tipoDiagnosticoPrincipal.style.display = 'none'
+
+    //     ejecutarConsultasAP();
+    // }
 });
 
 const btnRegistrarRIPS = document.getElementById('btnRegistrarRIPS');
@@ -318,15 +350,15 @@ const RegistrarRIPS = async () => {
 }
 
 // 
-listaTipoUsuario.addEventListener('change', quitarBordeRojo);
-listaEntidad.addEventListener('change', quitarBordeRojo);
-listaCodConsulta.addEventListener('change', quitarBordeRojo);
-listamodalidadAtencion.addEventListener('change', quitarBordeRojo);
-listaGrupoServicios.addEventListener('change', quitarBordeRojo);
-listaServicios.addEventListener('change', quitarBordeRojo);
-listaFinalidad.addEventListener('change', quitarBordeRojo);
-listaCausa.addEventListener('change', quitarBordeRojo);
-listaViaIngreso.addEventListener('change', quitarBordeRojo);
+// listaTipoUsuario.addEventListener('change', quitarBordeRojo);
+// listaEntidad.addEventListener('change', quitarBordeRojo);
+// listaCodConsulta.addEventListener('change', quitarBordeRojo);
+// listamodalidadAtencion.addEventListener('change', quitarBordeRojo);
+// listaGrupoServicios.addEventListener('change', quitarBordeRojo);
+// listaServicios.addEventListener('change', quitarBordeRojo);
+// listaFinalidad.addEventListener('change', quitarBordeRojo);
+// listaCausa.addEventListener('change', quitarBordeRojo);
+// listaViaIngreso.addEventListener('change', quitarBordeRojo);
 
 
 // Función para quitar el borde rojo
@@ -507,11 +539,11 @@ const getTipoUsuario = async () => {
 
 const selectTipoUsuario = document.getElementById('listaTipoUsuario');
 
-selectTipoUsuario.addEventListener('change', async () => {
-    const usuarioSeleecionado = selectTipoUsuario.options[selectTipoUsuario.selectedIndex].text;
-    await getTipoEntidad(usuarioSeleecionado)
-    console.log(usuarioSeleecionado);
-})
+// selectTipoUsuario.addEventListener('change', async () => {
+//     const usuarioSeleecionado = selectTipoUsuario.options[selectTipoUsuario.selectedIndex].text;
+//     await getTipoEntidad(usuarioSeleecionado)
+//     console.log(usuarioSeleecionado);
+// })
 
 const updateTipoEntidad = (tipoEntidades) => {
     const selectTipoEntidad = document.querySelector('#listaEntidad');
@@ -597,9 +629,9 @@ var selectores = {
 // Asociar el evento input a todos los input de búsqueda
 for (var inputId in selectores) {
     if (selectores.hasOwnProperty(inputId)) {
-        document.getElementById(inputId).addEventListener("input", function () {
-            buscarElementoPorInput(this.id);
-        });
+        // document.getElementById(inputId).addEventListener("input", function () {
+        //     buscarElementoPorInput(this.id);
+        // });
     }
 }
 
@@ -947,6 +979,11 @@ const alerta = async () => {
 };
 
 window.addEventListener('load', async () => {
-    alerta();
-    ejecutar();
+    // alerta();
+    // ejecutar();
 });
+
+const BotonRegresar = document.getElementById('RegresarAPrincipal');
+BotonRegresar.addEventListener('click', (e) => {
+    window.location.href = "RIPS.html";
+})

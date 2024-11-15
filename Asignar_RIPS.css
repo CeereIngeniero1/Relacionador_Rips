@@ -10,8 +10,6 @@
     width: 90%;
     margin: auto;
     display: grid;
-    gap: 20px; 
-
 }
 
 .listaHC {
@@ -19,9 +17,9 @@
     gap: 20px;
 }
 
-#listaHC {
+/* #listaHC {
     width: 550px !important;
-}
+} */
 
 select {
     width: 220px !important;
