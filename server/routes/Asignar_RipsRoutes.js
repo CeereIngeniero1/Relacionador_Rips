@@ -201,9 +201,15 @@ router.get('/DatosdeHC/:DocumentoPaciente/:DocumentoUsuario/:fechaInicio/:fechaF
         const fechaFin = req.params.fechaFin;
         const request = new Request(
             `
-        SELECT         FechaEvaluacion, DocumentoPaciente, IdTipodeEvaluacion,
-        DescripcionTipodeEvaluación, Formato_Diagnostico, DiagnósticoEspecíficoEvaluacionEntidad,
-        DocumentoUsuario, IdEvaluaciónEntidad
+        SELECT          [FechaEvaluacion]
+                ,[DocumentoPaciente]
+                ,[IdTipodeEvaluacion]
+                ,[DescripcionTipodeEvaluación]
+                ,[Formato_Diagnostico]
+                ,[DiagnósticoEspecíficoEvaluacionEntidad]
+                ,[DocumentoUsuario]
+                ,[IdEvaluaciónEntidad]
+                ,[HoraEvaluacion]
         FROM            [Cnsta Relacionador Info Historias]
         WHERE        (DocumentoPaciente = N'${DocumentoPaciente}') 
         AND (FechaEvaluacion BETWEEN '${fechaInicio}' AND '${fechaFin}') 
