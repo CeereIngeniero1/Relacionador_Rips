@@ -150,7 +150,7 @@ router.get('/UsuariosHC/:DocumentoUsuario/:fechaInicio/:fechaFin', async (req, r
 });
 
 
-router.get('/UsuariosHC/:DocumentoPaciente', async (req, res) =>{
+router.get('/DatosdeUsuarioHC/:DocumentoPaciente', async (req, res) =>{
     try {
         const DocumentoPaciente = req.params.DocumentoPaciente;
 
@@ -193,6 +193,48 @@ router.get('/UsuariosHC/:DocumentoPaciente', async (req, res) =>{
     
 });
 
+router.get('/DatosdeHC/:DocumentoPaciente', async (req, res) =>{
+    try {
+        const DocumentoPaciente = req.params.DocumentoPaciente;
+
+    const request = new Request(
+        `
+        SELECT        DocumentoPaciente, PrimerApellidoPaciente, 
+        SegundoApellidoPaciente, PrimerNombrePaciente, SegundoNombrePaciente, 
+        NombreCompletoPaciente, Sexo, Edad, Direccion, Tel, DocumentoTipoDOC
+        FROM            [Cnsta Relacionador Usuarios Info]
+        WHERE        (DocumentoPaciente = N'${DocumentoPaciente}')
+        `,
+        (err) => {
+            if (err) {
+                console.error(`Error de ejecución: ${err}`);
+                // En caso de error, enviamos una respuesta y salimos de la función
+                if (!res.headersSent) {
+                    res.status(500).send('Error interno del servidor');
+                }
+            }
+        }
+
+    );
+    const resultados = [];
+    request.on('row', (columns) => {   
+        const row = {};
+        columns.forEach((column) =>{
+            row[column.metadata.colName]= column.value;
+        });
+        resultados.push(row);
+    });
+
+    request.on ('requestCompleted', () => {
+        res.json(resultados);
+    })
+    console.log(resultados);
+     connection.execSql(request);
+    } catch (error) {
+        
+    }
+    
+});
 
 
 router.get('/TipodeRips', async (req, res) => {
