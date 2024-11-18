@@ -114,7 +114,7 @@ router.get('/UsuariosHC/:DocumentoUsuario/:fechaInicio/:fechaFin', async (req, r
         `SELECT  
                 [DocumentoPaciente]
                 ,[NombreCompletoPaciente]
-            FROM [Anacatalina].[dbo].[Cnsta Relacionador Usuarios HC]
+            FROM [Cnsta Relacionador Usuarios HC]
             WHERE DocumentoUsuario = '${DocumentoUsuario}' AND FechaEvaluacion BETWEEN '${fechaInicio}' AND '${fechaFin}'
             GROUP BY DocumentoPaciente , NombreCompletoPaciente
         `,
