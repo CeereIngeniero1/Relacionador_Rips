@@ -23,6 +23,7 @@ FROM            dbo.[Evaluación Entidad] INNER JOIN
 
 
 ---- Lista para selecionar paciente con hc sin rips segun fecha y usuario
+
 CREATE VIEW [dbo].[Cnsta Relacionador Usuarios HC]
 AS
 SELECT        dbo.[Evaluación Entidad].[Fecha Evaluación Entidad] AS FechaEvaluacion, dbo.[Evaluación Entidad].[Documento Entidad] AS DocumentoPaciente, dbo.Entidad.[Nombre Completo Entidad] AS NombreCompletoPaciente, 
@@ -30,8 +31,9 @@ SELECT        dbo.[Evaluación Entidad].[Fecha Evaluación Entidad] AS FechaEval
 FROM            dbo.[Evaluación Entidad] INNER JOIN
                          dbo.Entidad ON dbo.[Evaluación Entidad].[Documento Entidad] = dbo.Entidad.[Documento Entidad] LEFT OUTER JOIN
                          dbo.[Evaluación Entidad Rips] ON dbo.[Evaluación Entidad].[Id Evaluación Entidad] = dbo.[Evaluación Entidad Rips].[Id Evaluación Entidad]
-WHERE        (dbo.[Evaluación Entidad Rips].[Id Evaluación Entidad Rips] IS NULL)
+WHERE        (dbo.[Evaluación Entidad Rips].[Id Evaluación Entidad Rips] IS NULL) AND (dbo.[Evaluación Entidad].[Id Tipo de Evaluación] <> 2)
 GO
+
 
 ---- Info de Usuarios Segun documento seleccionado
 CREATE VIEW [dbo].[Cnsta Relacionador Usuarios Info]
@@ -60,11 +62,18 @@ SELECT        dbo.[Evaluación Entidad].[Fecha Evaluación Entidad] AS FechaEval
 FROM            dbo.[Evaluación Entidad] LEFT OUTER JOIN
                          dbo.[Evaluación Entidad Rips] ON dbo.[Evaluación Entidad].[Id Evaluación Entidad] = dbo.[Evaluación Entidad Rips].[Id Evaluación Entidad] INNER JOIN
                          dbo.[Tipo de Evaluación] ON dbo.[Evaluación Entidad].[Id Tipo de Evaluación] = dbo.[Tipo de Evaluación].[Id Tipo de Evaluación]
-WHERE        (dbo.[Evaluación Entidad Rips].[Id Evaluación Entidad Rips] IS NULL)
+WHERE        (dbo.[Evaluación Entidad Rips].[Id Evaluación Entidad Rips] IS NULL) AND (dbo.[Evaluación Entidad].[Id Tipo de Evaluación] <> 2)
+GO
 
 
+--lista de Tipo rips Activos estdo = 7
 
-
+CREATE VIEW [dbo].[Cnsta Relacionador Tipo Rips]
+AS
+SELECT        [Id Tipo Rips] AS IdTipoRips, [Código Tipo Rips] AS CódigoTipoRips, [Tipo Rips] AS TipoRips, [Descripción Tipo Rips] AS DescripcionTipoRips, [Id Estado] AS IdEstado
+FROM            dbo.[Tipo Rips]
+WHERE        ([Id Estado] = 7)
+GO
 
 
 

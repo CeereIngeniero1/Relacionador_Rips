@@ -60,12 +60,12 @@ router.get('/pruebaHC', async (req, res) => {
 });
 
 
-router.get('/DatosUsuario/:IdEvaluacion', async (req, res) =>{
+router.get('/DatosUsuario/:IdEvaluacion', async (req, res) => {
     try {
         const IdEvaluacion = req.params.IdEvaluacion;
 
-    const request = new Request(
-        `SELECT 
+        const request = new Request(
+            `SELECT 
                         [Id Evaluación Entidad], [Id Tipo de Evaluación], [Tipo de Evaluación], [Fecha Evaluación Entidad], [Documento Entidad], Identificacion, [Edad Entidad Evaluación Entidad], [Acompañante Evaluación Entidad], 
                         [Id Parentesco], [Teléfono Acompañante], [Diagnóstico General Evaluación Entidad], [Diagnóstico Específico Evaluación Entidad], [Manejo de Medicamentos], [Dirección Domicilio], [Id Ciudad], [Teléfono Domicilio], 
                         [Fecha Nacimiento], [Id Unidad de Medida Edad], [Id Sexo], [Id Estado], [Id Estado Civil], [Id Ocupación], [Documento Aseguradora], [Id Tipo de Afiliado], [Responsable Evaluación Entidad], [Id Parentesco Responsable], 
@@ -73,134 +73,134 @@ router.get('/DatosUsuario/:IdEvaluacion', async (req, res) =>{
         FROM            [Cnsta Relacionador Info Evaluacion Usuario]
         WHERE        ([Id Evaluación Entidad] = ${IdEvaluacion})
         `,
-        (err) => {
-            if (err) {
-                console.error(`Error de ejecución: ${err}`);
-                // En caso de error, enviamos una respuesta y salimos de la función
-                if (!res.headersSent) {
-                    res.status(500).send('Error interno del servidor');
+            (err) => {
+                if (err) {
+                    console.error(`Error de ejecución: ${err}`);
+                    // En caso de error, enviamos una respuesta y salimos de la función
+                    if (!res.headersSent) {
+                        res.status(500).send('Error interno del servidor');
+                    }
                 }
             }
-        }
 
-    );
-    const resultados = [];
-    request.on('row', (columns) => {   
-        const row = {};
-        columns.forEach((column) =>{
-            row[column.metadata.colName]= column.value;
+        );
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
+            });
+            resultados.push(row);
         });
-        resultados.push(row);
-    });
 
-    request.on ('requestCompleted', () => {
-        res.json(resultados);
-    })
-    console.log(resultados);
-     connection.execSql(request);
+        request.on('requestCompleted', () => {
+            res.json(resultados);
+        })
+        console.log(resultados);
+        connection.execSql(request);
     } catch (error) {
-        
+
     }
-    
+
 });
 
-router.get('/UsuariosHC/:DocumentoUsuario/:fechaInicio/:fechaFin', async (req, res) =>{
+router.get('/UsuariosHC/:DocumentoUsuario/:fechaInicio/:fechaFin', async (req, res) => {
     try {
         const DocumentoUsuario = req.params.DocumentoUsuario;
         const fechaInicio = req.params.fechaInicio;
         const fechaFin = req.params.fechaFin;
 
-    const request = new Request(
-        `SELECT  
+        const request = new Request(
+            `SELECT  
                 [DocumentoPaciente]
                 ,[NombreCompletoPaciente]
             FROM [Cnsta Relacionador Usuarios HC]
             WHERE DocumentoUsuario = '${DocumentoUsuario}' AND FechaEvaluacion BETWEEN '${fechaInicio}' AND '${fechaFin}'
             GROUP BY DocumentoPaciente , NombreCompletoPaciente
         `,
-        (err) => {
-            if (err) {
-                console.error(`Error de ejecución: ${err}`);
-                // En caso de error, enviamos una respuesta y salimos de la función
-                if (!res.headersSent) {
-                    res.status(500).send('Error interno del servidor');
+            (err) => {
+                if (err) {
+                    console.error(`Error de ejecución: ${err}`);
+                    // En caso de error, enviamos una respuesta y salimos de la función
+                    if (!res.headersSent) {
+                        res.status(500).send('Error interno del servidor');
+                    }
                 }
             }
-        }
 
-    );
-    const resultados = [];
-    request.on('row', (columns) => {   
-        const row = {};
-        columns.forEach((column) =>{
-            row[column.metadata.colName]= column.value;
+        );
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
+            });
+            resultados.push(row);
         });
-        resultados.push(row);
-    });
 
-    request.on ('requestCompleted', () => {
-        res.json(resultados);
-    })
-    console.log(resultados);
-     connection.execSql(request);
+        request.on('requestCompleted', () => {
+            res.json(resultados);
+        })
+        console.log(resultados);
+        connection.execSql(request);
     } catch (error) {
-        
+
     }
-    
+
 });
 
 
-router.get('/DatosdeUsuarioHC/:DocumentoPaciente', async (req, res) =>{
+router.get('/DatosdeUsuarioHC/:DocumentoPaciente', async (req, res) => {
     try {
         const DocumentoPaciente = req.params.DocumentoPaciente;
 
-    const request = new Request(
-        `
+        const request = new Request(
+            `
         SELECT        DocumentoPaciente, PrimerApellidoPaciente, 
         SegundoApellidoPaciente, PrimerNombrePaciente, SegundoNombrePaciente, 
         NombreCompletoPaciente, Sexo, Edad, Direccion, Tel, DocumentoTipoDOC
         FROM            [Cnsta Relacionador Usuarios Info]
         WHERE        (DocumentoPaciente = N'${DocumentoPaciente}')
         `,
-        (err) => {
-            if (err) {
-                console.error(`Error de ejecución: ${err}`);
-                // En caso de error, enviamos una respuesta y salimos de la función
-                if (!res.headersSent) {
-                    res.status(500).send('Error interno del servidor');
+            (err) => {
+                if (err) {
+                    console.error(`Error de ejecución: ${err}`);
+                    // En caso de error, enviamos una respuesta y salimos de la función
+                    if (!res.headersSent) {
+                        res.status(500).send('Error interno del servidor');
+                    }
                 }
             }
-        }
 
-    );
-    const resultados = [];
-    request.on('row', (columns) => {   
-        const row = {};
-        columns.forEach((column) =>{
-            row[column.metadata.colName]= column.value;
+        );
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
+            });
+            resultados.push(row);
         });
-        resultados.push(row);
-    });
 
-    request.on ('requestCompleted', () => {
-        res.json(resultados);
-    })
-    console.log(resultados);
-     connection.execSql(request);
+        request.on('requestCompleted', () => {
+            res.json(resultados);
+        })
+        console.log(resultados);
+        connection.execSql(request);
     } catch (error) {
-        
+
     }
-    
+
 });
 
-router.get('/DatosdeHC/:DocumentoPaciente/:DocumentoUsuario/:fechaInicio/:fechaFin', async (req, res) =>{
+router.get('/DatosdeHC/:DocumentoPaciente/:DocumentoUsuario/:fechaInicio/:fechaFin', async (req, res) => {
     try {
         const DocumentoPaciente = req.params.DocumentoPaciente;
         const DocumentoUsuario = req.params.DocumentoUsuario;
         const fechaInicio = req.params.fechaInicio;
         const fechaFin = req.params.fechaFin;
-    const request = new Request(
-        `
+        const request = new Request(
+            `
         SELECT         FechaEvaluacion, DocumentoPaciente, IdTipodeEvaluacion,
         DescripcionTipodeEvaluación, Formato_Diagnostico, DiagnósticoEspecíficoEvaluacionEntidad,
         DocumentoUsuario, IdEvaluaciónEntidad
@@ -210,35 +210,35 @@ router.get('/DatosdeHC/:DocumentoPaciente/:DocumentoUsuario/:fechaInicio/:fechaF
         AND (DocumentoUsuario = N'${DocumentoUsuario}')
 
         `,
-        (err) => {
-            if (err) {
-                console.error(`Error de ejecución: ${err}`);
-                // En caso de error, enviamos una respuesta y salimos de la función
-                if (!res.headersSent) {
-                    res.status(500).send('Error interno del servidor');
+            (err) => {
+                if (err) {
+                    console.error(`Error de ejecución: ${err}`);
+                    // En caso de error, enviamos una respuesta y salimos de la función
+                    if (!res.headersSent) {
+                        res.status(500).send('Error interno del servidor');
+                    }
                 }
             }
-        }
 
-    );
-    const resultados = [];
-    request.on('row', (columns) => {   
-        const row = {};
-        columns.forEach((column) =>{
-            row[column.metadata.colName]= column.value;
+        );
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
+            });
+            resultados.push(row);
         });
-        resultados.push(row);
-    });
 
-    request.on ('requestCompleted', () => {
-        res.json(resultados);
-    })
-    console.log(resultados);
-     connection.execSql(request);
+        request.on('requestCompleted', () => {
+            res.json(resultados);
+        })
+        console.log(resultados);
+        connection.execSql(request);
     } catch (error) {
-        
+
     }
-    
+
 });
 
 
@@ -246,17 +246,14 @@ router.get('/TipodeRips', async (req, res) => {
     try {
         const request = new Request(
             `
-                SELECT [Id Tipo Rips]
-                ,[Código Tipo Rips]
-                ,[Tipo Rips]
-                ,[Descripción Tipo Rips]
-                ,[Id Estado]
-            FROM [Anacatalina].[dbo].[Cnsta Relacionador Tipo Rips]
+            SELECT        IdTipoRips, CódigoTipoRips, TipoRips, 
+            DescripcionTipoRips, IdEstado
+            FROM            [Cnsta Relacionador Tipo Rips]
             `,
             (err) => {
-                if(err){
+                if (err) {
                     console.error(`Error de ejecución: ${err}`);
-                    if(!res.headersSent){
+                    if (!res.headersSent) {
                         res.status(500).send("Error interno de servidor");
                     }
                 }
@@ -264,28 +261,25 @@ router.get('/TipodeRips', async (req, res) => {
         );
 
         const resultados = [];
-
         request.on('row', (columns) => {
-            const Tiporips = {
-                idtiporips: columns[0].value,
-                codigotiporips: columns[1].value,
-                descripciontiporips: columns[3].value
-            }
-            resultados.push(Tiporips);
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
+            });
+            resultados.push(row);
         });
-
 
         request.on('requestCompleted', () => {
             console.log('Resultados de la consulta');
             console.log(resultados);
-            if(!res.headersSent){
+            if (!res.headersSent) {
                 res.json(resultados);
             }
         });
-        
+
         request.on('error', (err) => {
             console.error(' Error en la consulta:', err);
-            if(!res.headersSent){
+            if (!res.headersSent) {
                 res.status(500).send('Error interno del servidor');
             }
         });
@@ -293,7 +287,7 @@ router.get('/TipodeRips', async (req, res) => {
 
     } catch (error) {
         console.error('Error en la conexion o en la ejecucion de la consulta ');
-        if(!res.headersSent){
+        if (!res.headersSent) {
             res.status(500).send('Error  interno dels servidor')
         }
     }
@@ -302,14 +296,24 @@ router.get('/TipodeRips', async (req, res) => {
 router.get('/Entidad/:Tipo', async (req, res) => {
     try {
         const Tipo = req.params.Tipo;
-
-        const request = new Request(
-            `
-            
-            `
-        )
-    } catch (error) {
         
+            const request = new Request(
+                `
+             
+                `,
+                (err) => {
+                    if (err) {
+                        console.error(`Error de ejecución: ${err}`);
+                        if (!res.headersSent) {
+                            res.status(500).send("Error interno de servidor");
+                        }
+                    }
+                }
+            );
+       
+        
+    } catch (error) {
+
     }
 });
 
