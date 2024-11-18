@@ -255,6 +255,8 @@ router.get('/TipodeRips', async (req, res) => {
             SELECT        IdTipoRips, CódigoTipoRips, TipoRips, 
             DescripcionTipoRips, IdEstado
             FROM            [Cnsta Relacionador Tipo Rips]
+            
+
             `,
             (err) => {
                 if (err) {
@@ -305,7 +307,9 @@ router.get('/Entidad/:Tipo', async (req, res) => {
         
             const request = new Request(
                 `
-             
+                SELECT        TOP (200) NombreCompletoPaciente, [Id Función], Función
+                FROM            [Cnsta Relacionador Entidades Rips]
+                WHERE        ([Id Función] = ${Tipo})
                 `,
                 (err) => {
                     if (err) {
@@ -316,6 +320,32 @@ router.get('/Entidad/:Tipo', async (req, res) => {
                     }
                 }
             );
+
+            const resultados = [];
+            request.on('row', (columns) => {
+                const row = {};
+                columns.forEach((column) => {
+                    row[column.metadata.colName] = column.value;
+                });
+                resultados.push(row);
+            });
+    
+            request.on('requestCompleted', () => {
+                console.log('Resultados de la consulta');
+                console.log(resultados);
+                if (!res.headersSent) {
+                    res.json(resultados);
+                }
+            });
+    
+            request.on('error', (err) => {
+                console.error(' Error en la consulta:', err);
+                if (!res.headersSent) {
+                    res.status(500).send('Error interno del servidor');
+                }
+            });
+            connection.execSql(request);
+    
        
         
     } catch (error) {
