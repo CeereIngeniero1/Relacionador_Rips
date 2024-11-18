@@ -1,4 +1,4 @@
-const servidor = "192.168.1.23";
+const servidor = "HPGRIS";
 
 console.log("Hola")
 const ejecutar = async () => {
@@ -38,6 +38,180 @@ function Consultar() {
 BotonConsultar.addEventListener('click', function (e) {
     Consultar();
 })
+
+async function Cargar() {
+    // Recuperar la variable
+    const documentoUsuarioLogeado = sessionStorage.getItem('documentousuariologeado');
+
+    // // Imprimir en la consola
+    // console.log(documentoUsuarioLogeado);
+
+    let FechaInicioConsulta = document.getElementById('FechaInicioConsulta').value;
+    let FechaFinConsulta = document.getElementById('FechaFinConsulta').value;
+
+    let CamposSinLlenar = [];
+
+    if (FechaInicioConsulta === "") CamposSinLlenar.push("Fecha inicio");
+    if (FechaFinConsulta === "") CamposSinLlenar.push("Fecha fin");
+
+    if (CamposSinLlenar.length > 0) {
+        Swal.fire({
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            icon: 'info',
+            text: '',
+            html: `
+                <h4 style="color: #ffffff"><b> Los siguientes campos son obligatorios: </b></h4>
+                <br>
+                <ul style="text-align: left;">
+                ${CamposSinLlenar
+                .map((campo) => `<li style="color: #ffffff"> ${campo}</li>`)
+                .join("")}
+                </ul>
+            `,
+        })
+
+        return;
+    }
+
+    if (FechaInicioConsulta > FechaFinConsulta) {
+        Swal.fire({
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            icon: 'info',
+            text: '',
+            html: `
+                <h4 style="color: #ffffff"><b>La fecha de inicio debe ser menor o igual a la fecha de fin.</b></h4>
+            `,
+        })
+
+        return;
+    }
+
+
+    try {
+        const PacienteConHCSinRIPS = await fetch(`http://${servidor}:3000/api/UsuariosHC/${documentoUsuarioLogeado}/${FechaInicioConsulta}/${FechaFinConsulta}`);
+        if (!PacienteConHCSinRIPS.ok) {
+            throw new Error(`Error al obtener los datos de Pacientes con HC sin RIPS: ${PacienteConHCSinRIPS.statusText}`);
+        }
+        const PacientesConHCSinRIPS = await PacienteConHCSinRIPS.json();
+        console.log('Datos: ', PacientesConHCSinRIPS);
+
+        Swal.fire({
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            icon: 'success',
+            html: `
+                <h4 style="color: #ffffff"> <b>Pacientes cargados correctamente</b> </h4>
+            `
+        }).then(function (response) {
+            // Cerrar el modal
+            const BotonCerarModal = document.getElementById('BotonCerarModal');
+            BotonCerarModal.click();
+
+            if (response.isConfirmed) {
+
+                const SelectPacientesConHCSinRIPS = document.getElementById('listaHC');
+                SelectPacientesConHCSinRIPS.innerHTML = '';
+                
+                // Agrega una opción por defecto
+                const defaultOption = document.createElement('option');
+                defaultOption.textContent = 'Seleccione un paciente';
+                defaultOption.value = '';
+                SelectPacientesConHCSinRIPS.appendChild(defaultOption);
+                for (let i = 0; i < PacientesConHCSinRIPS.length; i+=1) {
+                    const option = document.createElement('option');
+                    option.value = PacientesConHCSinRIPS[i].DocumentoPaciente;
+                    option.textContent = PacientesConHCSinRIPS[i].NombreCompletoPaciente;
+                    SelectPacientesConHCSinRIPS.appendChild(option);
+                }
+            }
+        })
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const BotonCargarPacientesConHCSinRIPS = document.getElementById('CargarPacientesConHCSinRIPS');
+
+BotonCargarPacientesConHCSinRIPS.addEventListener('click', function (e) {
+    Cargar();
+})
+
+const SelectPacientes = document.getElementById('listaHC');
+
+SelectPacientes.addEventListener('change', async function (e) {
+    console.log(this.value);
+
+    const NombrePaciente = document.getElementById('NombrePaciente');
+    const DcoumentoPaciente = document.getElementById('DocumentoPaciente');
+    const EdadPaciente = document.getElementById('EdadPaciente');
+    const SexoPaciente = document.getElementById('SexoPaciente');
+    const DireccionPaciente = document.getElementById('DireccionPaciente');
+    const TelefonoPaciente = document.getElementById('TelefonoPaciente');
+    const SelectHistoriasSinRIPS = document.getElementById('HistoriasSinRIPS');
+
+
+    if (this.value !== "") {
+        try {
+            const DatosPaciente = await fetch(`http://${servidor}:3000/api/DatosdeUsuarioHC/${this.value}`);
+            if (!DatosPaciente.ok) {
+                throw new Error(`Error al obtener los datos de Pacientes con HC sin RIPS: ${DatosPaciente.statusText}`);
+            }
+            const CargarDatosPaciente = await DatosPaciente.json();
+            console.log('Datos: ', CargarDatosPaciente); 
+
+            NombrePaciente.value = CargarDatosPaciente[0].NombreCompletoPaciente;
+            DcoumentoPaciente.value = CargarDatosPaciente[0].DocumentoPaciente;
+            EdadPaciente.value = CargarDatosPaciente[0].Edad;
+            SexoPaciente.value = CargarDatosPaciente[0].Sexo;
+            DireccionPaciente.value = CargarDatosPaciente[0].Direccion;
+            TelefonoPaciente.value = CargarDatosPaciente[0].Tel;
+
+
+            // Funcionalidad para el llenado del select de las historias/evoluciones sin RIPS
+            const RangoInicio = document.getElementById('FechaInicioConsulta').value;
+            const RangoFin = document.getElementById('FechaFinConsulta').value;
+            const documentoUsuarioLogeado = sessionStorage.getItem('documentousuariologeado');
+            const HCsinRIPS = await fetch(`http://${servidor}:3000/api/DatosdeHC/${this.value}/${documentoUsuarioLogeado}/${RangoInicio}/${RangoFin}`);
+            if (!HCsinRIPS.ok) {
+                throw new Error(`Error al obtener las historias/evoluciones sin RIPS: ${HCsinRIPS.statusText}`);
+            }
+            const HistoriasEvolucionesSinRIPS = await HCsinRIPS.json();
+            console.log('Historias/Evoluciones sin RIPS: ', HistoriasEvolucionesSinRIPS);
+
+            console.log('Rango: ' + RangoInicio + ' ' + RangoFin)
+
+            
+            SelectHistoriasSinRIPS.innerHTML = '';
+            // Opción por defecto
+            const defaultOption = document.createElement('option');
+            defaultOption.textContent = 'Seleccione una historia/evolución';
+            defaultOption.value = '';
+            SelectHistoriasSinRIPS.appendChild(defaultOption);
+            for (let i = 0; i < HistoriasEvolucionesSinRIPS.length; i+=1) {
+                const option = document.createElement('option');
+                option.value = HistoriasEvolucionesSinRIPS[i].IdEvaluaciónEntidad;
+                option.textContent = HistoriasEvolucionesSinRIPS[i].Formato_Diagnostico + " - " + HistoriasEvolucionesSinRIPS[i].FechaEvaluacionTexto + " " + HistoriasEvolucionesSinRIPS[i].HoraEvaluacion;
+                SelectHistoriasSinRIPS.appendChild(option);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    } else {
+        // Limpiar los campos si no hay selección
+        NombrePaciente.value = '';
+        DcoumentoPaciente.value = '';
+        EdadPaciente.value = '';
+        SexoPaciente.value = '';
+        DireccionPaciente.value = '';
+        TelefonoPaciente.value = '';
+        SelectHistoriasSinRIPS.innerHTML = '';
+    }    
+});
+
+
+
 
 const radioAC = document.getElementById('AC');
 const radioAP = document.getElementById('AP');

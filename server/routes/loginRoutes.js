@@ -11,7 +11,7 @@ router.post('/login', (req, res) => {
 
     // Realizar la autenticación en la base de datos
     const request = new Request(
-        'SELECT [Nombre de Usuario], Contraseña, [Id Nivel] FROM Contraseña WHERE [Nombre de Usuario] = @username AND Contraseña = @password',
+        'SELECT [Nombre de Usuario], [Documento Entidad], Contraseña, [Id Nivel] FROM Contraseña WHERE [Nombre de Usuario] = @username AND Contraseña = @password',
         (err) => {
             if (err) {
                 console.error(err.message);
@@ -32,8 +32,9 @@ router.post('/login', (req, res) => {
         const usernameColumn = columns.find(col => col.metadata.colName === 'Nombre de Usuario');
         const passwordColumn = columns.find(col => col.metadata.colName === 'Contraseña');
         const idNivelColumn = columns.find(col => col.metadata.colName === 'Id Nivel');
+        const documentoEntidadColumn = columns.find(col => col.metadata.colName === 'Documento Entidad');
 
-        if (!usernameColumn || !passwordColumn || !idNivelColumn) {
+        if (!usernameColumn || !passwordColumn || !idNivelColumn || !documentoEntidadColumn) {
             console.error('Column not found in result set');
             if (!res.headersSent) {
                 return res.status(500).json({ error: 'Error en la autenticación' });
@@ -46,6 +47,8 @@ router.post('/login', (req, res) => {
         // Obtener el nivel de usuario de las columnas
         const userLevel = idNivelColumn.value;
 
+        const documentousuariologeado = documentoEntidadColumn.value;
+
         // Verificar el nivel de usuario
         if (![1, 2, 3].includes(userLevel)) {
             if (!res.headersSent) {
@@ -55,7 +58,7 @@ router.post('/login', (req, res) => {
 
         // Enviar el token y el nivel de usuario al cliente
         if (!res.headersSent) {
-            res.json({ token, userLevel });
+            res.json({ token, userLevel,  documentousuariologeado});
         }
 
         // Almacena información adicional del usuario en la sesión

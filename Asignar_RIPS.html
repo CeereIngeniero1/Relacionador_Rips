@@ -25,7 +25,7 @@
     <div class="container">
 
         <div class="position-fixed bottom-0 end-0 p-3">
-            <button class="btn btn-success shadow-lg" id="RegresarAPrincipal">Regresar</button>
+            <button class="btn btn-success shadow-lg fw-bolder" id="RegresarAPrincipal">Regresar</button>
         </div>
         
 
@@ -38,7 +38,7 @@
                         <option value="Sin Seleccionar">Sin Seleccionar</option>
                     </select>
                     <!-- <button class="btn btn-success btn-sm mt-md-3 mt-lg-0" data-bs-toggle="modal" data-bs-target="#exampleModal" id="BotonConsultar">Consultar</button> -->
-                    <button class="btn btn-success btn-sm mt-md-3 mt-lg-0" id="BotonConsultar">Consultar</button>
+                    <button class="btn btn-success btn-sm mt-md-3 mt-lg-0 fw-bolder" id="BotonConsultar">Consultar</button>
                 </div>                  
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -52,18 +52,18 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <label for="">Fecha Inicial</label>
-                                <input type="date" class="form-control-sm w-100 border border-secondary">
+                                <input type="date" class="form-control-sm w-100 border border-secondary" id="FechaInicioConsulta">
                             </div>
 
                             <div class="col-md-6">
                                 <label for="">Fecha Final</label>
-                                <input type="date" class="form-control-sm w-100 border border-secondary">
+                                <input type="date" class="form-control-sm w-100 border border-secondary" id="FechaFinConsulta">
                             </div>
                         </div>
                         </div>
                         <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-primary">Cargar</button>
+                        <button type="button" class="btn btn-secondary btn-sm fw-bolder" data-bs-dismiss="modal" id="BotonCerarModal">Cerrar</button>
+                        <button type="button" class="btn btn-primary btn-sm fw-bolder" id="CargarPacientesConHCSinRIPS">Cargar</button>
                         </div>
                     </div>
                     </div>
@@ -74,24 +74,24 @@
                 <h5><b>Datos del paciente</b></h5>
                 <div class="col-md-4">
                     <label for="">Nombre completo:</label><br>
-                    <input type="text" class="form-control-sm mb-2 border border-secondary w-100" readonly><br>
+                    <input type="text" class="form-control-sm mb-2 border border-secondary w-100"  readonly id="NombrePaciente"><br>
 
                     <label for="">Edad:</label><br>
-                    <input type="number" class="form-control-sm mb-2 border border-secondary w-100" readonly>
+                    <input type="text" class="form-control-sm mb-2 border border-secondary w-100"  readonly id="EdadPaciente">
                 </div>
                 <div class="col-md-4">
                     <label for="">Documento:</label><br>
-                    <input type="text" class="form-control-sm mb-2 border border-secondary w-100" readonly><br>
+                    <input type="text" class="form-control-sm mb-2 border border-secondary w-100" readonly id="DocumentoPaciente"><br>
 
                     <label for="">Dirección:</label><br>
-                    <input type="text" class="form-control-sm mb-2 border border-secondary w-100" readonly>
+                    <input type="text" class="form-control-sm mb-2 border border-secondary w-100" readonly id="DireccionPaciente">
                 </div>
                 <div class="col-md-4">
                     <label for="">Sexo:</label><br>
-                    <input type="text" class="form-control-sm mb-2 border border-secondary w-100" readonly><br>
+                    <input type="text" class="form-control-sm mb-2 border border-secondary w-100" readonly id="SexoPaciente"><br>
 
                     <label for="">Teléfono:</label><br>
-                    <input type="text" class="form-control-sm mb-2 border border-secondary w-100" readonly>
+                    <input type="text" class="form-control-sm mb-2 border border-secondary w-100" readonly id="TelefonoPaciente">
                 </div>
             </div>
             
@@ -101,7 +101,7 @@
                     <h5><b>Selección de historia clínica y tipo de RIPS</b></h5>
                     <div class="col-md-4">
                         <label for="">Seleccione la historia clínica a asignarle el RIPS</label>
-                        <select name="" class="form-select-sm w-100 border border-secondary">
+                        <select name="" class="form-select-sm w-100 border border-secondary" id="HistoriasSinRIPS">
                             <option value="Sin Seleccionar">Sin Seleccionar</option>
                         </select>
                     </div>
@@ -111,6 +111,12 @@
                         <br>
                         <label for="ac">AC <input type="radio" name="tipoRips" id="AC"></label>
                         <label for="ap">AP <input type="radio" name="tipoRips" id="AP"></label>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="">Asginar RIPS por defecto</label>
+                        <br>
+                        <button class="btn btn-success btn-sm fw-bolder">Asignar</button>
                     </div>
                 </div>    
             </div>
@@ -307,7 +313,7 @@
             </div>
     
             <div class="button">
-                <button id="btnRegistrarRIPS" class="btn btn-success mt-3">Registrar RIPS</button>
+                <button id="btnRegistrarRIPS" class="btn btn-success btn-sm mt-3 fw-bolder">Registrar RIPS</button>
             </div>
         </div>
        
