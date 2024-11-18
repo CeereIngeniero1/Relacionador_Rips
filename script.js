@@ -1,4 +1,4 @@
-const servidor = "HPRED240";
+const servidor = "HPGRIS";
 
 const login = async () => {
     const username = document.getElementById('inputUsername').value;
@@ -27,12 +27,13 @@ const login = async () => {
             });
 
             if (response.ok) {
-                const { token, userLevel } = await response.json(); // Extrae token y userLevel de la respuesta
+                const { token, userLevel, documentousuariologeado } = await response.json(); // Extrae token y userLevel de la respuesta
                 const { exp } = JSON.parse(atob(token.split('.')[1])); // Decodifica el token para obtener la fecha de expiración
 
                 localStorage.setItem('token', token);
                 localStorage.setItem('token_exp', exp);
                 localStorage.setItem('userLevel', userLevel); // Guarda el nivel de usuario en localStorage
+                sessionStorage.setItem('documentousuariologeado', documentousuariologeado)
 
                 alertify.success('Inicio de sesión correcto');
                 setTimeout(() => {
