@@ -104,6 +104,50 @@ router.get('/DatosUsuario/:IdEvaluacion', async (req, res) =>{
     
 });
 
+router.get('/UsuariosHC/:DocumentoUsuario/:fechaInicio/:fechaFin', async (req, res) =>{
+    try {
+        const DocumentoUsuario = req.params.DocumentoUsuario;
+        const fechaInicio = req.params.fechaInicio;
+        const fechaFin = req.params.fechaFin;
+
+    const request = new Request(
+        `SELECT  
+                [DocumentoPaciente]
+                ,[NombreCompletoPaciente]
+            FROM [Anacatalina].[dbo].[Cnsta Relacionador Usuarios HC]
+            WHERE DocumentoUsuario = '${DocumentoUsuario}' AND FechaEvaluacion BETWEEN '${fechaInicio}' AND '${fechaFin}'
+            GROUP BY DocumentoPaciente , NombreCompletoPaciente
+        `,
+        (err) => {
+            if (err) {
+                console.error(`Error de ejecución: ${err}`);
+                // En caso de error, enviamos una respuesta y salimos de la función
+                if (!res.headersSent) {
+                    res.status(500).send('Error interno del servidor');
+                }
+            }
+        }
+
+    );
+    const resultados = [];
+    request.on('row', (columns) => {   
+        const row = {};
+        columns.forEach((column) =>{
+            row[column.metadata.colName]= column.value;
+        });
+        resultados.push(row);
+    });
+
+    request.on ('requestCompleted', () => {
+        res.json(resultados);
+    })
+    console.log(resultados);
+     connection.execSql(request);
+    } catch (error) {
+        
+    }
+    
+});
 
 router.get('/TipodeRips', async (req, res) => {
     try {
