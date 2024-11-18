@@ -89,6 +89,15 @@ const updateEvaluacionesTablet = (evaluaciones) => {
         columnaCheckBox.appendChild(checkBox);
         fila.appendChild(columnaCheckBox);
 
+        // const columnaRadioButton = document.createElement("td");
+        // const radioButton = document.createElement("input");
+        // radioButton.type = "radio";
+        // radioButton.id = "radioButtonColumn"; // Asigna el id en lugar de la clase
+        // radioButton.name = "radioButtonColumn"; // Asigna el id en lugar de la clase
+        // columnaRadioButton.appendChild(radioButton);
+        // fila.appendChild(columnaRadioButton);
+
+
         // Columna deL ID de la HC
         const columnaIdHC = document.createElement("td");
         columnaIdHC.textContent = evaluacion.idEvaluacion; // Cambiar por el campo adecuado
