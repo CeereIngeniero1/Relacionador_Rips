@@ -201,7 +201,7 @@ router.get('/DatosdeHC/:DocumentoPaciente/:DocumentoUsuario/:fechaInicio/:fechaF
         const fechaFin = req.params.fechaFin;
         const request = new Request(
             `
-        SELECT          [FechaEvaluacion]
+        SELECT          [FechaEvaluacionTexto]
                 ,[DocumentoPaciente]
                 ,[IdTipodeEvaluacion]
                 ,[DescripcionTipodeEvaluación]
