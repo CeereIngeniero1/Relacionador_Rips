@@ -165,3 +165,16 @@ SELECT        [Id Tipo de Diagnóstico Principal] AS IdTipodeDiagnósticoPrincip
 FROM            dbo.[Tipo de Diagnóstico Principal]
 WHERE        ([Id Estado] = 7)
 
+
+----Consta Via ingreso Usuario
+CREATE VIEW [dbo].[Cnsta Relacionador Via Ingreso Usuario]
+AS
+SELECT        [Id Via Ingreso Usuario] AS IdViaIngresoUsuario, Codigo, [Nombre Via Ingreso Usuario] AS NombreViaIngresoUsuario, [Descripción Via Ingreso Usuario] AS DescripcionViaIngresoUsuario, 
+                         [Orden Via Ingreso Usuario] AS OrdenViaIngresoUsuario, [Id Estado]
+FROM            dbo.[RIPS Via Ingreso Usuario]
+WHERE        ([Id Estado] = 7)
+
+
+
+
+

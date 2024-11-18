@@ -672,4 +672,61 @@ router.get('/DXPrincipal', async (req, res) => {
 
     }
 });
+
+
+router.get('/ViaIngresoUsuario', async (req, res) => {
+    try {
+        
+        
+            const request = new Request(
+                `
+             SELECT        IdViaIngresoUsuario, Codigo, NombreViaIngresoUsuario,
+             DescripcionViaIngresoUsuario, OrdenViaIngresoUsuario, [Id Estado]
+            FROM            [Cnsta Relacionador Via Ingreso Usuario]
+                `,
+                (err) => {
+                    if (err) {
+                        console.error(`Error de ejecución: ${err}`);
+                        if (!res.headersSent) {
+                            res.status(500).send("Error interno de servidor");
+                        }
+                    }
+                }
+            );
+
+            const resultados = [];
+            request.on('row', (columns) => {
+                const row = {};
+                columns.forEach((column) => {
+                    row[column.metadata.colName] = column.value;
+                });
+                resultados.push(row);
+            });
+    
+            request.on('requestCompleted', () => {
+                console.log('Resultados de la consulta');
+                console.log(resultados);
+                if (!res.headersSent) {
+                    res.json(resultados);
+                }
+            });
+    
+            request.on('error', (err) => {
+                console.error(' Error en la consulta:', err);
+                if (!res.headersSent) {
+                    res.status(500).send('Error interno del servidor');
+                }
+            });
+            connection.execSql(request);
+    
+       
+        
+    } catch (error) {
+
+    }
+});
+
+
+
+
 module.exports = router;
