@@ -1,4 +1,4 @@
-const servidor = "HPGRIS";
+const servidor = "HPRED240";
 
 const checkboxParticular = document.getElementById('checkbox1')
 const checkboxPrepagada = document.getElementById('checkbox2')

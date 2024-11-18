@@ -1,4 +1,4 @@
-const servidor = "HPGRIS";
+const servidor = "HPRED240";
 
 console.log("Hola")
 const ejecutar = async () => {
