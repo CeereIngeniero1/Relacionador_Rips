@@ -192,7 +192,7 @@ SelectPacientes.addEventListener('change', async function (e) {
             for (let i = 0; i < HistoriasEvolucionesSinRIPS.length; i+=1) {
                 const option = document.createElement('option');
                 option.value = HistoriasEvolucionesSinRIPS[i].IdEvaluaciónEntidad;
-                option.textContent = HistoriasEvolucionesSinRIPS[i].Formato_Diagnostico + " - " + HistoriasEvolucionesSinRIPS[i].FechaEvaluacionTexto + " " + HistoriasEvolucionesSinRIPS[i].HoraEvaluacion;
+                option.textContent = HistoriasEvolucionesSinRIPS[i].DescripcionTipodeEvaluación + " " +  HistoriasEvolucionesSinRIPS[i].Formato_Diagnostico + " - " + HistoriasEvolucionesSinRIPS[i].FechaEvaluacionTexto + " " + HistoriasEvolucionesSinRIPS[i].HoraEvaluacion;
                 SelectHistoriasSinRIPS.appendChild(option);
             }
         } catch (error) {
@@ -231,10 +231,47 @@ ContenedorTipoAC.style.display = 'none';
 ContenedorTipoAP.style.display = 'none';
 
 // Event listener para el radio button AC
-radioAC.addEventListener('change', () => {
+radioAC.addEventListener('change', async function (e) {
 
     ContenedorTipoAC.style.display = 'block';
     ContenedorTipoAP.style.display = 'none';
+
+    const SelectTipoUsuarioRIPS = document.getElementById('SelectTipoUsuarioRIPS');
+    const HistoriasSinRIPS = document.getElementById('HistoriasSinRIPS').value;
+    const SelectEntidad =  document.getElementById('SelectEntidad');
+
+    // Desarrollo || y producción &&
+    if (HistoriasSinRIPS !== "" || HistoriasSinRIPS !== "Sin Seleccionar") {
+        try {
+            // Funcionalidad para el llenado del select de tipo de rips
+            const TipoDeUsuarioRIPS = await fetch(`http://${servidor}:3000/api/TipodeRips`)
+            if (!TipoDeUsuarioRIPS) {
+                throw new Error(`Error al obtener los tipos de usuario RIPS: ${TipoDeUsuarioRIPS.statusText}`);
+            }
+            const CargarTipoDeUsuarioRIPS = await TipoDeUsuarioRIPS.json();
+            console.log('Tipos de Usuario RIPS: ', CargarTipoDeUsuarioRIPS);
+            SelectTipoUsuarioRIPS.innerHTML = '';
+            // Opción por defecto
+            const defaultOption = document.createElement('option');
+            defaultOption.textContent = 'Seleccione un tipo de RIPS';
+            defaultOption.value = '';
+            SelectTipoUsuarioRIPS.appendChild(defaultOption);
+            for (let i = 0; i < CargarTipoDeUsuarioRIPS.length; i+=1) {
+                const option = document.createElement('option');
+                option.value = CargarTipoDeUsuarioRIPS[i].CódigoTipoRips;
+                option.textContent = CargarTipoDeUsuarioRIPS[i].TipoRips;
+                SelectTipoUsuarioRIPS.appendChild(option);
+            }
+
+            // Funcionalidad para el llenado del select de entidad
+
+    
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
     // if (radioAC.checked) {
     //     procedimientoRIPS.textContent = 'codConsulta'; // Limpiar el valor si es necesario
     //     causaViaIngreso.textContent = 'causaMotivoAtencion';
