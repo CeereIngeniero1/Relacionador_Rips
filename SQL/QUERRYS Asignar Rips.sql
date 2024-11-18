@@ -76,6 +76,12 @@ WHERE        ([Id Estado] = 7)
 GO
 
 
+-- para que los tipo rips no se dañen :P
+Update [Tipo Rips] set [Código Tipo Rips] = 17 where  [Tipo Rips] = 'Particulares'
+Update [Tipo Rips] set [Código Tipo Rips] = 24 where  [Tipo Rips] = 'Entidad Prepago'
+Update [Tipo Rips] set [Código Tipo Rips] = 23 where  [Tipo Rips] = 'Entidad Prepago'
+
+
 ---- ENTIDADES TIPO RIPS
 CREATE VIEW [dbo].[Cnsta Relacionador Entidades Rips]
 AS
@@ -88,5 +94,60 @@ WHERE        (dbo.[Función Por Entidad].[Id Función] = 17) OR
                          (dbo.[Función Por Entidad].[Id Función] = 23)
 GO
 
+----Modalidad atencion
 
-                         
+CREATE VIEW [dbo].[Cnsta Relacionador Modalidad Atencion]
+AS
+SELECT        [Id Modalidad Atencion] AS IdModalidadAtencion, Codigo, [Nombre Modalidad Atencion] AS NombreModalidadAtencion, [Descripción Modalidad Atencion] AS DescripcionModalidadAtencion, 
+                         [Orden Modalidad Atencion] AS OrdenModalidadAtencion, [Id Estado]
+FROM            dbo.[RIPS Modalidad Atención]
+WHERE        ([Id Estado] = 7)
+
+
+
+--Estos updates son para que se pueda relacion grupo servicios con servicios
+Update  [RIPS Grupo Servicios] set [Descripción Grupo Servicios] = 'CONSULTA EXTERNA'
+WHERE Codigo = '01'
+
+Update  [RIPS Grupo Servicios] set [Descripción Grupo Servicios] = 'APOYO DIAGNOSTICO Y COMPLEMENTACION TERAPEUTICA'
+WHERE Codigo = '02'
+
+Update  [RIPS Grupo Servicios] set [Descripción Grupo Servicios] = 'INTERNACION'
+WHERE Codigo = '03'
+
+Update  [RIPS Grupo Servicios] set [Descripción Grupo Servicios] = 'QUIRURGICOS'
+WHERE Codigo = '04'
+
+Update  [RIPS Grupo Servicios] set [Descripción Grupo Servicios] = 'ATENCION INMEDIATA'
+WHERE Codigo = '05'
+
+-- -- cnsta grupo servicios
+    CREATE VIEW [dbo].[Cnsta Relacionador ModalidadGrupoServicioTecSal]
+AS
+SELECT        [Id Grupo Servicios] AS IdGrupoServicios, Codigo, [Nombre Grupo Servicios] AS NombreGrupoServicios, [Descripción Grupo Servicios] AS DescripcionGrupoServicios, [Orden Grupo Servicios], [Id Estado]
+FROM            dbo.[RIPS Grupo Servicios]
+WHERE        ([Id Estado] = 7)
+GO
+
+
+--cnsta servicios
+
+CREATE VIEW [dbo].[Cnsta Relacionador Servicios]
+AS
+SELECT        [Id Servicios], [Código Servicios], [Nombre Servicios], [Descripción Servicios], [Id Estado]
+FROM            dbo.[RIPS Servicios]
+WHERE        ([Id Estado] = 7)
+GO
+
+-- cnsta finalidad
+CREATE VIEW [dbo].[Cnsta Relacionador Finalidad]
+AS
+SELECT        [Id Finalidad Consulta] AS IdFinalidadConsulta, Codigo, [Nombre RIPS Finalidad Consulta Version2] AS NombreRIPSFinalidadConsultaVersion2, 
+                         [Descripción RIPS Finalidad Consulta Version2] AS DescripcionRIPSFinalidadConsultaVersion2, [Orden RIPS Finalidad Consulta Version2] AS RIPSFinalidadConsultaVersion2, AC, AP, [Id Estado]
+FROM            dbo.[RIPS Finalidad Consulta Version2]
+GO
+
+
+
+
+
