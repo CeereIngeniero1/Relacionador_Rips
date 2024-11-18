@@ -564,5 +564,112 @@ router.get('/FinalidadV2/:Tipo', async (req, res) => {
     }
 });
 
+router.get('/CausaExterna', async (req, res) => {
+    try {
+        
+        
+            const request = new Request(
+                `
+              SELECT       [Id RIPS Causa Externa Version2], Codigo, 
+              NombreRIPSCausaExternaVersion2, DescripcionRIPSCausaExternaVersion2, 
+              RIPSCausaExternaVersion2, [Id Estado]
+                FROM            [Cnsta Relacionador Causa Externa]
 
+                `,
+                (err) => {
+                    if (err) {
+                        console.error(`Error de ejecución: ${err}`);
+                        if (!res.headersSent) {
+                            res.status(500).send("Error interno de servidor");
+                        }
+                    }
+                }
+            );
+
+            const resultados = [];
+            request.on('row', (columns) => {
+                const row = {};
+                columns.forEach((column) => {
+                    row[column.metadata.colName] = column.value;
+                });
+                resultados.push(row);
+            });
+    
+            request.on('requestCompleted', () => {
+                console.log('Resultados de la consulta');
+                console.log(resultados);
+                if (!res.headersSent) {
+                    res.json(resultados);
+                }
+            });
+    
+            request.on('error', (err) => {
+                console.error(' Error en la consulta:', err);
+                if (!res.headersSent) {
+                    res.status(500).send('Error interno del servidor');
+                }
+            });
+            connection.execSql(request);
+    
+       
+        
+    } catch (error) {
+
+    }
+});
+
+
+router.get('/DXPrincipal', async (req, res) => {
+    try {
+        
+        
+            const request = new Request(
+                `
+              SELECT        IdTipodeDiagnósticoPrincipal, CódigoTipodeDiagnósticoPrincipal, 
+              TipodeDiagnósticoPrincipal, DescripcionTipodeDiagnósticoPrincipal,
+               ordenTipodeDiagnósticoPrincipal, [Id Estado]
+                FROM            [Cnsta Relacionador Tipo Diagnostico Principal]
+
+                `,
+                (err) => {
+                    if (err) {
+                        console.error(`Error de ejecución: ${err}`);
+                        if (!res.headersSent) {
+                            res.status(500).send("Error interno de servidor");
+                        }
+                    }
+                }
+            );
+
+            const resultados = [];
+            request.on('row', (columns) => {
+                const row = {};
+                columns.forEach((column) => {
+                    row[column.metadata.colName] = column.value;
+                });
+                resultados.push(row);
+            });
+    
+            request.on('requestCompleted', () => {
+                console.log('Resultados de la consulta');
+                console.log(resultados);
+                if (!res.headersSent) {
+                    res.json(resultados);
+                }
+            });
+    
+            request.on('error', (err) => {
+                console.error(' Error en la consulta:', err);
+                if (!res.headersSent) {
+                    res.status(500).send('Error interno del servidor');
+                }
+            });
+            connection.execSql(request);
+    
+       
+        
+    } catch (error) {
+
+    }
+});
 module.exports = router;

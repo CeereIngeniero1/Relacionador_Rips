@@ -139,7 +139,7 @@ FROM            dbo.[RIPS Servicios]
 WHERE        ([Id Estado] = 7)
 GO
 
--- cnsta finalidad
+-- cnsta finalidad V2
 CREATE VIEW [dbo].[Cnsta Relacionador Finalidad]
 AS
 SELECT        [Id Finalidad Consulta] AS IdFinalidadConsulta, Codigo, [Nombre RIPS Finalidad Consulta Version2] AS NombreRIPSFinalidadConsultaVersion2, 
@@ -147,7 +147,21 @@ SELECT        [Id Finalidad Consulta] AS IdFinalidadConsulta, Codigo, [Nombre RI
 FROM            dbo.[RIPS Finalidad Consulta Version2]
 GO
 
+--CNsta causa externa V2
+CREATE VIEW [dbo].[Cnsta Relacionador Causa Externa]
+AS
+SELECT        [Id RIPS Causa Externa Version2], Codigo, [Nombre RIPS Causa Externa Version2] AS NombreRIPSCausaExternaVersion2, [Descripción RIPS Causa Externa Version2] AS DescripcionRIPSCausaExternaVersion2, 
+                         [Orden RIPS Causa Externa Version2] AS RIPSCausaExternaVersion2, [Id Estado]
+FROM            dbo.[RIPS Causa Externa Version2]
+WHERE        ([Id Estado] = 7)
 
 
+-- Cnosta DX PRINCIPAL
 
+CREATE VIEW [dbo].[Cnsta Relacionador Tipo Diagnostico Principal]
+AS
+SELECT        [Id Tipo de Diagnóstico Principal] AS IdTipodeDiagnósticoPrincipal, [Código Tipo de Diagnóstico Principal] AS CódigoTipodeDiagnósticoPrincipal, [Tipo de Diagnóstico Principal] AS TipodeDiagnósticoPrincipal, 
+                         [Descripción Tipo de Diagnóstico Principal] AS DescripcionTipodeDiagnósticoPrincipal, [Orden Tipo de Diagnóstico Principal] AS ordenTipodeDiagnósticoPrincipal, [Id Estado]
+FROM            dbo.[Tipo de Diagnóstico Principal]
+WHERE        ([Id Estado] = 7)
 
