@@ -50,7 +50,7 @@ FROM            dbo.Entidad INNER JOIN
 ----- Info de hc segun usuario y segun paciente
 CREATE VIEW [dbo].[Cnsta Relacionador Info Historias]
 AS
-SELECT        dbo.[Evaluación Entidad].[Fecha Evaluación Entidad], dbo.[Evaluación Entidad].[Documento Entidad] AS DocumentoPaciente, dbo.[Evaluación Entidad].[Id Tipo de Evaluación] AS IdTipodeEvaluacion, 
+SELECT        dbo.[Evaluación Entidad].[Fecha Evaluación Entidad] AS FechaEvaluacion, dbo.[Evaluación Entidad].[Documento Entidad] AS DocumentoPaciente, dbo.[Evaluación Entidad].[Id Tipo de Evaluación] AS IdTipodeEvaluacion, 
                          dbo.[Tipo de Evaluación].[Descripción Tipo de Evaluación] AS DescripcionTipodeEvaluación, 
                          CASE WHEN dbo.[Evaluación Entidad].[Id Tipo de Evaluación] = 4 THEN SUBSTRING(CAST(dbo.[Evaluación Entidad].[Diagnóstico General Evaluación Entidad] AS nvarchar(MAX)), CHARINDEX('\', 
                          CAST(dbo.[Evaluación Entidad].[Diagnóstico General Evaluación Entidad] AS nvarchar(MAX)), CHARINDEX('\', CAST(dbo.[Evaluación Entidad].[Diagnóstico General Evaluación Entidad] AS nvarchar(MAX))) + 1) + 1, 

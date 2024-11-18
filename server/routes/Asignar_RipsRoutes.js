@@ -193,17 +193,22 @@ router.get('/DatosdeUsuarioHC/:DocumentoPaciente', async (req, res) =>{
     
 });
 
-router.get('/DatosdeHC/:DocumentoPaciente', async (req, res) =>{
+router.get('/DatosdeHC/:DocumentoPaciente/:DocumentoUsuario/:fechaInicio/:fechaFin', async (req, res) =>{
     try {
         const DocumentoPaciente = req.params.DocumentoPaciente;
-
+        const DocumentoUsuario = req.params.DocumentoUsuario;
+        const fechaInicio = req.params.fechaInicio;
+        const fechaFin = req.params.fechaFin;
     const request = new Request(
         `
-        SELECT        DocumentoPaciente, PrimerApellidoPaciente, 
-        SegundoApellidoPaciente, PrimerNombrePaciente, SegundoNombrePaciente, 
-        NombreCompletoPaciente, Sexo, Edad, Direccion, Tel, DocumentoTipoDOC
-        FROM            [Cnsta Relacionador Usuarios Info]
-        WHERE        (DocumentoPaciente = N'${DocumentoPaciente}')
+        SELECT         FechaEvaluacion, DocumentoPaciente, IdTipodeEvaluacion,
+        DescripcionTipodeEvaluación, Formato_Diagnostico, DiagnósticoEspecíficoEvaluacionEntidad,
+        DocumentoUsuario, IdEvaluaciónEntidad
+        FROM            [Cnsta Relacionador Info Historias]
+        WHERE        (DocumentoPaciente = N'${DocumentoPaciente}') 
+        AND (FechaEvaluacion BETWEEN '${fechaInicio}' AND '${fechaFin}') 
+        AND (DocumentoUsuario = N'${DocumentoUsuario}')
+
         `,
         (err) => {
             if (err) {
