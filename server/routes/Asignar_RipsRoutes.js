@@ -307,7 +307,7 @@ router.get('/Entidad/:Tipo', async (req, res) => {
         
             const request = new Request(
                 `
-                SELECT        TOP (200) NombreCompletoPaciente, [Id Función], Función
+                SELECT        TOP (200) NombreCompletoPaciente, [Id Función], Función, DocumentoEntidad
                 FROM            [Cnsta Relacionador Entidades Rips]
                 WHERE        ([Id Función] = ${Tipo})
                 `,

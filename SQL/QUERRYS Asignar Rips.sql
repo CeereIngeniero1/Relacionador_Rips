@@ -85,7 +85,7 @@ Update [Tipo Rips] set [Código Tipo Rips] = 23 where  [Tipo Rips] = 'Entidad Pr
 ---- ENTIDADES TIPO RIPS
 CREATE VIEW [dbo].[Cnsta Relacionador Entidades Rips]
 AS
-SELECT        dbo.Entidad.[Nombre Completo Entidad] AS NombreCompletoPaciente, dbo.[Función Por Entidad].[Id Función], dbo.Función.Función
+SELECT        dbo.Entidad.[Nombre Completo Entidad] AS NombreCompletoPaciente, dbo.[Función Por Entidad].[Id Función], dbo.Función.Función, dbo.Entidad.[Documento Entidad] AS DocumentoEntidad
 FROM            dbo.Entidad INNER JOIN
                          dbo.[Función Por Entidad] ON dbo.Entidad.[Documento Entidad] = dbo.[Función Por Entidad].[Documento Entidad] INNER JOIN
                          dbo.Función ON dbo.[Función Por Entidad].[Id Función] = dbo.Función.[Id Función]
