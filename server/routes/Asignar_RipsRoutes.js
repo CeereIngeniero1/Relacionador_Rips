@@ -727,6 +727,10 @@ router.get('/ViaIngresoUsuario', async (req, res) => {
 });
 
 
+router.post('/RegistrarRips/:IdEvaluacion', async (req, res) => {
+
+});
+
 
 
 module.exports = router;
