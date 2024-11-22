@@ -176,5 +176,31 @@ WHERE        ([Id Estado] = 7)
 
 
 
+--TABLA Rips
+CREATE TABLE [Rips Cie10] (
+    Tabla VARCHAR(50),
+    Codigo VARCHAR(10),
+    Nombre VARCHAR(255),
+    Descripcion VARCHAR(255),
+    AplicaASexo INT,
+    EdadMinima INT,
+    EdadMaxima INT,
+    GrupoMortalidad INT,
+    Extra_V VARCHAR(255),
+    Extra_VI_Capitulo VARCHAR(10),
+    SubGrupo VARCHAR(10),
+    Sexo CHAR(1)
+);
+--tabla Cups
+--Si esta tabla existe ELIMINELA Por uqe no sirve pa un joropo
+CREATE TABLE [Rips Cups] (
+    Tabla VARCHAR(50),
+    Codigo VARCHAR(10),
+    Nombre VARCHAR(255),
+    Descripcion VARCHAR(255),
+    Tipo VARCHAR(50)
+);
+
+--¡¡¡¡ OJO !!!!recuerde que en otro script llamado Datos de las tablas de rips y cups se encuentran los datos de estas tablas 
 
 
