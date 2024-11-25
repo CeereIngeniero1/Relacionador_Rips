@@ -204,3 +204,18 @@ CREATE TABLE [Rips Cups] (
 --¡¡¡¡ OJO !!!!recuerde que en otro script llamado Datos de las tablas de rips y cups se encuentran los datos de estas tablas 
 
 
+--cie
+CREATE VIEW [dbo].[Cnsta Relacionador Cie10]
+AS
+SELECT        Codigo, Nombre, Descripcion, AplicaASexo, EdadMinima, EdadMaxima, GrupoMortalidad, Extra_V, Extra_VI_Capitulo, SubGrupo, Sexo
+FROM            dbo.[Rips Cie10]
+GO
+
+--cups
+CREATE VIEW [dbo].[Cnsta Relacionador Cups]
+AS
+SELECT        Codigo, Descripcion, Nombre, Tipo
+FROM            dbo.[Rips Cups]
+GO
+
+

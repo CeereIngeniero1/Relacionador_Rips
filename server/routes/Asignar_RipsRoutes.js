@@ -304,50 +304,50 @@ router.get('/TipodeRips', async (req, res) => {
 router.get('/Entidad/:Tipo', async (req, res) => {
     try {
         const Tipo = req.params.Tipo;
-        
-            const request = new Request(
-                `
+
+        const request = new Request(
+            `
                 SELECT        TOP (200) NombreCompletoPaciente, [Id Función], Función, DocumentoEntidad
                 FROM            [Cnsta Relacionador Entidades Rips]
                 WHERE        ([Id Función] = ${Tipo})
                 `,
-                (err) => {
-                    if (err) {
-                        console.error(`Error de ejecución: ${err}`);
-                        if (!res.headersSent) {
-                            res.status(500).send("Error interno de servidor");
-                        }
+            (err) => {
+                if (err) {
+                    console.error(`Error de ejecución: ${err}`);
+                    if (!res.headersSent) {
+                        res.status(500).send("Error interno de servidor");
                     }
                 }
-            );
+            }
+        );
 
-            const resultados = [];
-            request.on('row', (columns) => {
-                const row = {};
-                columns.forEach((column) => {
-                    row[column.metadata.colName] = column.value;
-                });
-                resultados.push(row);
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
             });
-    
-            request.on('requestCompleted', () => {
-                console.log('Resultados de la consulta');
-                console.log(resultados);
-                if (!res.headersSent) {
-                    res.json(resultados);
-                }
-            });
-    
-            request.on('error', (err) => {
-                console.error(' Error en la consulta:', err);
-                if (!res.headersSent) {
-                    res.status(500).send('Error interno del servidor');
-                }
-            });
-            connection.execSql(request);
-    
-       
-        
+            resultados.push(row);
+        });
+
+        request.on('requestCompleted', () => {
+            console.log('Resultados de la consulta');
+            console.log(resultados);
+            if (!res.headersSent) {
+                res.json(resultados);
+            }
+        });
+
+        request.on('error', (err) => {
+            console.error(' Error en la consulta:', err);
+            if (!res.headersSent) {
+                res.status(500).send('Error interno del servidor');
+            }
+        });
+        connection.execSql(request);
+
+
+
     } catch (error) {
 
     }
@@ -355,51 +355,51 @@ router.get('/Entidad/:Tipo', async (req, res) => {
 
 router.get('/ModalidadAtencion', async (req, res) => {
     try {
-       
-        
-            const request = new Request(
-                `
+
+
+        const request = new Request(
+            `
              SELECT        IdModalidadAtencion, Codigo, NombreModalidadAtencion, 
              DescripcionModalidadAtencion, OrdenModalidadAtencion, [Id Estado]
                 FROM            [Cnsta Relacionador Modalidad Atencion]
                 `,
-                (err) => {
-                    if (err) {
-                        console.error(`Error de ejecución: ${err}`);
-                        if (!res.headersSent) {
-                            res.status(500).send("Error interno de servidor");
-                        }
+            (err) => {
+                if (err) {
+                    console.error(`Error de ejecución: ${err}`);
+                    if (!res.headersSent) {
+                        res.status(500).send("Error interno de servidor");
                     }
                 }
-            );
+            }
+        );
 
-            const resultados = [];
-            request.on('row', (columns) => {
-                const row = {};
-                columns.forEach((column) => {
-                    row[column.metadata.colName] = column.value;
-                });
-                resultados.push(row);
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
             });
-    
-            request.on('requestCompleted', () => {
-                console.log('Resultados de la consulta');
-                console.log(resultados);
-                if (!res.headersSent) {
-                    res.json(resultados);
-                }
-            });
-    
-            request.on('error', (err) => {
-                console.error(' Error en la consulta:', err);
-                if (!res.headersSent) {
-                    res.status(500).send('Error interno del servidor');
-                }
-            });
-            connection.execSql(request);
-    
-       
-        
+            resultados.push(row);
+        });
+
+        request.on('requestCompleted', () => {
+            console.log('Resultados de la consulta');
+            console.log(resultados);
+            if (!res.headersSent) {
+                res.json(resultados);
+            }
+        });
+
+        request.on('error', (err) => {
+            console.error(' Error en la consulta:', err);
+            if (!res.headersSent) {
+                res.status(500).send('Error interno del servidor');
+            }
+        });
+        connection.execSql(request);
+
+
+
     } catch (error) {
 
     }
@@ -407,51 +407,51 @@ router.get('/ModalidadAtencion', async (req, res) => {
 
 router.get('/GrupoServicios', async (req, res) => {
     try {
-       
-        
-            const request = new Request(
-                `
+
+
+        const request = new Request(
+            `
               SELECT        IdGrupoServicios, Codigo, NombreGrupoServicios, 
               DescripcionGrupoServicios, [Orden Grupo Servicios], [Id Estado]
                 FROM            [Cnsta Relacionador ModalidadGrupoServicioTecSal]
                 `,
-                (err) => {
-                    if (err) {
-                        console.error(`Error de ejecución: ${err}`);
-                        if (!res.headersSent) {
-                            res.status(500).send("Error interno de servidor");
-                        }
+            (err) => {
+                if (err) {
+                    console.error(`Error de ejecución: ${err}`);
+                    if (!res.headersSent) {
+                        res.status(500).send("Error interno de servidor");
                     }
                 }
-            );
+            }
+        );
 
-            const resultados = [];
-            request.on('row', (columns) => {
-                const row = {};
-                columns.forEach((column) => {
-                    row[column.metadata.colName] = column.value;
-                });
-                resultados.push(row);
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
             });
-    
-            request.on('requestCompleted', () => {
-                console.log('Resultados de la consulta');
-                console.log(resultados);
-                if (!res.headersSent) {
-                    res.json(resultados);
-                }
-            });
-    
-            request.on('error', (err) => {
-                console.error(' Error en la consulta:', err);
-                if (!res.headersSent) {
-                    res.status(500).send('Error interno del servidor');
-                }
-            });
-            connection.execSql(request);
-    
-       
-        
+            resultados.push(row);
+        });
+
+        request.on('requestCompleted', () => {
+            console.log('Resultados de la consulta');
+            console.log(resultados);
+            if (!res.headersSent) {
+                res.json(resultados);
+            }
+        });
+
+        request.on('error', (err) => {
+            console.error(' Error en la consulta:', err);
+            if (!res.headersSent) {
+                res.status(500).send('Error interno del servidor');
+            }
+        });
+        connection.execSql(request);
+
+
+
     } catch (error) {
 
     }
@@ -461,50 +461,50 @@ router.get('/GrupoServicios', async (req, res) => {
 router.get('/Servicios/:Tipo', async (req, res) => {
     try {
         const Tipo = req.params.Tipo;
-        
-            const request = new Request(
-                `
+
+        const request = new Request(
+            `
                 SELECT        TOP (200) [Id Servicios], [Código Servicios], [Nombre Servicios], [Descripción Servicios], [Id Estado]
                 FROM            [Cnsta Relacionador Servicios]
                 WHERE        ([Descripción Servicios] = N'${Tipo}')
                 `,
-                (err) => {
-                    if (err) {
-                        console.error(`Error de ejecución: ${err}`);
-                        if (!res.headersSent) {
-                            res.status(500).send("Error interno de servidor");
-                        }
+            (err) => {
+                if (err) {
+                    console.error(`Error de ejecución: ${err}`);
+                    if (!res.headersSent) {
+                        res.status(500).send("Error interno de servidor");
                     }
                 }
-            );
+            }
+        );
 
-            const resultados = [];
-            request.on('row', (columns) => {
-                const row = {};
-                columns.forEach((column) => {
-                    row[column.metadata.colName] = column.value;
-                });
-                resultados.push(row);
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
             });
-    
-            request.on('requestCompleted', () => {
-                console.log('Resultados de la consulta');
-                console.log(resultados);
-                if (!res.headersSent) {
-                    res.json(resultados);
-                }
-            });
-    
-            request.on('error', (err) => {
-                console.error(' Error en la consulta:', err);
-                if (!res.headersSent) {
-                    res.status(500).send('Error interno del servidor');
-                }
-            });
-            connection.execSql(request);
-    
-       
-        
+            resultados.push(row);
+        });
+
+        request.on('requestCompleted', () => {
+            console.log('Resultados de la consulta');
+            console.log(resultados);
+            if (!res.headersSent) {
+                res.json(resultados);
+            }
+        });
+
+        request.on('error', (err) => {
+            console.error(' Error en la consulta:', err);
+            if (!res.headersSent) {
+                res.status(500).send('Error interno del servidor');
+            }
+        });
+        connection.execSql(request);
+
+
+
     } catch (error) {
 
     }
@@ -513,52 +513,52 @@ router.get('/Servicios/:Tipo', async (req, res) => {
 router.get('/FinalidadV2/:Tipo', async (req, res) => {
     try {
         const Tipo = req.params.Tipo;
-        
-            const request = new Request(
-                `
+
+        const request = new Request(
+            `
                 
                 SELECT        IdFinalidadConsulta, Codigo, NombreRIPSFinalidadConsultaVersion2, DescripcionRIPSFinalidadConsultaVersion2, RIPSFinalidadConsultaVersion2, AC, AP, [Id Estado]
                 FROM            [Cnsta Relacionador Finalidad]
                 WHERE        (${Tipo} = N'Si')
 
                 `,
-                (err) => {
-                    if (err) {
-                        console.error(`Error de ejecución: ${err}`);
-                        if (!res.headersSent) {
-                            res.status(500).send("Error interno de servidor");
-                        }
+            (err) => {
+                if (err) {
+                    console.error(`Error de ejecución: ${err}`);
+                    if (!res.headersSent) {
+                        res.status(500).send("Error interno de servidor");
                     }
                 }
-            );
+            }
+        );
 
-            const resultados = [];
-            request.on('row', (columns) => {
-                const row = {};
-                columns.forEach((column) => {
-                    row[column.metadata.colName] = column.value;
-                });
-                resultados.push(row);
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
             });
-    
-            request.on('requestCompleted', () => {
-                console.log('Resultados de la consulta');
-                console.log(resultados);
-                if (!res.headersSent) {
-                    res.json(resultados);
-                }
-            });
-    
-            request.on('error', (err) => {
-                console.error(' Error en la consulta:', err);
-                if (!res.headersSent) {
-                    res.status(500).send('Error interno del servidor');
-                }
-            });
-            connection.execSql(request);
-    
-       
-        
+            resultados.push(row);
+        });
+
+        request.on('requestCompleted', () => {
+            console.log('Resultados de la consulta');
+            console.log(resultados);
+            if (!res.headersSent) {
+                res.json(resultados);
+            }
+        });
+
+        request.on('error', (err) => {
+            console.error(' Error en la consulta:', err);
+            if (!res.headersSent) {
+                res.status(500).send('Error interno del servidor');
+            }
+        });
+        connection.execSql(request);
+
+
+
     } catch (error) {
 
     }
@@ -566,53 +566,53 @@ router.get('/FinalidadV2/:Tipo', async (req, res) => {
 
 router.get('/CausaExterna', async (req, res) => {
     try {
-        
-        
-            const request = new Request(
-                `
+
+
+        const request = new Request(
+            `
               SELECT       [Id RIPS Causa Externa Version2], Codigo, 
               NombreRIPSCausaExternaVersion2, DescripcionRIPSCausaExternaVersion2, 
               RIPSCausaExternaVersion2, [Id Estado]
                 FROM            [Cnsta Relacionador Causa Externa]
 
                 `,
-                (err) => {
-                    if (err) {
-                        console.error(`Error de ejecución: ${err}`);
-                        if (!res.headersSent) {
-                            res.status(500).send("Error interno de servidor");
-                        }
+            (err) => {
+                if (err) {
+                    console.error(`Error de ejecución: ${err}`);
+                    if (!res.headersSent) {
+                        res.status(500).send("Error interno de servidor");
                     }
                 }
-            );
+            }
+        );
 
-            const resultados = [];
-            request.on('row', (columns) => {
-                const row = {};
-                columns.forEach((column) => {
-                    row[column.metadata.colName] = column.value;
-                });
-                resultados.push(row);
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
             });
-    
-            request.on('requestCompleted', () => {
-                console.log('Resultados de la consulta');
-                console.log(resultados);
-                if (!res.headersSent) {
-                    res.json(resultados);
-                }
-            });
-    
-            request.on('error', (err) => {
-                console.error(' Error en la consulta:', err);
-                if (!res.headersSent) {
-                    res.status(500).send('Error interno del servidor');
-                }
-            });
-            connection.execSql(request);
-    
-       
-        
+            resultados.push(row);
+        });
+
+        request.on('requestCompleted', () => {
+            console.log('Resultados de la consulta');
+            console.log(resultados);
+            if (!res.headersSent) {
+                res.json(resultados);
+            }
+        });
+
+        request.on('error', (err) => {
+            console.error(' Error en la consulta:', err);
+            if (!res.headersSent) {
+                res.status(500).send('Error interno del servidor');
+            }
+        });
+        connection.execSql(request);
+
+
+
     } catch (error) {
 
     }
@@ -621,53 +621,53 @@ router.get('/CausaExterna', async (req, res) => {
 
 router.get('/DXPrincipal', async (req, res) => {
     try {
-        
-        
-            const request = new Request(
-                `
+
+
+        const request = new Request(
+            `
               SELECT        IdTipodeDiagnósticoPrincipal, CódigoTipodeDiagnósticoPrincipal, 
               TipodeDiagnósticoPrincipal, DescripcionTipodeDiagnósticoPrincipal,
                ordenTipodeDiagnósticoPrincipal, [Id Estado]
                 FROM            [Cnsta Relacionador Tipo Diagnostico Principal]
 
                 `,
-                (err) => {
-                    if (err) {
-                        console.error(`Error de ejecución: ${err}`);
-                        if (!res.headersSent) {
-                            res.status(500).send("Error interno de servidor");
-                        }
+            (err) => {
+                if (err) {
+                    console.error(`Error de ejecución: ${err}`);
+                    if (!res.headersSent) {
+                        res.status(500).send("Error interno de servidor");
                     }
                 }
-            );
+            }
+        );
 
-            const resultados = [];
-            request.on('row', (columns) => {
-                const row = {};
-                columns.forEach((column) => {
-                    row[column.metadata.colName] = column.value;
-                });
-                resultados.push(row);
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
             });
-    
-            request.on('requestCompleted', () => {
-                console.log('Resultados de la consulta');
-                console.log(resultados);
-                if (!res.headersSent) {
-                    res.json(resultados);
-                }
-            });
-    
-            request.on('error', (err) => {
-                console.error(' Error en la consulta:', err);
-                if (!res.headersSent) {
-                    res.status(500).send('Error interno del servidor');
-                }
-            });
-            connection.execSql(request);
-    
-       
-        
+            resultados.push(row);
+        });
+
+        request.on('requestCompleted', () => {
+            console.log('Resultados de la consulta');
+            console.log(resultados);
+            if (!res.headersSent) {
+                res.json(resultados);
+            }
+        });
+
+        request.on('error', (err) => {
+            console.error(' Error en la consulta:', err);
+            if (!res.headersSent) {
+                res.status(500).send('Error interno del servidor');
+            }
+        });
+        connection.execSql(request);
+
+
+
     } catch (error) {
 
     }
@@ -676,56 +676,159 @@ router.get('/DXPrincipal', async (req, res) => {
 
 router.get('/ViaIngresoUsuario', async (req, res) => {
     try {
-        
-        
-            const request = new Request(
-                `
+
+
+        const request = new Request(
+            `
              SELECT        IdViaIngresoUsuario, Codigo, NombreViaIngresoUsuario,
              DescripcionViaIngresoUsuario, OrdenViaIngresoUsuario, [Id Estado]
             FROM            [Cnsta Relacionador Via Ingreso Usuario]
                 `,
-                (err) => {
-                    if (err) {
-                        console.error(`Error de ejecución: ${err}`);
-                        if (!res.headersSent) {
-                            res.status(500).send("Error interno de servidor");
-                        }
+            (err) => {
+                if (err) {
+                    console.error(`Error de ejecución: ${err}`);
+                    if (!res.headersSent) {
+                        res.status(500).send("Error interno de servidor");
                     }
                 }
-            );
+            }
+        );
 
-            const resultados = [];
-            request.on('row', (columns) => {
-                const row = {};
-                columns.forEach((column) => {
-                    row[column.metadata.colName] = column.value;
-                });
-                resultados.push(row);
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
             });
-    
-            request.on('requestCompleted', () => {
-                console.log('Resultados de la consulta');
-                console.log(resultados);
-                if (!res.headersSent) {
-                    res.json(resultados);
-                }
-            });
-    
-            request.on('error', (err) => {
-                console.error(' Error en la consulta:', err);
-                if (!res.headersSent) {
-                    res.status(500).send('Error interno del servidor');
-                }
-            });
-            connection.execSql(request);
-    
-       
-        
+            resultados.push(row);
+        });
+
+        request.on('requestCompleted', () => {
+            console.log('Resultados de la consulta');
+            console.log(resultados);
+            if (!res.headersSent) {
+                res.json(resultados);
+            }
+        });
+
+        request.on('error', (err) => {
+            console.error(' Error en la consulta:', err);
+            if (!res.headersSent) {
+                res.status(500).send('Error interno del servidor');
+            }
+        });
+        connection.execSql(request);
+
+
+
     } catch (error) {
 
     }
 });
 
+router.get('/Cups/:Tipo', async (req, res) => {
+    try {
+        const Tipo = req.params.Tipo;
+
+        const request = new Request(
+            `
+        SELECT        Codigo, Descripcion, Nombre, Tipo
+FROM            [Cnsta Relacionador Cups]
+WHERE        (Tipo = '${Tipo}')
+            `,
+            (err) => {
+                if (err) {
+                    console.error(`Error de ejecución: ${err}`);
+                    if (!res.headersSent) {
+                        res.status(500).send("Error interno de servidor");
+                    }
+                }
+            }
+        );
+
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
+            });
+            resultados.push(row);
+        });
+
+        request.on('requestCompleted', () => {
+            console.log('Resultados de la consulta');
+            console.log(resultados);
+            if (!res.headersSent) {
+                res.json(resultados);
+            }
+        });
+
+        request.on('error', (err) => {
+            console.error(' Error en la consulta:', err);
+            if (!res.headersSent) {
+                res.status(500).send('Error interno del servidor');
+            }
+        });
+        connection.execSql(request);
+
+
+
+    } catch (error) {
+
+    }
+});
+
+router.get('/Cie', async (req, res) => {
+    try {
+       
+
+        const request = new Request(
+            `
+        SELECT         Codigo, Nombre, Descripcion, AplicaASexo, EdadMinima, EdadMaxima, 
+        GrupoMortalidad, Extra_V, Extra_VI_Capitulo, SubGrupo, Sexo
+FROM            [Cnsta Relacionador Cie10]
+            `,
+            (err) => {
+                if (err) {
+                    console.error(`Error de ejecución: ${err}`);
+                    if (!res.headersSent) {
+                        res.status(500).send("Error interno de servidor");
+                    }
+                }
+            }
+        );
+
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
+            });
+            resultados.push(row);
+        });
+
+        request.on('requestCompleted', () => {
+            console.log('Resultados de la consulta');
+           // console.log(resultados);
+            if (!res.headersSent) {
+                res.json(resultados);
+            }
+        });
+
+        request.on('error', (err) => {
+            console.error(' Error en la consulta:', err);
+            if (!res.headersSent) {
+                res.status(500).send('Error interno del servidor');
+            }
+        });
+        connection.execSql(request);
+
+
+
+    } catch (error) {
+
+    }
+});
 
 router.post('/RegistrarRips/:IdEvaluacion', async (req, res) => {
 
