@@ -1,4 +1,40 @@
-const servidor = "HPRED241";
+const servidor = "HPGRIS";
+
+function VerificarLogin() {
+    const TokenLogin = localStorage.getItem('token');
+    const contenido = document.getElementById('Contenido'); // Contenedor principal de la página
+
+    if (!TokenLogin) {
+        console.warn("Token no encontrado, redirigiendo al inicio de sesión...");
+        
+        // Ocultar el contenido de la página
+        if (contenido) {
+            contenido.style.display = 'none';
+        } else {
+            document.body.classList.add('hidden'); // Fallback si no hay un contenedor específico
+        }
+
+        Swal.fire({
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            icon: 'warning',
+            // text: 'Primero debes iniciar sesión para acceder a esta página',
+            html: `
+                <h4 style="color: #FFFFFF">Primero debes iniciar sesión para acceder a esta página</h4>
+            `,
+            showConfirmButton: false // Deshabilitar botón para forzar la espera
+        });
+
+        setTimeout(() => {
+            window.location.href = "index.html"; // Redirigir después del tiempo
+        }, 5000);
+    }
+}
+
+// Llamar a la función al cargar la página
+VerificarLogin();
+
+
 
 console.log("Hola")
 const ejecutar = async () => {
