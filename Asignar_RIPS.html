@@ -16,6 +16,13 @@
 
     <!-- BOOTSTRAP -->
     <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- HERRAMIENTAS PARA TRABAJAR CON SELECTS PARA INCORPORAR BUSCADOR Y AJUSTAR EL CONTENIDO -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
     
     <title>Registrar - RIPS</title>
 </head>
@@ -185,19 +192,19 @@
                                 </div>
                             </div>
                             <div class="row g-3">
-                                <div class="col-12 col-md-2">
-                                    <input type="text" id="inputCodConsulta1" value="89020" class="form-control-sm border border-dark w-100">
-                                </div>
-                                <div class="col-12 col-md-10">
-                                    <select id="listaCodConsulta1" class="form-select-sm border border-dark w-100">
+                                <!-- <div class="col-12 col-md-2">
+                                    <input type="text" id="InputValorCodigoConsultaRIPS1" class="form-control-sm border border-dark w-100">
+                                </div> -->
+                                <div class="col-12 col-md-12">
+                                    <select id="SelectConsultaRIPSAC1" class="form-select-sm border border-dark w-100">
                                         <option value="Sin Seleccionar">Sin Seleccionar</option>
                                     </select>
                                 </div>
-                                <div class="col-12 col-md-2">
-                                    <input type="text" id="inputCodConsulta2" value="89020" class="form-control-sm border border-dark w-100">
-                                </div>
-                                <div class="col-12 col-md-10">
-                                    <select id="listaCodConsulta2" class="form-select-sm border border-dark w-100">
+                                <!-- <div class="col-12 col-md-2">
+                                    <input type="text" id="InputValorCodigoConsultaRIPS2" class="form-control-sm border border-dark w-100">
+                                </div> -->
+                                <div class="col-12 col-md-12">
+                                    <select id="SelectConsultaRIPSAC2" class="form-select-sm border border-dark w-100">
                                         <option value="Sin Seleccionar">Sin Seleccionar</option>
                                     </select>
                                 </div>
@@ -213,25 +220,26 @@
                                 </div>
                             </div>
                             <div class="row g-3">
-                                <div class="col-md-2">
+                                <!-- <div class="col-md-2">
                                     <input type="text" id="inputCodConsulta1" value="89020" class="form-control-sm border border-secondary w-100">
-                                </div>
-                                <div class="col-md-10">
-                                    <select id="listaCodConsulta1" class="form-select-sm border border-secondary w-100">
+                                </div> -->
+                                <div class="col-12 col-md-12">
+                                    <select id="SelectDiagnosticoRIPSAC1" class="form-select-sm border border-secondary w-100">
                                         <option value="Sin Seleccionar">Sin Seleccionar</option>
                                     </select>
                                 </div>
-                                <div class="col-md-2">
+                                <!-- <div class="col-md-2">
                                     <input type="text" id="inputCodConsulta2" value="89020" class="form-control-sm border border-secondary w-100">
-                                </div>
-                                <div class="col-md-10">
-                                    <select id="listaCodConsulta2" class="form-select-sm border border-secondary w-100">
+                                </div> -->
+                                <div class="col-12 col-md-12">
+                                    <select id="SelectDiagnosticoRIPSAC2" class="form-select-sm border border-secondary w-100" style="white-space: normal;">
                                         <option value="Sin Seleccionar">Sin Seleccionar</option>
                                     </select>
                                 </div>
                             </div>
+                            <button class="btn btn-success d-none" id="MostrarValue">Mostrar Value</button>
                         </div>                        
-                    </div>
+                    </div>                      
                 </div>
             </div>
 
@@ -292,19 +300,19 @@
                                 </div>
                             </div>
                             <div class="row g-3">
-                                <div class="col-12 col-md-2">
+                                <!-- <div class="col-12 col-md-2">
                                     <input type="text" id="inputCodConsulta1" value="89020" class="form-control-sm border border-dark w-100">
-                                </div>
-                                <div class="col-12 col-md-10">
-                                    <select id="listaCodConsulta1" class="form-select-sm border border-dark w-100">
+                                </div> -->
+                                <div class="col-12 col-md-12">
+                                    <select id="SelectProcedimientoRIPSAP1" class="form-select-sm border border-dark w-100">
                                         <option value="Sin Seleccionar">Sin Seleccionar</option>
                                     </select>
                                 </div>
-                                <div class="col-12 col-md-2">
+                                <!-- <div class="col-12 col-md-2">
                                     <input type="text" id="inputCodConsulta2" value="89020" class="form-control-sm border border-dark w-100">
-                                </div>
-                                <div class="col-12 col-md-10">
-                                    <select id="listaCodConsulta2" class="form-select-sm border border-dark w-100">
+                                </div> -->
+                                <div class="col-12 col-md-12">
+                                    <select id="SelectProcedimientoRIPSAP2" class="form-select-sm border border-dark w-100">
                                         <option value="Sin Seleccionar">Sin Seleccionar</option>
                                     </select>
                                 </div>
@@ -320,19 +328,19 @@
                                 </div>
                             </div>
                             <div class="row g-3">
-                                <div class="col-md-2">
+                                <!-- <div class="col-md-2">
                                     <input type="text" id="inputCodConsulta1" value="89020" class="form-control-sm border border-secondary w-100">
-                                </div>
-                                <div class="col-md-10">
-                                    <select id="listaCodConsulta1" class="form-select-sm border border-secondary w-100">
+                                </div> -->
+                                <div class="col-md-12">
+                                    <select id="SelectDiagnosticoRIPSAP1" class="form-select-sm border border-secondary w-100">
                                         <option value="Sin Seleccionar">Sin Seleccionar</option>
                                     </select>
                                 </div>
-                                <div class="col-md-2">
+                                <!-- <div class="col-md-2">
                                     <input type="text" id="inputCodConsulta2" value="89020" class="form-control-sm border border-secondary w-100">
-                                </div>
-                                <div class="col-md-10">
-                                    <select id="listaCodConsulta2" class="form-select-sm border border-secondary w-100">
+                                </div> -->
+                                <div class="col-md-12">
+                                    <select id="SelectDiagnosticoRIPSAP2" class="form-select-sm border border-secondary w-100">
                                         <option value="Sin Seleccionar">Sin Seleccionar</option>
                                     </select>
                                 </div>

@@ -34,9 +34,6 @@ function VerificarLogin() {
 // Llamar a la función al cargar la página
 VerificarLogin();
 
-
-
-console.log("Hola")
 const ejecutar = async () => {
     try {
         const abc = await fetch(`http://${servidor}:3000/api/pruebahc`);
@@ -274,7 +271,43 @@ const ContenedorTipoAP = document.getElementById('TipoAP');
 ContenedorTipoAC.style.display = 'none';
 ContenedorTipoAP.style.display = 'none';
 
+$(document).ready(function() {
+
+    const ElementosSelectConTextoLargo = [
+        '#SelectConsultaRIPSAC1',
+        '#SelectConsultaRIPSAC2',
+        '#SelectDiagnosticoRIPSAC1',
+        '#SelectDiagnosticoRIPSAC2',
+        '#SelectProcedimientoRIPSAP1',
+        '#SelectProcedimientoRIPSAP2',
+        '#SelectDiagnosticoRIPSAP1',
+        '#SelectDiagnosticoRIPSAP2'
+    ]
+
+    for (let i = 0; i < ElementosSelectConTextoLargo.length; i+=1) {
+        $(ElementosSelectConTextoLargo[i]).select2({
+            width: '100%', // Ajusta el ancho al contenedor
+            dropdownAutoWidth: true, // Ajusta automáticamente el ancho del menú
+            // placeholder: "Buscar",
+            templateSelection: function (data) {
+                // Truncar el texto a 50 caracteres y añadir puntos suspensivos
+                var truncatedText = data.text.length > 50 ? data.text.substring(0, 50) + '...' : data.text;
+                return $('<span>' + truncatedText + '</span>');
+            }
+        });
+    }
+
+   
+    $('#MostrarValue').on('click', function () {
+        const Valor1 = $('#SelectDiagnosticoRIPSAC1').val();
+        console.log(Valor1);
+    })
+});
+  
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // Event listener para el radio button AC
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 radioAC.addEventListener('change', async function (e) {
 
     ContenedorTipoAC.style.display = 'block';
@@ -287,6 +320,10 @@ radioAC.addEventListener('change', async function (e) {
     const SelectFinalidadTecnologiaSaludAC = document.getElementById('SelectFinalidadTecnologiaSaludAC');
     const SelectCausaMotivoAtencion = document.getElementById('SelectCausaMotivoAtencion');
     const SelectTipoDiagnosticoPrincipalAC = document.getElementById('SelectTipoDiagnosticoPrincipalAC');
+    const SelectConsultaRIPSAC1 = document.getElementById('SelectConsultaRIPSAC1');
+    const SelectConsultaRIPSAC2 = document.getElementById('SelectConsultaRIPSAC2');
+    const SelectDiagnosticoRIPSAC1 = document.getElementById('SelectDiagnosticoRIPSAC1');
+    const SelectDiagnosticoRIPSAC2 = document.getElementById('SelectDiagnosticoRIPSAC2');
 
     // Desarrollo || y producción &&
     if (HistoriasSinRIPS !== "" || HistoriasSinRIPS !== "Sin Seleccionar") {
@@ -450,6 +487,119 @@ radioAC.addEventListener('change', async function (e) {
                 SelectTipoDiagnosticoPrincipalAC.appendChild(option);
             }
 
+            // Funcionalidad para el llenado del select de Consulta RIPS
+            const TipoConsulta1 = "AC";
+            const ConsultaRIPS1 = await fetch(`http://${servidor}:3000/api/Cups/${TipoConsulta1}`);
+            if (!ConsultaRIPS1) {
+                throw new Error(`Error al obtener las consultas RIPS: ${ConsultaRIPS1.statusText}`);
+            }
+            const CargarConsultaRIPS1 = await ConsultaRIPS1.json();
+            console.log('Consultas RIPS: ', CargarConsultaRIPS1);
+            SelectConsultaRIPSAC1.innerHTML = '';
+            // Opción por defecto
+            const defaultOption7 = document.createElement('option');
+            defaultOption7.textContent = 'Seleccione una consulta RIPS 1';
+            defaultOption7.value = '';
+            SelectConsultaRIPSAC1.appendChild(defaultOption7);
+            // Ordenar el array por el nombre del grupo
+            CargarConsultaRIPS1.sort((a, b) => {
+                if (a.Nombre < b.Nombre) return -1;
+                if (a.Nombre > b.Nombre) return 1;
+                return 0;
+            });
+            // Agregar las opciones al select de ConsultaRIPS
+            for (let i = 0; i < CargarConsultaRIPS1.length; i+=1) {
+                const option = document.createElement('option');
+                option.value = CargarConsultaRIPS1[i].Codigo;
+                option.textContent = CargarConsultaRIPS1[i].Codigo + ' - ' + CargarConsultaRIPS1[i].Nombre;
+                SelectConsultaRIPSAC1.appendChild(option);
+            }
+
+            // Funcionalidad para el llenado del select de Consulta RIPS 2
+            const TipoConsulta2 = "AC";
+            const ConsultaRIPS2 = await fetch(`http://${servidor}:3000/api/Cups/${TipoConsulta2}`);
+            if (!ConsultaRIPS2) {
+                throw new Error(`Error al obtener las consultas RIPS: ${ConsultaRIPS2.statusText}`);
+            }
+            const CargarConsultaRIPS2 = await ConsultaRIPS2.json();
+            console.log('Consultas RIPS: ', CargarConsultaRIPS2);
+            SelectConsultaRIPSAC2.innerHTML = '';
+            // Opción por defecto
+            const defaultOption8 = document.createElement('option');
+            defaultOption8.textContent = 'Seleccione una consulta RIPS 2';
+            defaultOption8.value = '';
+            SelectConsultaRIPSAC2.appendChild(defaultOption8);
+            // Ordenar el array por el nombre del grupo
+            CargarConsultaRIPS2.sort((a, b) => {
+                if (a.Nombre < b.Nombre) return -1;
+                if (a.Nombre > b.Nombre) return 1;
+                return 0;
+            });
+            // Agregar las opciones al select de ConsultaRIPS 2
+            for (let i = 0; i < CargarConsultaRIPS2.length; i+=1) {
+                const option = document.createElement('option');
+                option.value = CargarConsultaRIPS2[i].Codigo;
+                option.textContent = CargarConsultaRIPS2[i].Codigo + ' - ' + CargarConsultaRIPS2[i].Nombre;
+                SelectConsultaRIPSAC2.appendChild(option);
+            }
+
+
+            // Funcinalidad para el llenado del select Diagnósitoco RIPS AC 1
+            const DiasnosticoRIPSAC1 = await fetch(`http://${servidor}:3000/api/Cie`);
+            if (!DiasnosticoRIPSAC1) {
+                throw new Error(`Error al obtener los diagnósticos RIPS: ${DiasnosticoRIPSAC1.statusText}`);
+            }
+            const CargarDiagnosticoRIPSAC1 = await DiasnosticoRIPSAC1.json();
+            console.log('Diagnósticos RIPS AC 1: ', CargarDiagnosticoRIPSAC1);
+            SelectDiagnosticoRIPSAC1.innerHTML = '';
+            // Opción por defecto
+            const defaultOption9 = document.createElement('option');
+            defaultOption9.textContent = 'Seleccione un diagnóstico RIPS AC 1';
+            defaultOption9.value = '';
+            SelectDiagnosticoRIPSAC1.appendChild(defaultOption9);
+            // Ordenar el array por el nombre del grupo
+            CargarDiagnosticoRIPSAC1.sort((a, b) => {
+                if (a.Nombre < b.Nombre) return -1;
+                if (a.Nombre > b.Nombre) return 1;
+                return 0;
+            });
+            // Agregar las opciones al select Diagnósitoco RIPS AC 1
+            for (let i = 0; i < CargarDiagnosticoRIPSAC1.length; i+=1) {
+                const option = document.createElement('option');
+                option.value = CargarDiagnosticoRIPSAC1[i].Codigo;
+                option.textContent = CargarDiagnosticoRIPSAC1[i].Codigo + ' - ' + CargarDiagnosticoRIPSAC1[i].Nombre;
+                SelectDiagnosticoRIPSAC1.appendChild(option);
+            }
+
+
+            // Funcinalidad para el llenado del select Diagnósitoco RIPS AC 2
+            const DiasnosticoRIPSAC2 = await fetch(`http://${servidor}:3000/api/Cie`);
+            if (!DiasnosticoRIPSAC2) {
+                throw new Error(`Error al obtener los diagnósticos RIPS: ${DiasnosticoRIPSAC2.statusText}`);
+            }
+            const CargarDiagnosticoRIPSAC2 = await DiasnosticoRIPSAC2.json();
+            console.log('Diagnósticos RIPS AC 1: ', CargarDiagnosticoRIPSAC2);
+            SelectDiagnosticoRIPSAC2.innerHTML = '';
+            // Opción por defecto
+            const defaultOption10 = document.createElement('option');
+            defaultOption10.textContent = 'Seleccione un diagnóstico RIPS AC 2';
+            defaultOption10.value = '';
+            SelectDiagnosticoRIPSAC2.appendChild(defaultOption10);
+            // Ordenar el array por el nombre del grupo
+            CargarDiagnosticoRIPSAC2.sort((a, b) => {
+                if (a.Nombre < b.Nombre) return -1;
+                if (a.Nombre > b.Nombre) return 1;
+                return 0;
+            });
+            // Agregar las opciones al select Diagnósitoco RIPS AC 1
+            for (let i = 0; i < CargarDiagnosticoRIPSAC2.length; i+=1) {
+                const option = document.createElement('option');
+                option.value = CargarDiagnosticoRIPSAC2[i].Codigo;
+                option.textContent = CargarDiagnosticoRIPSAC2[i].Codigo + ' - ' + CargarDiagnosticoRIPSAC2[i].Nombre;
+                SelectDiagnosticoRIPSAC2.appendChild(option);
+            }
+
+
         } catch (error) {
             console.error(error);
         }
@@ -557,10 +707,13 @@ SelectGrupoServiciosAC.addEventListener('change', async function (e) {
         console.error(error);
     }
 })
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-// FUNCIONALIDAD PARA LLENAR TODOS LOS SELECT CORRESPONDIENTES A LOS RIPS DE TIPO AP - PROCEDIMIENTOS (CIES)
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // Event listener para el radio button AP
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 radioAP.addEventListener('change', async function (e) {
 
     ContenedorTipoAP.style.display = 'block';
@@ -572,6 +725,10 @@ radioAP.addEventListener('change', async function (e) {
     const SelectModalidadGrupoServicioTecSalAP = document.getElementById('SelectModalidadGrupoServicioTecSalAP');
     const SelectGrupoServiciosAP = document.getElementById('SelectGrupoServiciosAP');
     const SelectFinalidadTecnologiaSaludAP = document.getElementById('SelectFinalidadTecnologiaSaludAP');
+    const SelectProcedimientoRIPSAP1 = document.getElementById('SelectProcedimientoRIPSAP1');
+    const SelectProcedimientoRIPSAP2 = document.getElementById('SelectProcedimientoRIPSAP2');
+    const SelectDiagnosticoRIPSAP1 = document.getElementById('SelectDiagnosticoRIPSAP1');
+    const SelectDiagnosticoRIPSAP2 = document.getElementById('SelectDiagnosticoRIPSAP2');
 
 
     if (HistoriasSinRIPS !== "" || HistoriasSinRIPS !== "Sin Seleccionar") {
@@ -705,6 +862,112 @@ radioAP.addEventListener('change', async function (e) {
             option.textContent = CargarFinalidadTecnologiaSaludAP[i]['NombreRIPSFinalidadConsultaVersion2'];
             SelectFinalidadTecnologiaSaludAP.appendChild(option);
         }
+
+        // Funcionalidad para el llenado del select Procedimiento AP 1
+        const TipoProcedimientoAP1 = "AP";
+        const ProcedimientoAP1 = await fetch(`http://${servidor}:3000/api/Cups/${TipoProcedimientoAP1}`);
+        if (!ProcedimientoAP1) {
+            throw new Error(`Error al obtener los procedimientos AP 1: ${ProcedimientoAP1.statusText}`);
+        }
+        const CargarProcedimientoAP1 = await ProcedimientoAP1.json();
+        console.log('Procedimientos AP 1: ', CargarProcedimientoAP1);
+        SelectProcedimientoRIPSAP1.innerHTML = '';
+        // Opción por defecto
+        const defaultOption6 = document.createElement('option');
+        defaultOption6.textContent = 'Seleccione un procedimiento AP 1';
+        defaultOption6.value = '';
+        SelectProcedimientoRIPSAP1.appendChild(defaultOption6);
+        // Ordenar el array por el nombre del procedimiento
+        CargarProcedimientoAP1.sort((a, b) => {
+            if (a['Nombre'] < b['Nombre']) return -1;
+            if (a['Nombre'] > b['Nombre']) return 1;
+            return 0;
+        });
+        for (let i = 0; i < CargarProcedimientoAP1.length; i++) {
+            const option = document.createElement('option');
+            option.value = CargarProcedimientoAP1[i].Codigo;
+            option.textContent = CargarProcedimientoAP1[i].Codigo + ' - ' + CargarProcedimientoAP1[i].Nombre;
+            SelectProcedimientoRIPSAP1.appendChild(option);
+        }
+
+        // Funcionalidad para el llenado del select Procedimiento AP 2
+        const TipoProcedimientoAP2 = "AP";
+        const ProcedimientoAP2 = await fetch(`http://${servidor}:3000/api/Cups/${TipoProcedimientoAP2}`);
+        if (!ProcedimientoAP2) {
+            throw new Error(`Error al obtener los procedimientos AP 2: ${ProcedimientoAP2.statusText}`);
+        }
+        const CargarProcedimientoAP2 = await ProcedimientoAP2.json();
+        console.log('Procedimientos AP 2: ', CargarProcedimientoAP2);
+        SelectProcedimientoRIPSAP2.innerHTML = '';
+        // Opción por defecto
+        const defaultOption7 = document.createElement('option');
+        defaultOption7.textContent = 'Seleccione un procedimiento AP 2';
+        defaultOption7.value = '';
+        SelectProcedimientoRIPSAP2.appendChild(defaultOption7);
+        // Ordenar el array por el nombre del procedimiento
+        CargarProcedimientoAP2.sort((a, b) => {
+            if (a['Nombre'] < b['Nombre']) return -1;
+            if (a['Nombre'] > b['Nombre']) return 1;
+            return 0;
+        });
+        for (let i = 0; i < CargarProcedimientoAP2.length; i++) {
+            const option = document.createElement('option');
+            option.value = CargarProcedimientoAP2[i].Codigo;
+            option.textContent = CargarProcedimientoAP2[i].Codigo + ' - ' + CargarProcedimientoAP2[i].Nombre;
+            SelectProcedimientoRIPSAP2.appendChild(option);
+        }
+
+        // Funcionalidad para el llenado del Select Diagnostico AP 1
+        const DiagnosticoAP1 = await fetch(`http://${servidor}:3000/api/Cie`);
+        if (!DiagnosticoAP1) {
+            throw new Error(`Error al obtener los diagnósticos AP 1: ${DiagnosticoAP1.statusText}`);
+        }
+        const CargarDiagnosticoAP1 = await DiagnosticoAP1.json();
+        console.log('Diagnósticos AP 1: ', CargarDiagnosticoAP1);
+        SelectDiagnosticoRIPSAP1.innerHTML = '';
+        // Opción por defecto
+        const defaultOption8 = document.createElement('option');
+        defaultOption8.textContent = 'Seleccione un diagnóstico AP 1';
+        defaultOption8.value = '';
+        SelectDiagnosticoRIPSAP1.appendChild(defaultOption8);
+        // Ordenar el array por el nombre del diagnóstico
+        CargarDiagnosticoAP1.sort((a, b) => {
+            if (a['Nombre'] < b['Nombre']) return -1;
+            if (a['Nombre'] > b['Nombre']) return 1;
+            return 0;
+        });
+        for (let i = 0; i < CargarDiagnosticoAP1.length; i++) {
+            const option = document.createElement('option');
+            option.value = CargarDiagnosticoAP1[i].Codigo;
+            option.textContent = CargarDiagnosticoAP1[i].Codigo + ' - ' + CargarDiagnosticoAP1[i].Nombre;
+            SelectDiagnosticoRIPSAP1.appendChild(option);
+        }
+
+        // Funcionalidad para el llenado del Select Diagnostico AP 2
+        const DiagnosticoAP2 = await fetch(`http://${servidor}:3000/api/Cie`);
+        if (!DiagnosticoAP2) {
+            throw new Error(`Error al obtener los diagnósticos AP 1: ${DiagnosticoAP2.statusText}`);
+        }
+        const CargarDiagnosticoAP2 = await DiagnosticoAP2.json();
+        console.log('Diagnósticos AP 1: ', CargarDiagnosticoAP2);
+        SelectDiagnosticoRIPSAP2.innerHTML = '';
+        // Opción por defecto
+        const defaultOption9 = document.createElement('option');
+        defaultOption9.textContent = 'Seleccione un diagnóstico AP 2';
+        defaultOption9.value = '';
+        SelectDiagnosticoRIPSAP2.appendChild(defaultOption9);
+        // Ordenar el array por el nombre del diagnóstico
+        CargarDiagnosticoAP2.sort((a, b) => {
+            if (a['Nombre'] < b['Nombre']) return -1;
+            if (a['Nombre'] > b['Nombre']) return 1;
+            return 0;
+        });
+        for (let i = 0; i < CargarDiagnosticoAP2.length; i++) {
+            const option = document.createElement('option');
+            option.value = CargarDiagnosticoAP2[i].Codigo;
+            option.textContent = CargarDiagnosticoAP2[i].Codigo + ' - ' + CargarDiagnosticoAP2[i].Nombre;
+            SelectDiagnosticoRIPSAP2.appendChild(option);
+        }
     }
     // if (radioAP.checked) {
 
@@ -781,7 +1044,7 @@ GrupoServicioAP.addEventListener('change', async function (e) {
         SelectServicioAP.appendChild(option2);
     }
 })
-// FIN FIN FIN FIN FIN FIN FIN FIN FIN FIN FIN FIN FIN FIN FIN FIN
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 const btnRegistrarRIPS = document.getElementById('btnRegistrarRIPS');
 const selectHistoriaClinica = document.getElementById('listaHC');
