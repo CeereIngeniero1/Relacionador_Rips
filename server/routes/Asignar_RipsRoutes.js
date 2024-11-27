@@ -780,7 +780,7 @@ WHERE        (Tipo = '${Tipo}')
 
 router.get('/Cie', async (req, res) => {
     try {
-       
+
 
         const request = new Request(
             `
@@ -809,7 +809,7 @@ FROM            [Cnsta Relacionador Cie10]
 
         request.on('requestCompleted', () => {
             console.log('Resultados de la consulta');
-           // console.log(resultados);
+            // console.log(resultados);
             if (!res.headersSent) {
                 res.json(resultados);
             }
@@ -830,8 +830,100 @@ FROM            [Cnsta Relacionador Cie10]
     }
 });
 
-router.post('/RegistrarRips/:IdEvaluacion', async (req, res) => {
+router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoServicioTecSal/:GrupoServicios/:CodServicio/:FinalidadTecnologiaSalud/:CausaMotivoAtencion/:TipoDiagnosticoPrincipal/:ViaIngresoServicioSalud/:Cups1/:Cups2/:Cie1/:Cie2/:TipoRips',  (req, res) => {
+   
 
+
+    console.log("prueba");
+    const IdEvaluacion = req.params.IdEvaluacion;
+    const TipoUsuario = req.params.TipoUsuario;
+    const Entidad = req.params.Entidad;
+    const ModalidadGrupoServicioTecSal = req.params.ModalidadGrupoServicioTecSal;
+    const GrupoServicios = req.params.v;
+    const CodServicio = req.params.CodServicio;
+    const FinalidadTecnologiaSalud = req.params.FinalidadTecnologiaSalud;
+    const CausaMotivoAtencion = req.params.CausaMotivoAtencion;
+    const TipoDiagnosticoPrincipal = req.params.TipoDiagnosticoPrincipal;
+    const ViaIngresoServicioSalud = req.params.ViaIngresoServicioSalud;
+    const Cups1 = req.params.Cups1;
+    const Cups2 = req.params.Cups2;
+    const Cie1 = req.params.Cie1;
+    const Cie2 = req.params.Cie2;
+    const TipoRips = req.params.TipoRips;
+    var Actoquirurgico;
+    if (TipoRips == 'AC' || TipoRips == 'ac') {
+        Actoquirurgico = 1;
+    } else {
+        Actoquirurgico = 2;
+    }
+
+    const requestInsert = new Request(
+        `
+    INSERT INTO [Evaluación Entidad Rips] 
+    (
+    [Id Evaluación Entidad] ,
+    [Codigo Rips],
+    [Codigo Rips2],
+    [Diagnostico Rips],
+    [Diagnostico Rips2],
+    [Id Tipo de Rips],
+    [Documento Tipo Rips],
+    [Id Causa Externa],
+    [Id Tipo de Diagnóstico Principal],
+    [Id Finalidad Consulta],
+    [Id Acto Quirúrgico],
+    [Id Modalidad Atencion],
+    [Id Grupo Servicios],
+    [Id Servicios],
+    [Id Via Ingreso Usuario] 
+    )
+    VALUES 
+    (
+    @IdEvaluacion,
+    @Cups1,
+    @Cups2,
+    @Cie1,
+    @Cie2,
+    @TipoUsuario,
+    @Entidad,
+    @CausaMotivoAtencion,
+    @TipoDiagnosticoPrincipal,
+    @FinalidadTecnologiaSalud,
+    @Actoquirurgico, 
+    @ModalidadGrupoServicioTecSal,
+    @GrupoServicios,
+    @CodServicio,
+    @ViaIngresoServicioSalud
+    ) 
+    `, (err) => {
+        if (err) {
+            console.error('Error al insertar el Rips:', err.message);
+            res.status(500).json({ error: 'Error al insertar el RIPS' });
+        } else {
+            console.log('Inserción ejecutada con éxito');
+            res.json({ success: true, message: 'Rips insertado correctamente' });
+        }
+    });
+
+      // Ajustar los parámetros según las columnas y datos que estás insertando
+    requestInsert.addParameter('IdEvaluacion', TYPES.Int, IdEvaluacion);
+    requestInsert.addParameter('TipoUsuario', TYPES.Int, TipoUsuario);
+    requestInsert.addParameter('Entidad', TYPES.NVarChar, Entidad);
+    requestInsert.addParameter('ModalidadGrupoServicioTecSal', TYPES.Int, ModalidadGrupoServicioTecSal);
+    requestInsert.addParameter('GrupoServicios', TYPES.Int, GrupoServicios);
+    requestInsert.addParameter('CodServicio', TYPES.Int, CodServicio);
+    requestInsert.addParameter('FinalidadTecnologiaSalud', TYPES.Int, FinalidadTecnologiaSalud);
+    requestInsert.addParameter('CausaMotivoAtencion', TYPES.Int, CausaMotivoAtencion);
+    requestInsert.addParameter('TipoDiagnosticoPrincipal', TYPES.Int, TipoDiagnosticoPrincipal);
+    requestInsert.addParameter('ViaIngresoServicioSalud', TYPES.Int, ViaIngresoServicioSalud);
+    requestInsert.addParameter('Cups1', TYPES.NVarChar, Cups1);
+    requestInsert.addParameter('Cups2', TYPES.NVarChar, Cups2);
+    requestInsert.addParameter('Cie1', TYPES.NVarChar, Cie1);
+    requestInsert.addParameter('Cie2', TYPES.NVarChar, Cie2);
+    requestInsert.addParameter('Actoquirurgico', TYPES.Int, Actoquirurgico);
+
+    
+connection.execSql(requestInsert);
 });
 
 
