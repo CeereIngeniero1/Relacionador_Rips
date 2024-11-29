@@ -464,9 +464,9 @@ router.get('/Servicios/:Tipo', async (req, res) => {
 
         const request = new Request(
             `
-                SELECT        TOP (200) [Id Servicios], [Código Servicios], [Nombre Servicios], [Descripción Servicios], [Id Estado]
+                SELECT        [Id Servicios], [Código Servicios], [Nombre Servicios], [Descripción Servicios], [Id Estado], [Codigo Grupo Servicios]
                 FROM            [Cnsta Relacionador Servicios]
-                WHERE        ([Descripción Servicios] = N'${Tipo}')
+                WHERE        ([Codigo Grupo Servicios] = N'${Tipo}')
                 `,
             (err) => {
                 if (err) {
@@ -834,12 +834,12 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
    
 
 
-    console.log("prueba");
+    
     const IdEvaluacion = req.params.IdEvaluacion;
     const TipoUsuario = req.params.TipoUsuario;
     const Entidad = req.params.Entidad;
     const ModalidadGrupoServicioTecSal = req.params.ModalidadGrupoServicioTecSal;
-    const GrupoServicios = req.params.v;
+    const GrupoServicios = req.params.GrupoServicios;
     const CodServicio = req.params.CodServicio;
     const FinalidadTecnologiaSalud = req.params.FinalidadTecnologiaSalud;
     const CausaMotivoAtencion = req.params.CausaMotivoAtencion;
@@ -851,11 +851,27 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
     const Cie2 = req.params.Cie2;
     const TipoRips = req.params.TipoRips;
     var Actoquirurgico;
-    if (TipoRips == 'AC' || TipoRips == 'ac') {
+    if (TipoRips == 'AC' || TipoRips == 'AP') {
         Actoquirurgico = 1;
     } else {
         Actoquirurgico = 2;
     }
+    console.log(`IdEvaluacion ${IdEvaluacion}`);
+    console.log(`TipoUsuario ${TipoUsuario}`);
+    console.log(`Entidad ${Entidad}`);
+    console.log(`ModalidadGrupoServicioTecSal ${ModalidadGrupoServicioTecSal}`);
+    console.log(`GrupoServicios ${GrupoServicios}`);
+    console.log(`CodServicio ${CodServicio}`);
+    console.log(`FinalidadTecnologiaSalud ${FinalidadTecnologiaSalud}`);
+    console.log(`CausaMotivoAtencion ${CausaMotivoAtencion}`);
+    console.log(`TipoDiagnosticoPrincipal ${TipoDiagnosticoPrincipal}`);
+    console.log(`ViaIngresoServicioSalud ${ViaIngresoServicioSalud}`);
+    console.log(`Cups1 ${Cups1}`);
+    console.log(`Cups2 ${Cups2}`);
+    console.log(`Cie1 ${Cie1}`);
+    console.log(`Cie2 ${Cie2}`);
+    console.log(`TipoRips ${TipoRips}`);
+    // console.log(`IdEvaluacion ${IdEvaluacion}`);
 
     const requestInsert = new Request(
         `
