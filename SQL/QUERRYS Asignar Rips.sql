@@ -219,3 +219,27 @@ FROM            dbo.[Rips Cups]
 GO
 
 
+
+ALTER TABLE [RIPS Servicios] 
+ADD [Codigo Grupo Servicios] nvarchar(50);
+
+
+UPDATE [RIPS Servicios] SET [Codigo Grupo Servicios] = '01'
+WHERE [Descripción Servicios] = 'CONSULTA EXTERNA'
+
+
+UPDATE [RIPS Servicios] SET [Codigo Grupo Servicios] = '02'
+WHERE [Descripción Servicios] = 'APOYO DIAGNOSTICO Y COMPLEMENTACION TERAPEUTICA'
+
+
+UPDATE [RIPS Servicios] SET [Codigo Grupo Servicios] = '03'
+WHERE [Descripción Servicios] = 'INTERNACION'
+
+
+
+UPDATE [RIPS Servicios] SET [Codigo Grupo Servicios] = '04'
+WHERE [Descripción Servicios] = 'QUIRURGICOS'
+
+
+UPDATE [RIPS Servicios] SET [Codigo Grupo Servicios] = '05'
+WHERE [Descripción Servicios] = 'ATENCION INMEDIATA'

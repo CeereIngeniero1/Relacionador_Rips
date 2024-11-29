@@ -464,9 +464,9 @@ router.get('/Servicios/:Tipo', async (req, res) => {
 
         const request = new Request(
             `
-                SELECT        TOP (200) [Id Servicios], [Código Servicios], [Nombre Servicios], [Descripción Servicios], [Id Estado]
+                SELECT        [Id Servicios], [Código Servicios], [Nombre Servicios], [Descripción Servicios], [Id Estado], [Codigo Grupo Servicios]
                 FROM            [Cnsta Relacionador Servicios]
-                WHERE        ([Descripción Servicios] = N'${Tipo}')
+                WHERE        ([Codigo Grupo Servicios] = N'${Tipo}')
                 `,
             (err) => {
                 if (err) {
