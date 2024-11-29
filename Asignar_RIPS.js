@@ -400,7 +400,7 @@ radioAC.addEventListener('change', async function (e) {
             // Agregar las opciones al select de GrupoServiciosAC
             for (let i = 0; i < CargarGrupoServiciosAC.length; i+=1) {
                 const option = document.createElement('option');
-                option.value = CargarGrupoServiciosAC[i].DescripcionGrupoServicios;
+                option.value = CargarGrupoServiciosAC[i].Codigo;
                 option.textContent = CargarGrupoServiciosAC[i].NombreGrupoServicios;
                 SelectGrupoServiciosAC.appendChild(option);
             }
@@ -831,7 +831,7 @@ radioAP.addEventListener('change', async function (e) {
         });
         for (let i = 0; i < CargarGrupoServiciosAP.length; i++) {
             const option = document.createElement('option');
-            option.value = CargarGrupoServiciosAP[i]['DescripcionGrupoServicios'];
+            option.value = CargarGrupoServiciosAP[i]['Codigo'];
             option.textContent = CargarGrupoServiciosAP[i]['NombreGrupoServicios'];
             SelectGrupoServiciosAP.appendChild(option);
         }
@@ -1143,9 +1143,177 @@ const pruebaAlert = async () => {
     });
 };
 
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+//  FUNCIÓN PARA ASIGNAR RIPS A LAS HISTORIAS
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+const AsignarRIPS = async () => {
+
+    const HistoriasSinRIPS = document.getElementById('HistoriasSinRIPS');
+
+    // Validar si hay una historia seleccionada correctamente
+    const historiaValida = HistoriasSinRIPS.value !== "" && HistoriasSinRIPS.value !== "Sin Seleccionar";
+
+    // Validar qué radio está seleccionado
+    if (historiaValida && radioAP.checked) {
+        console.log("PREPARANDO PARA RIPS AP");
+        // Lógica para realizar la petición al API para asignar el RIPS AP
+        // const IdEvaluacionRIPSAP = document.getElementById("HistoriasSinRIPS").value;
+        // const IdEvaluacionRIPSAP = Number(document.getElementById("HistoriasSinRIPS").value);
+        const IdEvaluacionRIPSAP = parseInt(document.getElementById("HistoriasSinRIPS").value, 10);
+
+        const TipoUsuarioRIPSAP = document.getElementById("SelectTipoUsurioRIPSAP").value;
+        const EntidadRIPSAP = document.getElementById("SelectEntidadAP").value;
+        const ViaIngresoServicioSaludRIPSAP = document.getElementById("SelectViaIngresoServicioSaludAP").value;
+        const ModalidadGrupoServicioTecSalRIPSAP = document.getElementById("SelectModalidadGrupoServicioTecSalAP").value;
+        const GrupoServiciosRIPSAP = document.getElementById("SelectGrupoServiciosAP").value;
+        const CodServicioRIPSAP = document.getElementById("SelectServicioAP").value;
+        const FinalidadTecnologiaSaludRIPSAP = document.getElementById("SelectFinalidadTecnologiaSaludAP").value;
+        const CausaMotivoAtencionRIPSAP = ""; // VACÍO PARA RIPS AP
+        const TipoDiagnosticoPrincipalRIPSAP = ""; // VACÍO PARA RIPS AP
+        const Cups1RIPSAP = document.getElementById("SelectProcedimientoRIPSAP1").value;
+        const Cups2RIPSAP = document.getElementById("SelectProcedimientoRIPSAP2").value;
+        const Cie1RIPSAP = document.getElementById("SelectDiagnosticoRIPSAP1").value;
+        const Cie2RIPSAP = document.getElementById("SelectDiagnosticoRIPSAP2").value;
+        const TipoRipsRIPSAP = "AP";
+
+        // Logica para campos vacíos
+        let RIPSAPCAMPOSVACIOS = [];
+        if (!TipoUsuarioRIPSAP) RIPSAPCAMPOSVACIOS.push("Tipo de usuario.");
+        if (!EntidadRIPSAP || EntidadRIPSAP === "" || EntidadRIPSAP === "Sin Seleccionar") RIPSAPCAMPOSVACIOS.push("Entidad.");
+        if (!ViaIngresoServicioSaludRIPSAP) RIPSAPCAMPOSVACIOS.push("Vía de ingreso al servicio de salud.");
+        if (!ModalidadGrupoServicioTecSalRIPSAP) RIPSAPCAMPOSVACIOS.push("Modalidad de grupo de servicios técnico salud.");
+        if (!GrupoServiciosRIPSAP) RIPSAPCAMPOSVACIOS.push("Grupo servicios.");
+        // if (!CodServicioRIPSAP || CodServicioRIPSAP === "" || CodServicioRIPSAP === "Sin Seleccionar") RIPSAPCAMPOSVACIOS.push("Código de servicio.");
+        if (!FinalidadTecnologiaSaludRIPSAP) RIPSAPCAMPOSVACIOS.push("Finalidad técnica de salud.");
+        if (!Cups1RIPSAP) RIPSAPCAMPOSVACIOS.push("Procedimiento RIPS");
+        if (!Cie1RIPSAP) RIPSAPCAMPOSVACIOS.push("Diagnóstico RIPS");
+
+        if (RIPSAPCAMPOSVACIOS.length > 0) {
+            Swal.fire({
+                icon: 'warning',
+                html: `
+                <h4 style="color: #ffffff"><b> Los siguientes campos son obligatorios: </b></h4>
+                <br>
+                <ul style="text-align: left;">
+                ${RIPSAPCAMPOSVACIOS
+                .map((campo) => `<li style="color: #ffffff"> ${campo}</li>`)
+                .join("")}
+                </ul>
+            `,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            })
+
+            return;
+        }else {
+            // Vamossfsdf
+            let InformacionParaRIPSAP = {
+                "Id de historia clinica": IdEvaluacionRIPSAP,
+                "Tipo de usuario": TipoUsuarioRIPSAP,
+                "Entidad": EntidadRIPSAP,
+                "Modalidad de grupo de servicios técnico salud": ModalidadGrupoServicioTecSalRIPSAP,
+                "Grupo servicios": GrupoServiciosRIPSAP,
+                "Código de servicio": CodServicioRIPSAP,
+                "Finalidad tecnología salud": FinalidadTecnologiaSaludRIPSAP,
+                "Causa motivo atención": CausaMotivoAtencionRIPSAP,
+                "Tipo diagnóstico principal": TipoDiagnosticoPrincipalRIPSAP,
+                "Via ingreso servicio salud": ViaIngresoServicioSaludRIPSAP,
+                "Procedimiento1 RIPS": Cups1RIPSAP,
+                "Procedimiento2 RIPS": Cups2RIPSAP,
+                "Diagnóstico1 RIPS": Cie1RIPSAP,
+                "Diagnóstico2 RIPS": Cie2RIPSAP,
+                "Tipo de RIPS": TipoRipsRIPSAP,
+            }
+
+            console.log(InformacionParaRIPSAP);
+
+
+            const AsignarRIPSAP = await fetch(`http://${servidor}:3000/api/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoServicioTecSal/:GrupoServicios/:CodServicio/:FinalidadTecnologiaSalud/:CausaMotivoAtencion/:TipoDiagnosticoPrincipal/:ViaIngresoServicioSalud/:Cups1/:Cups2/:Cie1/:Cie2/:TipoRips`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(InformacionParaRIPSAP)
+                }
+            );
+    
+            if (!AsignarRIPSAP) {
+                throw new Error(`Error al obtener las entidades de RIPS: ${AsignarRIPSAP.statusText}`);
+            }
+            const CargarAsignarRIPSAP = await AsignarRIPSAP.json();
+            console.log('Entidades de RIPS AP: ', CargarAsignarRIPSAP);
+        }
+
+
+
+
+
+
+
+        // const IdEvaluacion = '382301';
+        // const TipoUsuario = '2';
+        // const Entidad = '1001444180';
+        // const ModalidadGrupoServicioTecSal = '5';
+        // const GrupoServicios = '1';
+        // const CodServicio = '12';
+        // const FinalidadTecnologiaSalud = '11';
+        // const CausaMotivoAtencion = '13';
+        // const TipoDiagnosticoPrincipal = '4';
+        // const ViaIngresoServicioSalud = '1';
+        // const Cups1 = '827902';
+        // const Cups2 = '827902';
+        // const Cie1 = 'X612';
+        // const Cie2 = 'X612';
+        // const TipoRips = 'AP';
+        // const PRUEBAS = await fetch(`http://${servidor}:3000/api/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoServicioTecSal/:GrupoServicios/:CodServicio/:FinalidadTecnologiaSalud/:CausaMotivoAtencion/:TipoDiagnosticoPrincipal/:ViaIngresoServicioSalud/:Cups1/:Cups2/:Cie1/:Cie2/:TipoRips`);
+    
+        // const InsertarRIPSAP = await fetch(`http://${servidor}:3000/api/RegistrarRips/${IdEvaluacion}/${TipoUsuario}/${Entidad}/${ModalidadGrupoServicioTecSal}/${GrupoServicios}/
+        //     ${CodServicio}/${FinalidadTecnologiaSalud}/${CausaMotivoAtencion}/${TipoDiagnosticoPrincipal}/${ViaIngresoServicioSalud}/${Cups1}/${Cups2}/${Cie1}/${Cie2}/${TipoRips}`, {
+        //         method: 'POST', // Cambiar a POST si es necesario
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         }
+        //     }
+
+        // );
+
+        
+        // if (!InsertarRIPSAP) {
+        //     throw new Error(`Error al obtener las entidades de RIPS: ${InsertarRIPSAP.statusText}`);
+        // }
+        // const CargarInsertarRIPSAP = await InsertarRIPSAP.json();
+        // console.log('Entidades de RIPS AP: ', CargarInsertarRIPSAP);
+
+        // Swal.fire({
+        //     icon: 'info',
+        //     text: `Respuesta => ${CargarInsertarRIPSAP.message}`
+        // })
+
+
+
+        // console.log(InsertarRIPSAP.data);
+    } else if (historiaValida && radioAC.checked) {
+        console.log("PREPARANDO PARA RIPS AC");
+
+        const AsignarRIPSAC = await fetch(``)
+    } else {
+        Swal.fire({
+            icon: 'warning',
+            html: `
+                <span style="color: #FFFFFF;">Debes seleccionar una historia clínica y el tipo de RIPS [ AC ó AP ], para poder asignar el RIPS correctamente.</span>
+            `,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+        });
+    }
+}
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 btnRegistrarRIPS.addEventListener('click', async () => {
-    pruebaAlert();
+    // pruebaAlert();
+    AsignarRIPS();
+
 });
 
 const RegistrarRIPS = async () => {
