@@ -244,12 +244,16 @@ WHERE [Descripción Servicios] = 'QUIRURGICOS'
 UPDATE [RIPS Servicios] SET [Codigo Grupo Servicios] = '05'
 WHERE [Descripción Servicios] = 'ATENCION INMEDIATA'
 
+
 ALTER VIEW [dbo].[Cnsta Relacionador Servicios]
 AS
-SELECT        [Id Servicios], [Código Servicios], [Nombre Servicios], [Descripción Servicios], [Id Estado], [Codigo Grupo Servicios]
-FROM            dbo.[RIPS Servicios]
-WHERE        ([Id Estado] = 7)
+SELECT        dbo.[RIPS Servicios].[Id Servicios], dbo.[RIPS Servicios].[Código Servicios], dbo.[RIPS Servicios].[Nombre Servicios], dbo.[RIPS Servicios].[Descripción Servicios], dbo.[RIPS Servicios].[Id Estado], 
+                         dbo.[RIPS Servicios].[Codigo Grupo Servicios], dbo.[RIPS Grupo Servicios].[Id Grupo Servicios]
+FROM            dbo.[RIPS Servicios] INNER JOIN
+                         dbo.[RIPS Grupo Servicios] ON dbo.[RIPS Servicios].[Codigo Grupo Servicios] = dbo.[RIPS Grupo Servicios].Codigo
+WHERE        (dbo.[RIPS Servicios].[Id Estado] = 7)
 GO
+
 
 
 
