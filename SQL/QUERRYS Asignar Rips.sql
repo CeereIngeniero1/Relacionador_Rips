@@ -243,3 +243,15 @@ WHERE [Descripción Servicios] = 'QUIRURGICOS'
 
 UPDATE [RIPS Servicios] SET [Codigo Grupo Servicios] = '05'
 WHERE [Descripción Servicios] = 'ATENCION INMEDIATA'
+
+ALTER VIEW [dbo].[Cnsta Relacionador Servicios]
+AS
+SELECT        [Id Servicios], [Código Servicios], [Nombre Servicios], [Descripción Servicios], [Id Estado], [Codigo Grupo Servicios]
+FROM            dbo.[RIPS Servicios]
+WHERE        ([Id Estado] = 7)
+GO
+
+
+
+
+
