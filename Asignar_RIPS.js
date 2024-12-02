@@ -34,24 +34,24 @@ function VerificarLogin() {
 // Llamar a la función al cargar la página
 VerificarLogin();
 
-const ejecutar = async () => {
-    try {
-        const abc = await fetch(`http://${servidor}:3000/api/pruebahc`);
+// const ejecutar = async () => {
+//     try {
+//         const abc = await fetch(`http://${servidor}:3000/api/pruebahc`);
         
-        if (!abc.ok) {
-            // Captura un error en caso de que la respuesta no sea 'ok'
-            throw new Error(`Error en la solicitud: ${abc.status} ${abc.statusText}`);
-        }
+//         if (!abc.ok) {
+//             // Captura un error en caso de que la respuesta no sea 'ok'
+//             throw new Error(`Error en la solicitud: ${abc.status} ${abc.statusText}`);
+//         }
 
-        const Datos = await abc.json();
-        console.log('Pacientes:', Datos);
+//         const Datos = await abc.json();
+//         console.log('Pacientes:', Datos);
         
-    } catch (error) {
-        // Manejo de errores de red o de la API
-        console.error('Ocurrió un error al realizar la solicitud:', error.message);
-    }
-};
-ejecutar();
+//     } catch (error) {
+//         // Manejo de errores de red o de la API
+//         console.error('Ocurrió un error al realizar la solicitud:', error.message);
+//     }
+// };
+// ejecutar();
 
 
 const BotonConsultar = document.getElementById('BotonConsultar');
@@ -128,7 +128,7 @@ async function Cargar() {
             throw new Error(`Error al obtener los datos de Pacientes con HC sin RIPS: ${PacienteConHCSinRIPS.statusText}`);
         }
         const PacientesConHCSinRIPS = await PacienteConHCSinRIPS.json();
-        console.log('Datos: ', PacientesConHCSinRIPS);
+        // console.log('Datos: ', PacientesConHCSinRIPS);
 
         Swal.fire({
             allowOutsideClick: false,
@@ -179,10 +179,40 @@ BotonCargarPacientesConHCSinRIPS.addEventListener('click', function (e) {
     Cargar();
 })
 
-const SelectPacientes = document.getElementById('listaHC');
+async function LlenarSelectDeHistoriasClinicas() {
+      // Funcionalidad para el llenado del select de las historias/evoluciones sin RIPS
+      const RangoInicio = document.getElementById('FechaInicioConsulta').value;
+      const RangoFin = document.getElementById('FechaFinConsulta').value;
+      const documentoUsuarioLogeado = sessionStorage.getItem('documentousuariologeado');
+      const documentopaciente = document.getElementById('listaHC').value;
+      const SelectHistoriasSinRIPS = document.getElementById('HistoriasSinRIPS');
 
+      const HCsinRIPS = await fetch(`http://${servidor}:3000/api/DatosdeHC/${documentopaciente}/${documentoUsuarioLogeado}/${RangoInicio}/${RangoFin}`);
+      if (!HCsinRIPS.ok) {
+          throw new Error(`Error al obtener las historias/evoluciones sin RIPS: ${HCsinRIPS.statusText}`);
+      }
+      const HistoriasEvolucionesSinRIPS = await HCsinRIPS.json();
+    //   console.log('Historias/Evoluciones sin RIPS: ', HistoriasEvolucionesSinRIPS);
+
+    //   console.log('Rango: ' + RangoInicio + ' ' + RangoFin)
+
+      
+      SelectHistoriasSinRIPS.innerHTML = '';
+      // Opción por defecto
+      const defaultOption = document.createElement('option');
+      defaultOption.textContent = 'Seleccione una historia/evolución';
+      defaultOption.value = '';
+      SelectHistoriasSinRIPS.appendChild(defaultOption);
+      for (let i = 0; i < HistoriasEvolucionesSinRIPS.length; i+=1) {
+          const option = document.createElement('option');
+          option.value = HistoriasEvolucionesSinRIPS[i].IdEvaluaciónEntidad;
+          option.textContent = HistoriasEvolucionesSinRIPS[i].DescripcionTipodeEvaluación + " [ " +  HistoriasEvolucionesSinRIPS[i].Formato_Diagnostico + " - " + HistoriasEvolucionesSinRIPS[i].FechaEvaluacionTexto + " " + HistoriasEvolucionesSinRIPS[i].HoraEvaluacion + " ]";
+          SelectHistoriasSinRIPS.appendChild(option);
+      }
+}
+const SelectPacientes = document.getElementById('listaHC');
 SelectPacientes.addEventListener('change', async function (e) {
-    console.log(this.value);
+    // console.log(this.value);
 
     const NombrePaciente = document.getElementById('NombrePaciente');
     const DcoumentoPaciente = document.getElementById('DocumentoPaciente');
@@ -200,7 +230,7 @@ SelectPacientes.addEventListener('change', async function (e) {
                 throw new Error(`Error al obtener los datos de Pacientes con HC sin RIPS: ${DatosPaciente.statusText}`);
             }
             const CargarDatosPaciente = await DatosPaciente.json();
-            console.log('Datos: ', CargarDatosPaciente); 
+            // console.log('Datos: ', CargarDatosPaciente); 
 
             NombrePaciente.value = CargarDatosPaciente[0].NombreCompletoPaciente;
             DcoumentoPaciente.value = CargarDatosPaciente[0].DocumentoPaciente;
@@ -209,33 +239,34 @@ SelectPacientes.addEventListener('change', async function (e) {
             DireccionPaciente.value = CargarDatosPaciente[0].Direccion;
             TelefonoPaciente.value = CargarDatosPaciente[0].Tel;
 
+            LlenarSelectDeHistoriasClinicas();
 
-            // Funcionalidad para el llenado del select de las historias/evoluciones sin RIPS
-            const RangoInicio = document.getElementById('FechaInicioConsulta').value;
-            const RangoFin = document.getElementById('FechaFinConsulta').value;
-            const documentoUsuarioLogeado = sessionStorage.getItem('documentousuariologeado');
-            const HCsinRIPS = await fetch(`http://${servidor}:3000/api/DatosdeHC/${this.value}/${documentoUsuarioLogeado}/${RangoInicio}/${RangoFin}`);
-            if (!HCsinRIPS.ok) {
-                throw new Error(`Error al obtener las historias/evoluciones sin RIPS: ${HCsinRIPS.statusText}`);
-            }
-            const HistoriasEvolucionesSinRIPS = await HCsinRIPS.json();
-            console.log('Historias/Evoluciones sin RIPS: ', HistoriasEvolucionesSinRIPS);
+            // // Funcionalidad para el llenado del select de las historias/evoluciones sin RIPS
+            // const RangoInicio = document.getElementById('FechaInicioConsulta').value;
+            // const RangoFin = document.getElementById('FechaFinConsulta').value;
+            // const documentoUsuarioLogeado = sessionStorage.getItem('documentousuariologeado');
+            // const HCsinRIPS = await fetch(`http://${servidor}:3000/api/DatosdeHC/${this.value}/${documentoUsuarioLogeado}/${RangoInicio}/${RangoFin}`);
+            // if (!HCsinRIPS.ok) {
+            //     throw new Error(`Error al obtener las historias/evoluciones sin RIPS: ${HCsinRIPS.statusText}`);
+            // }
+            // const HistoriasEvolucionesSinRIPS = await HCsinRIPS.json();
+            // console.log('Historias/Evoluciones sin RIPS: ', HistoriasEvolucionesSinRIPS);
 
-            console.log('Rango: ' + RangoInicio + ' ' + RangoFin)
+            // console.log('Rango: ' + RangoInicio + ' ' + RangoFin)
 
             
-            SelectHistoriasSinRIPS.innerHTML = '';
-            // Opción por defecto
-            const defaultOption = document.createElement('option');
-            defaultOption.textContent = 'Seleccione una historia/evolución';
-            defaultOption.value = '';
-            SelectHistoriasSinRIPS.appendChild(defaultOption);
-            for (let i = 0; i < HistoriasEvolucionesSinRIPS.length; i+=1) {
-                const option = document.createElement('option');
-                option.value = HistoriasEvolucionesSinRIPS[i].IdEvaluaciónEntidad;
-                option.textContent = HistoriasEvolucionesSinRIPS[i].DescripcionTipodeEvaluación + " [ " +  HistoriasEvolucionesSinRIPS[i].Formato_Diagnostico + " - " + HistoriasEvolucionesSinRIPS[i].FechaEvaluacionTexto + " " + HistoriasEvolucionesSinRIPS[i].HoraEvaluacion + " ]";
-                SelectHistoriasSinRIPS.appendChild(option);
-            }
+            // SelectHistoriasSinRIPS.innerHTML = '';
+            // // Opción por defecto
+            // const defaultOption = document.createElement('option');
+            // defaultOption.textContent = 'Seleccione una historia/evolución';
+            // defaultOption.value = '';
+            // SelectHistoriasSinRIPS.appendChild(defaultOption);
+            // for (let i = 0; i < HistoriasEvolucionesSinRIPS.length; i+=1) {
+            //     const option = document.createElement('option');
+            //     option.value = HistoriasEvolucionesSinRIPS[i].IdEvaluaciónEntidad;
+            //     option.textContent = HistoriasEvolucionesSinRIPS[i].DescripcionTipodeEvaluación + " [ " +  HistoriasEvolucionesSinRIPS[i].Formato_Diagnostico + " - " + HistoriasEvolucionesSinRIPS[i].FechaEvaluacionTexto + " " + HistoriasEvolucionesSinRIPS[i].HoraEvaluacion + " ]";
+            //     SelectHistoriasSinRIPS.appendChild(option);
+            // }
         } catch (error) {
             console.error(error);
         }
@@ -296,12 +327,6 @@ $(document).ready(function() {
             }
         });
     }
-
-   
-    $('#MostrarValue').on('click', function () {
-        const Valor1 = $('#SelectDiagnosticoRIPSAC1').val();
-        console.log(Valor1);
-    })
 });
   
 
@@ -334,7 +359,7 @@ radioAC.addEventListener('change', async function (e) {
                 throw new Error(`Error al obtener los tipos de usuario RIPS: ${TipoDeUsuarioRIPS.statusText}`);
             }
             const CargarTipoDeUsuarioRIPS = await TipoDeUsuarioRIPS.json();
-            console.log('Tipos de Usuario RIPS: ', CargarTipoDeUsuarioRIPS);
+            // console.log('Tipos de Usuario RIPS: ', CargarTipoDeUsuarioRIPS);
             SelectTipoUsuarioRIPS.innerHTML = '';
             // Opción por defecto
             const defaultOption = document.createElement('option');
@@ -354,7 +379,7 @@ radioAC.addEventListener('change', async function (e) {
                 throw new Error(`Error al obtener las modalidades de grupo servicio tecnología salud: ${ModalidadGrupoServicioTecnologiaSalud.statusText}`);
             }
             const CargarModalidadGrupoServicioTecnologiaSalud = await ModalidadGrupoServicioTecnologiaSalud.json();
-            console.log('Modalidades de Grupo Servicio Tecnología Salud: ', CargarModalidadGrupoServicioTecnologiaSalud);
+            // console.log('Modalidades de Grupo Servicio Tecnología Salud: ', CargarModalidadGrupoServicioTecnologiaSalud);
 
             SelectModalidadGrupoServicioTecnologiaSalud.innerHTML = '';
             // Opción por defecto
@@ -383,7 +408,7 @@ radioAC.addEventListener('change', async function (e) {
                 throw new Error(`Error al obtener los grupos de servicios AC: ${GrupoServiciosAC.statusText}`);
             }
             const CargarGrupoServiciosAC = await GrupoServiciosAC.json();
-            console.log('Grupos de Servicios AC: ', CargarGrupoServiciosAC);
+            // console.log('Grupos de Servicios AC: ', CargarGrupoServiciosAC);
             SelectGrupoServiciosAC.innerHTML = '';
             // Opción por defecto
             const defaultOption3 = document.createElement('option');
@@ -412,7 +437,7 @@ radioAC.addEventListener('change', async function (e) {
                 throw new Error(`Error al obtener las finalidades para el tipo AC: ${FinalidadTecnologiaSaludAC.statusText}`);
             }
             const CargarFinalidadTecnologiaSaludAC = await FinalidadTecnologiaSaludAC.json();
-            console.log('Finalidades para el tipo AC: ', CargarFinalidadTecnologiaSaludAC);
+            // console.log('Finalidades para el tipo AC: ', CargarFinalidadTecnologiaSaludAC);
             SelectFinalidadTecnologiaSaludAC.innerHTML = '';
             // Opción por defecto
             const defaultOption4 = document.createElement('option');
@@ -439,7 +464,7 @@ radioAC.addEventListener('change', async function (e) {
                 throw new Error(`Error al obtener las causas externas: ${CausaMotivoAtencion.statusText}`);
             }
             const CargarCausaMotivoAtencion = await CausaMotivoAtencion.json();
-            console.log('Causas externas: ', CargarCausaMotivoAtencion);
+            // console.log('Causas externas: ', CargarCausaMotivoAtencion);
             SelectCausaMotivoAtencion.innerHTML = '';
             // Opción por defecto
             const defaultOption5 = document.createElement('option');
@@ -466,7 +491,7 @@ radioAC.addEventListener('change', async function (e) {
                 throw new Error(`Error al obtener los tipos de diagnósticos principales: ${TipoDiagnosticoPrincipal.statusText}`);
             }
             const CargarTipoDiagnosticoPrincipal = await TipoDiagnosticoPrincipal.json();
-            console.log('Tipos de diagnósticos principales: ', CargarTipoDiagnosticoPrincipal);
+            // console.log('Tipos de diagnósticos principales: ', CargarTipoDiagnosticoPrincipal);
             SelectTipoDiagnosticoPrincipalAC.innerHTML = '';
             // Opción por defecto
             const defaultOption6 = document.createElement('option');
@@ -494,7 +519,7 @@ radioAC.addEventListener('change', async function (e) {
                 throw new Error(`Error al obtener las consultas RIPS: ${ConsultaRIPS1.statusText}`);
             }
             const CargarConsultaRIPS1 = await ConsultaRIPS1.json();
-            console.log('Consultas RIPS: ', CargarConsultaRIPS1);
+            // console.log('Consultas RIPS: ', CargarConsultaRIPS1);
             SelectConsultaRIPSAC1.innerHTML = '';
             // Opción por defecto
             const defaultOption7 = document.createElement('option');
@@ -522,7 +547,7 @@ radioAC.addEventListener('change', async function (e) {
                 throw new Error(`Error al obtener las consultas RIPS: ${ConsultaRIPS2.statusText}`);
             }
             const CargarConsultaRIPS2 = await ConsultaRIPS2.json();
-            console.log('Consultas RIPS: ', CargarConsultaRIPS2);
+            // console.log('Consultas RIPS: ', CargarConsultaRIPS2);
             SelectConsultaRIPSAC2.innerHTML = '';
             // Opción por defecto
             const defaultOption8 = document.createElement('option');
@@ -550,7 +575,7 @@ radioAC.addEventListener('change', async function (e) {
                 throw new Error(`Error al obtener los diagnósticos RIPS: ${DiasnosticoRIPSAC1.statusText}`);
             }
             const CargarDiagnosticoRIPSAC1 = await DiasnosticoRIPSAC1.json();
-            console.log('Diagnósticos RIPS AC 1: ', CargarDiagnosticoRIPSAC1);
+            // console.log('Diagnósticos RIPS AC 1: ', CargarDiagnosticoRIPSAC1);
             SelectDiagnosticoRIPSAC1.innerHTML = '';
             // Opción por defecto
             const defaultOption9 = document.createElement('option');
@@ -578,7 +603,7 @@ radioAC.addEventListener('change', async function (e) {
                 throw new Error(`Error al obtener los diagnósticos RIPS: ${DiasnosticoRIPSAC2.statusText}`);
             }
             const CargarDiagnosticoRIPSAC2 = await DiasnosticoRIPSAC2.json();
-            console.log('Diagnósticos RIPS AC 1: ', CargarDiagnosticoRIPSAC2);
+            // console.log('Diagnósticos RIPS AC 1: ', CargarDiagnosticoRIPSAC2);
             SelectDiagnosticoRIPSAC2.innerHTML = '';
             // Opción por defecto
             const defaultOption10 = document.createElement('option');
@@ -634,7 +659,7 @@ SelectTipoDeUsuarioRIPS.addEventListener('change', async function (e) {
                 throw new Error(`Error al obtener las entidades responsables: ${EntidadResponsable.statusText}`);
             }
             const CargarEntidadResponsable = await EntidadResponsable.json();
-            console.log('Entidades Responsables: ', CargarEntidadResponsable);
+            // console.log('Entidades Responsables: ', CargarEntidadResponsable);
     
             SelectEntidadResponsable.innerHTML = '';
             // Opción por defecto
@@ -676,13 +701,13 @@ const SelectGrupoServiciosAC = document.getElementById('SelectGrupoServiciosAC')
 const SelectServiciosAC = document.getElementById('SelectServiciosAC');
 SelectGrupoServiciosAC.addEventListener('change', async function (e) {
     try {
-        console.log(this.value);
+        // console.log(this.value);
         const CargarServicios = await fetch(`http://${servidor}:3000/api/Servicios/${this.value}`);
         if (!CargarServicios.ok) {
             throw new Error(`Error al obtener los servicios: ${CargarServicios.statusText}`);
         }
         const CargarServiciosAC = await CargarServicios.json();
-        console.log('Servicios: ', CargarServiciosAC);
+        // console.log('Servicios: ', CargarServiciosAC);
 
         SelectServiciosAC.innerHTML = '';
         // Opción por defecto
@@ -738,7 +763,7 @@ radioAP.addEventListener('change', async function (e) {
             throw new Error(`Error al obtener los tipos de usuario RIPS: ${TipoUsuarioRIPSAP.statusText}`);
         }
         const CargarTipoUsuarioRIPSAP = await TipoUsuarioRIPSAP.json();
-        console.log('Tipos de Usuario RIPS AP: ', CargarTipoUsuarioRIPSAP);
+        // console.log('Tipos de Usuario RIPS AP: ', CargarTipoUsuarioRIPSAP);
         SelectTipoUsurioRIPSAP.innerHTML = '';
         // Opción por defecto
         const defaultOption = document.createElement('option');
@@ -764,7 +789,7 @@ radioAP.addEventListener('change', async function (e) {
             throw new Error(`Error al obtener las vías de ingreso de usuario RIPS: ${ViaIngresoServicioSaludAP.statusText}`);
         }
         const CargarViaIngresoServicioSaludAP = await ViaIngresoServicioSaludAP.json();
-        console.log('Vias de Ingreso de Usuario RIPS AP: ', CargarViaIngresoServicioSaludAP);
+        // console.log('Vias de Ingreso de Usuario RIPS AP: ', CargarViaIngresoServicioSaludAP);
         SelectViaIngresoServicioSaludAP.innerHTML = '';
         // Opción por defecto
         const defaultOption2 = document.createElement('option');
@@ -790,7 +815,7 @@ radioAP.addEventListener('change', async function (e) {
             throw new Error(`Error al obtener las modalidades de grupo de servicios técnicos RIPS: ${ModalidadGrupoServicioTecSalAP.statusText}`);
         }
         const CargarModalidadGrupoServicioTecSalAP = await ModalidadGrupoServicioTecSalAP.json();
-        console.log('Modalidades de Grupo de Servicios Técnicos RIPS AP: ', CargarModalidadGrupoServicioTecSalAP);
+        // console.log('Modalidades de Grupo de Servicios Técnicos RIPS AP: ', CargarModalidadGrupoServicioTecSalAP);
         SelectModalidadGrupoServicioTecSalAP.innerHTML = '';
         // Opción por defecto
         const defaultOption3 = document.createElement('option');
@@ -816,7 +841,7 @@ radioAP.addEventListener('change', async function (e) {
             throw new Error(`Error al obtener los grupos de servicios RIPS: ${GrupoServiciosAP.statusText}`);
         }
         const CargarGrupoServiciosAP = await GrupoServiciosAP.json();
-        console.log('Grupos de Servicios RIPS AP: ', CargarGrupoServiciosAP);
+        // console.log('Grupos de Servicios RIPS AP: ', CargarGrupoServiciosAP);
         SelectGrupoServiciosAP.innerHTML = '';
         // Opción por defecto
         const defaultOption4 = document.createElement('option');
@@ -843,7 +868,7 @@ radioAP.addEventListener('change', async function (e) {
             throw new Error(`Error al obtener las finalidades técnicas de salud RIPS: ${FinalidadTecnologiaSaludAP.statusText}`);
         }
         const CargarFinalidadTecnologiaSaludAP = await FinalidadTecnologiaSaludAP.json();
-        console.log('Finalidades Técnicas de Salud RIPS AP: ', CargarFinalidadTecnologiaSaludAP);
+        // console.log('Finalidades Técnicas de Salud RIPS AP: ', CargarFinalidadTecnologiaSaludAP);
         SelectFinalidadTecnologiaSaludAP.innerHTML = '';
         // Opción por defecto
         const defaultOption5 = document.createElement('option');
@@ -870,7 +895,7 @@ radioAP.addEventListener('change', async function (e) {
             throw new Error(`Error al obtener los procedimientos AP 1: ${ProcedimientoAP1.statusText}`);
         }
         const CargarProcedimientoAP1 = await ProcedimientoAP1.json();
-        console.log('Procedimientos AP 1: ', CargarProcedimientoAP1);
+        // console.log('Procedimientos AP 1: ', CargarProcedimientoAP1);
         SelectProcedimientoRIPSAP1.innerHTML = '';
         // Opción por defecto
         const defaultOption6 = document.createElement('option');
@@ -897,7 +922,7 @@ radioAP.addEventListener('change', async function (e) {
             throw new Error(`Error al obtener los procedimientos AP 2: ${ProcedimientoAP2.statusText}`);
         }
         const CargarProcedimientoAP2 = await ProcedimientoAP2.json();
-        console.log('Procedimientos AP 2: ', CargarProcedimientoAP2);
+        // console.log('Procedimientos AP 2: ', CargarProcedimientoAP2);
         SelectProcedimientoRIPSAP2.innerHTML = '';
         // Opción por defecto
         const defaultOption7 = document.createElement('option');
@@ -923,7 +948,7 @@ radioAP.addEventListener('change', async function (e) {
             throw new Error(`Error al obtener los diagnósticos AP 1: ${DiagnosticoAP1.statusText}`);
         }
         const CargarDiagnosticoAP1 = await DiagnosticoAP1.json();
-        console.log('Diagnósticos AP 1: ', CargarDiagnosticoAP1);
+        // console.log('Diagnósticos AP 1: ', CargarDiagnosticoAP1);
         SelectDiagnosticoRIPSAP1.innerHTML = '';
         // Opción por defecto
         const defaultOption8 = document.createElement('option');
@@ -949,7 +974,7 @@ radioAP.addEventListener('change', async function (e) {
             throw new Error(`Error al obtener los diagnósticos AP 1: ${DiagnosticoAP2.statusText}`);
         }
         const CargarDiagnosticoAP2 = await DiagnosticoAP2.json();
-        console.log('Diagnósticos AP 1: ', CargarDiagnosticoAP2);
+        // console.log('Diagnósticos AP 1: ', CargarDiagnosticoAP2);
         SelectDiagnosticoRIPSAP2.innerHTML = '';
         // Opción por defecto
         const defaultOption9 = document.createElement('option');
@@ -994,7 +1019,7 @@ TipoUsuarioRIPSAP.addEventListener('change', async function (e) {
         throw new Error(`Error al obtener las entidades de RIPS: ${EntidadesAP.statusText}`);
     }
     const CargarEntidadesAP = await EntidadesAP.json();
-    console.log('Entidades de RIPS AP: ', CargarEntidadesAP);
+    // console.log('Entidades de RIPS AP: ', CargarEntidadesAP);
     SelectEntidadAP.innerHTML = '';
     // Opción por defecto
     const defaultOption = document.createElement('option');
@@ -1024,7 +1049,7 @@ GrupoServicioAP.addEventListener('change', async function (e) {
         throw new Error(`Error al obtener los servicios de RIPS: ${ServiciosAP.statusText}`);
     }
     const CargarServiciosAP = await ServiciosAP.json();
-    console.log('Servicios de RIPS AP: ', CargarServiciosAP);
+    // console.log('Servicios de RIPS AP: ', CargarServiciosAP);
     SelectServicioAP.innerHTML = '';
     // Opción por defecto
     const defaultOption2 = document.createElement('option');
@@ -1155,12 +1180,10 @@ const AsignarRIPS = async () => {
 
     // Validar qué radio está seleccionado
     if (historiaValida && radioAP.checked) {
-        console.log("PREPARANDO PARA RIPS AP");
+        // console.log("PREPARANDO PARA RIPS AP");
+        console.log('%cAsignando RIPS de tipo AP...', 'color: blue; font-size: 16px;');
         // Lógica para realizar la petición al API para asignar el RIPS AP
         const IdEvaluacionRIPSAP = document.getElementById("HistoriasSinRIPS").value;
-        // const IdEvaluacionRIPSAP = Number(document.getElementById("HistoriasSinRIPS").value);
-        // const IdEvaluacionRIPSAP = parseInt(document.getElementById("HistoriasSinRIPS").value, 10);
-
         const TipoUsuarioRIPSAP = document.getElementById("SelectTipoUsurioRIPSAP").value;
         const EntidadRIPSAP = document.getElementById("SelectEntidadAP").value;
         const ViaIngresoServicioSaludRIPSAP = document.getElementById("SelectViaIngresoServicioSaludAP").value;
@@ -1183,7 +1206,7 @@ const AsignarRIPS = async () => {
         if (!ViaIngresoServicioSaludRIPSAP) RIPSAPCAMPOSVACIOS.push("Vía de ingreso al servicio de salud.");
         if (!ModalidadGrupoServicioTecSalRIPSAP) RIPSAPCAMPOSVACIOS.push("Modalidad de grupo de servicios técnico salud.");
         if (!GrupoServiciosRIPSAP) RIPSAPCAMPOSVACIOS.push("Grupo servicios.");
-        // if (!CodServicioRIPSAP || CodServicioRIPSAP === "" || CodServicioRIPSAP === "Sin Seleccionar") RIPSAPCAMPOSVACIOS.push("Código de servicio.");
+        if (!CodServicioRIPSAP || CodServicioRIPSAP === "" || CodServicioRIPSAP === "Sin Seleccionar") RIPSAPCAMPOSVACIOS.push("Código de servicio.");
         if (!FinalidadTecnologiaSaludRIPSAP) RIPSAPCAMPOSVACIOS.push("Finalidad técnica de salud.");
         if (!Cups1RIPSAP) RIPSAPCAMPOSVACIOS.push("Procedimiento RIPS");
         if (!Cie1RIPSAP) RIPSAPCAMPOSVACIOS.push("Diagnóstico RIPS");
@@ -1225,7 +1248,7 @@ const AsignarRIPS = async () => {
                 "Tipo de RIPS": TipoRipsRIPSAP,
             }
 
-            console.log(InformacionParaRIPSAP);
+            // console.log(InformacionParaRIPSAP);
             if (Cups2RIPSAP === "") {
                 Cups2RIPSAP = "0";
             }
@@ -1249,21 +1272,123 @@ const AsignarRIPS = async () => {
                 throw new Error(`Error al obtener las entidades de RIPS: ${AsignarRIPSAP.statusText}`);
             }
             const CargarAsignarRIPSAP = await AsignarRIPSAP.json();
-            console.log('Entidades de RIPS AP: ', CargarAsignarRIPSAP);
-
+            // console.log('Entidades de RIPS AP: ', CargarAsignarRIPSAP);
+            console.log(`%cRIPS AP asignado correctamente!`, 'color: green; font-size: 16px;');
             Swal.fire({
                 icon: 'success',
                 html: `
-                    <span style="color: #FFFFFF;">El RIPS ha sido asignado correctamente a la historia clínica con ID: ${IdEvaluacionRIPSAP}.</span>
+                    <span style="color: #FFFFFF;">El RIPS ha sido asignado correctamente a la historia clínica con ID: ${IdEvaluacionRIPSAP}</span>
                 `,
                 allowOutsideClick: false,
                 allowEscapeKey: false,
-            })
+            }).then(
+                function(respuesta) {
+                    LlenarSelectDeHistoriasClinicas();
+                }
+            )
         }
     } else if (historiaValida && radioAC.checked) {
-        console.log("PREPARANDO PARA RIPS AC");
+        // console.log("PREPARANDO PARA RIPS AC");
+        console.log('%cAsignando RIPS de tipo AC...', 'color: blue; font-size: 16px;');
+        const IdEvaluacionRIPSAC = document.getElementById("HistoriasSinRIPS").value; // Select que tiene las historias clinicas del paciente sin RIPS
+        const SelectTipoUsuarioRIPSAC = document.getElementById("SelectTipoUsuarioRIPS").value; 
+        const SelectEntidadAC = document.getElementById("SelectEntidad").value;
+        const SelectModalidadGrupoServicioTecnologiaSaludAC = document.getElementById("SelectModalidadGrupoServicioTecnologiaSalud").value;
+        const SelectGrupoServiciosAC = document.getElementById("SelectGrupoServiciosAC").value;
+        const SelectServiciosAC = document.getElementById("SelectServiciosAC").value;
+        const SelectFinalidadTecnologiaSaludAC = document.getElementById("SelectFinalidadTecnologiaSaludAC").value;
+        const SelectCausaMotivoAtencion = document.getElementById("SelectCausaMotivoAtencion").value;
+        const SelectTipoDiagnosticoPrincipalAC = document.getElementById("SelectTipoDiagnosticoPrincipalAC").value;
+        const SelectConsultaRIPSAC1 = document.getElementById("SelectConsultaRIPSAC1").value;
+        let SelectConsultaRIPSAC2 = document.getElementById("SelectConsultaRIPSAC2").value;
+        const SelectDiagnosticoRIPSAC1 = document.getElementById("SelectDiagnosticoRIPSAC1").value;
+        let SelectDiagnosticoRIPSAC2 = document.getElementById("SelectDiagnosticoRIPSAC2").value;
+        const TipoRipsRIPSAC = "AC";
+        const ViaIngresoAC = "0";
 
-        const AsignarRIPSAC = await fetch(``);
+        let ValoresCapturados = {
+            "Id de historia clinica": IdEvaluacionRIPSAC,
+            "Tipo de usuario": SelectTipoUsuarioRIPSAC,
+            "Entidad": SelectEntidadAC,
+            "Modalidad de grupo de servicios técnico salud": SelectModalidadGrupoServicioTecnologiaSaludAC,
+            "Grupo servicios": SelectGrupoServiciosAC,
+            "Servicio": SelectServiciosAC,
+            "Finalidad técnica de salud": SelectFinalidadTecnologiaSaludAC,
+            "Causa motivo atención": SelectCausaMotivoAtencion,
+            "Tipo diagnóstico principal": SelectTipoDiagnosticoPrincipalAC,
+            "Consulta1 RIPS": SelectConsultaRIPSAC1,
+            "Consulta2 RIPS": SelectConsultaRIPSAC2,
+            "Diagnóstico1 RIPS": SelectDiagnosticoRIPSAC1,
+            "Diagnóstico2 RIPS": SelectDiagnosticoRIPSAC2,
+        }
+
+        let CamposSinLlenar = [];
+        if (!SelectTipoUsuarioRIPSAC) CamposSinLlenar.push("Tipo de usuario.");
+        if (!SelectEntidadAC || SelectEntidadAC === "" || SelectEntidadAC === "Sin Seleccionar") CamposSinLlenar.push("Entidad.");
+        if (!SelectModalidadGrupoServicioTecnologiaSaludAC) CamposSinLlenar.push("Modalidad de grupo servicio de salud.");
+        if (!SelectGrupoServiciosAC) CamposSinLlenar.push("Grupo servicios.");
+        if (!SelectServiciosAC || SelectServiciosAC === "" || SelectServiciosAC === "Sin Seleccionar") CamposSinLlenar.push("Servicio.");
+        if (!SelectFinalidadTecnologiaSaludAC) CamposSinLlenar.push("Finalidad técnica de salud.");
+        if (!SelectCausaMotivoAtencion) CamposSinLlenar.push("Causa motivo de atención.");
+        if (!SelectTipoDiagnosticoPrincipalAC) CamposSinLlenar.push("Tipo diagnostico principal");
+        if (!SelectConsultaRIPSAC1) CamposSinLlenar.push("Consulta RIPS.");
+        if (!SelectDiagnosticoRIPSAC1) CamposSinLlenar.push("Diagnóstico RIPS.");
+
+        if (CamposSinLlenar.length > 0) {
+            Swal.fire({
+                icon: 'warning',
+                html: `
+                    <h4 style="color: #ffffff"><b> Los siguientes campos son obligatorios: </b></h4>
+                    <br>
+                    <ul style="text-align: left;">
+                    ${CamposSinLlenar
+                    .map((campo) => `<li style="color: #ffffff"> ${campo}</li>`)
+                    .join("")}
+                    </ul>
+                `,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+            });
+            return;
+        } else {
+            // console.log(ValoresCapturados);
+            if (!SelectConsultaRIPSAC2) {
+                SelectConsultaRIPSAC2 = "0";
+            }
+            if (!SelectDiagnosticoRIPSAC2) {
+                SelectDiagnosticoRIPSAC2 = "0";
+            }
+            const AsignarRIPSAC = await fetch(`http://${servidor}:3000/api/RegistrarRips/${IdEvaluacionRIPSAC}/${SelectTipoUsuarioRIPSAC}/${SelectEntidadAC}/${SelectModalidadGrupoServicioTecnologiaSaludAC}/
+                ${SelectGrupoServiciosAC}/${SelectServiciosAC}/${SelectFinalidadTecnologiaSaludAC}/${SelectCausaMotivoAtencion}/${SelectTipoDiagnosticoPrincipalAC}/${ViaIngresoAC}/${SelectConsultaRIPSAC1}/${SelectConsultaRIPSAC2}/
+                ${SelectDiagnosticoRIPSAC1}/${SelectDiagnosticoRIPSAC2}/${TipoRipsRIPSAC}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            if (!AsignarRIPSAC) {
+                throw new Error(`Error al obtener las entidades de RIPS: ${AsignarRIPSAC.statusText}`);
+            }
+            const CargarAsignarRIPSAC = await AsignarRIPSAC.json();
+            // console.log('Entidades de RIPS AC: ', CargarAsignarRIPSAC);
+            console.log(`%cRIPS AC asignado correctamente!`, 'color: green; font-size: 16px;');
+            
+            Swal.fire({
+                icon: 'success',
+                html: `
+                    <span style="color: #FFFFFF;">El RIPS ha sido asignado correctamente a la historia clínica con ID: ${IdEvaluacionRIPSAC}</span>
+                `,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+            }).then(
+                function(respuesta) {
+                    LlenarSelectDeHistoriasClinicas();
+                }
+            )
+        }
     } else {
         Swal.fire({
             icon: 'warning',
@@ -1273,6 +1398,7 @@ const AsignarRIPS = async () => {
             allowOutsideClick: false,
             allowEscapeKey: false,
         });
+        return;
     }
 }
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
