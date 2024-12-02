@@ -212,7 +212,7 @@ router.get('/DatosdeHC/:DocumentoPaciente/:DocumentoUsuario/:fechaInicio/:fechaF
                 ,[HoraEvaluacion]
         FROM            [Cnsta Relacionador Info Historias]
         WHERE        (DocumentoPaciente = N'${DocumentoPaciente}') 
-        AND (FechaEvaluacion BETWEEN '${fechaInicio}' AND '${fechaFin}') 
+        AND (CAST(FechaEvaluacion AS DATE) BETWEEN '${fechaInicio}' AND '${fechaFin}') 
         AND (DocumentoUsuario = N'${DocumentoUsuario}')
 
         `,
