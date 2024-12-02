@@ -115,7 +115,7 @@ router.get('/UsuariosHC/:DocumentoUsuario/:fechaInicio/:fechaFin', async (req, r
                 [DocumentoPaciente]
                 ,[NombreCompletoPaciente]
             FROM [Cnsta Relacionador Usuarios HC]
-            WHERE DocumentoUsuario = '${DocumentoUsuario}' AND FechaEvaluacion BETWEEN '${fechaInicio}' AND '${fechaFin}'
+            WHERE DocumentoUsuario = '${DocumentoUsuario}' AND CAST(FechaEvaluacion AS DATE) BETWEEN '${fechaInicio}' AND '${fechaFin}'
             GROUP BY DocumentoPaciente , NombreCompletoPaciente
         `,
             (err) => {
