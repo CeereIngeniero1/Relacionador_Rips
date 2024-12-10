@@ -368,7 +368,7 @@ radioAC.addEventListener('change', async function (e) {
             SelectTipoUsuarioRIPS.appendChild(defaultOption);
             for (let i = 0; i < CargarTipoDeUsuarioRIPS.length; i+=1) {
                 const option = document.createElement('option');
-                option.value = CargarTipoDeUsuarioRIPS[i].CódigoTipoRips;
+                option.value = CargarTipoDeUsuarioRIPS[i].IdTipoRips;
                 option.textContent = CargarTipoDeUsuarioRIPS[i].TipoRips;
                 SelectTipoUsuarioRIPS.appendChild(option);
             }
