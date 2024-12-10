@@ -1,4 +1,4 @@
-const servidor = "HPGRIS";
+const servidor = "HPRED241";
 
 const checkboxParticular = document.getElementById('checkbox1')
 const checkboxPrepagada = document.getElementById('checkbox2')
@@ -521,15 +521,20 @@ btnRelacionar.addEventListener('click', async () => {
 
 })
 
-checkboxFacturaCero.addEventListener('change', () => {
-    if (checkboxFacturaCero.checked) {
-        selectFacturas.disabled = true;
+//Yeison dejo eso asi y eso no esta definido en ningun lado
+// por ende mr comentarios es decir Fernando
+// procede a comentar esto que no sive para nada y tira error 
+//pasito
 
-    } else {
-        selectFacturas.disabled = false;
+// checkboxFacturaCero.addEventListener('change', () => {
+//     if (checkboxFacturaCero.checked) {
+//         selectFacturas.disabled = true;
 
-    }
-})
+//     } else {
+//         selectFacturas.disabled = false;
+
+//     }
+// })
 
 const selectBuscarFacturas = document.querySelector('#selectBuscarFacturas');
 
