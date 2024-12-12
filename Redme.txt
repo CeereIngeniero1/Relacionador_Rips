@@ -22,6 +22,7 @@ npm install
 
 PARA QUE FUNCIONE EL CHECKBOX DE LA FACTURA 0 TIENE QUE EJECTUAR EL QUERY EN LA BASE DE DATOS PARA CREAR LA FACTURA 0, DEBES CONSULTAR EL DOCUMENTO DE LA EMPRESA Y UN ID EMPRESA V, EN LA EMPRESA QUE SE VA A A EJECUTAR EL QUERY ->
 
+¡¡¡ IMPORTANTEEE, SE DEBE HACER UN UPDATE A UNA FACTRA YA EXISTENTE QUE SE LE HAYA REALIZADO AL USUARIO DE PRUEBA, ES DECIR QUE EL DOCUMENTO RESPONSABLE SEA '70123456' !!!
 INSERT INTO [dbo].[Factura]
            ([Documento Empresa] 
 		,[Id EmpresaV]
@@ -132,6 +133,75 @@ INSERT INTO [dbo].[Factura]
 			NULL,
 			NULL,
 			NULL)
+DECLARE @DocumentoEmpresa VARCHAR(50);
+DECLARE @IdEmpresaV INT;
+DECLARE @IdFactura INT;
+
+
+SET @DocumentoEmpresa = '900129174-3';  -- CÁMBIALO POR EL DOCUMENTO DE LA EMPRESA REAL
+SET @IdEmpresaV = 138; -- CÁMBIALO POR EL ID DE EMPRESA V CORRECTO, EL CUAL SE ENCUETRA VIGENTE
+SET @IdFactura = 83363; -- CÁMBIALO POR EL ID DE LA FACTURA QUE PERTENECE AL ADMINISTRADOR [Documento Responsable] = 70123456
+
+UPDATE [dbo].[Factura]
+SET
+	[Documento Empresa] = @DocumentoEmpresa,
+	[Id EmpresaV] = @IdEmpresaV,
+    [No Factura] = '0000000',
+    [Id Período de Inventario Bodega] = NULL,
+    [Id Bodega] = NULL,
+    [Id Pedido] = NULL,
+    [Id Tipo Tarifa] = NULL,
+    [Id Remisión] = NULL,
+    [Fecha Digitación Factura] = NULL,
+    [Fecha Factura] = NULL,
+    [Fecha Vencimiento Factura] = NULL,
+    [Id Condición de Pago Factura] = NULL,
+    [Id Moneda] = NULL,
+    [Tasa de Cambio Vigente] = NULL,
+    [Documento Responsable] = NULL,
+    [Documento Paciente] = '70123456',
+    [Documento Beneficiario] = NULL,
+    [Id EntidadXXVI Sucursal] = NULL,
+    [Documento Vendedor] = NULL,
+    [Porcentaje Descuento Pronto Pago Factura] = NULL,
+    [Valor Propina Factura] = NULL,
+    [Domicilio Factura] = NULL,
+    [Nro de Items Factura] = NULL,
+    [Cantidad de Artículos Factura] = NULL,
+    [Valor Acumulado Factura] = NULL,
+    [Descuentos Factura] = NULL,
+    [Descuento Adicional $ Factura] = NULL,
+    [Descuento Adicional % Factura] = NULL,
+    [Comisión Factura] = NULL,
+    [Comisión Adicional % Factura] = NULL,
+    [Comisión Adicional $ Factura] = NULL,
+    [Iva Factura] = NULL,
+    [SubTotal Factura] = NULL,
+    [Total Factura] = NULL,
+    [Retención en la Fuente Factura] = '0',
+    [Id Retención Fuente] = '0',
+    [Retención Iva Factura] = NULL,
+    [Id Retención Iva] = NULL,
+    [Retención Otros Factura] = NULL,
+    [Id Retención Otros] = NULL,
+    [Valor En Letras Factura] = NULL,
+    [Observaciones Factura] = NULL,
+    [Documento Usuario] = NULL,
+    [Id Terminal] = NULL,
+    [Id Estado Contabilidad] = NULL,
+    [Id Estado] = NULL,
+    [Id Período Inventario] = NULL,
+    [Id Estado Impresión] = NULL,
+    [Id Tipo de Comprobante] = NULL,
+    [Documento Sede] = NULL,
+    [Retención Cancelada] = NULL,
+    [Impuesto Factura Electronica retenido] = NULL,
+    [Concepto Factura Electronica] = NULL,
+    [EstadoFacturaElectronica] = NULL
+WHERE
+	[Id Factura] = @IdFactura
+    --[No Factura] = '0000000'; -- Condición para identificar el registro a actualizar
+
 
 *****************************************************************************************************
 *****************************************************************************************************
