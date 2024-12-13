@@ -1401,13 +1401,90 @@ const AsignarRIPS = async () => {
         return;
     }
 }
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 btnRegistrarRIPS.addEventListener('click', async () => {
     // pruebaAlert();
     AsignarRIPS();
 
 });
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// FUNCIONALIDAD PARA LAS HISTORIAS QUE SE ALMACENAN SIN RIPS
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+async function NoAsignarRIPS() {
+
+    const HistoriasSinRIPS = document.getElementById('HistoriasSinRIPS');
+    const TextoOpcionSeleccionada = HistoriasSinRIPS.options[HistoriasSinRIPS.selectedIndex].textContent;
+    const NombreDelPaciente = document.getElementById('NombrePaciente');
+
+    if (HistoriasSinRIPS.value === "" || HistoriasSinRIPS.value === "Sin Seleccionar") {
+        Swal.fire({
+            icon: 'info',
+            html: `
+                <span style="color: #fff">Primero debes seleccionar una historia</span>
+            `,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+        })
+    }else {
+        Swal.fire({
+            icon: 'question',
+            html: `
+                <span style="color: #fff">¿Realmente deseas guardar esta historia sin asginarle ningún RIPS?</span>
+                <br><br>
+                <ul style="text-align: left;">
+                    <li style="color: #ffffff">Nombre Paciente: ${NombreDelPaciente.value}</li>
+                    <br>
+                    <li style="color: #ffffff">Historia: ${TextoOpcionSeleccionada}</li>
+                    <br>
+                    <li style="color: #ffffff">Id Historia: ${HistoriasSinRIPS.value}</li>
+                </ul>
+            `,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showCancelButton: true,
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar",            
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",            
+        }).then(async function(Respuesta) {
+            if (Respuesta.isConfirmed) {
+                console.log("Se confirmó");
+                const GuardarSinRIPS = await fetch(`http://${servidor}:3000/api/TieneRips/${HistoriasSinRIPS.value}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                console.log(HistoriasSinRIPS.value);
+                if (!GuardarSinRIPS.ok) {
+                    throw new Error(`Error al obtener los datos de evaluaciones: ${GuardarSinRIPS.statusText}`);
+                }
+
+                const datosEvaluaciones = await GuardarSinRIPS.json();
+                console.log('Datos de evaluaciones: ', datosEvaluaciones);
+
+                Swal.fire({
+                    icon: "success",
+                    html: `
+                        <span style="color: #fff;">Historia sin RIPS guardada correctamente</span>
+                    `,
+                    showConfirmButton: false,
+                    timer: 2000
+                }).then(function() {
+                    LlenarSelectDeHistoriasClinicas();
+                })
+            }
+        })
+    }
+}
+
+const BtnNoRegistrarRIPS = document.getElementById('BtnNoRegistrarRIPS');
+BtnNoRegistrarRIPS.addEventListener('click', async () => {
+    NoAsignarRIPS();
+})
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 const RegistrarRIPS = async () => {
     
