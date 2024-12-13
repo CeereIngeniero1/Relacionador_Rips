@@ -276,7 +276,7 @@ SELECT        FORMAT(dbo.[Evaluación Entidad].[Fecha Evaluación Entidad], 'dd/
 FROM            dbo.[Evaluación Entidad] LEFT OUTER JOIN
                          dbo.[Evaluación Entidad Rips] ON dbo.[Evaluación Entidad].[Id Evaluación Entidad] = dbo.[Evaluación Entidad Rips].[Id Evaluación Entidad] INNER JOIN
                          dbo.[Tipo de Evaluación] ON dbo.[Evaluación Entidad].[Id Tipo de Evaluación] = dbo.[Tipo de Evaluación].[Id Tipo de Evaluación]
-WHERE        (dbo.[Evaluación Entidad Rips].[Id Evaluación Entidad Rips] IS NULL) AND (dbo.[Evaluación Entidad].[Id Tipo de Evaluación] <> 2) AND (dbo.[Evaluación Entidad].Rips = 0)
+WHERE        (dbo.[Evaluación Entidad Rips].[Id Evaluación Entidad Rips] IS NULL) AND (dbo.[Evaluación Entidad].[Id Tipo de Evaluación] <> 2) AND (dbo.[Evaluación Entidad].Rips = 1)
 GO
 
 
