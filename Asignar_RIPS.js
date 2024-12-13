@@ -1,4 +1,4 @@
-const servidor = "HPRED241";
+const servidor = "HPGRIS";
 
 function VerificarLogin() {
     const TokenLogin = localStorage.getItem('token');
@@ -778,7 +778,7 @@ radioAP.addEventListener('change', async function (e) {
         });
         for (let i = 0; i < CargarTipoUsuarioRIPSAP.length; i++) {
             const option = document.createElement('option');
-            option.value = CargarTipoUsuarioRIPSAP[i]['CódigoTipoRips'];
+            option.value = CargarTipoUsuarioRIPSAP[i]['IdTipoRips'];
             option.textContent = CargarTipoUsuarioRIPSAP[i]['TipoRips'];
             SelectTipoUsurioRIPSAP.appendChild(option);
         }
