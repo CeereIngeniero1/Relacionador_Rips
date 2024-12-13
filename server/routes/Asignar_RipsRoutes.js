@@ -309,7 +309,7 @@ router.get('/Entidad/:Tipo', async (req, res) => {
             `
                 SELECT         NombreCompletoPaciente, [Id Función], Función, DocumentoEntidad, IdTipoRips
                 FROM            [Cnsta Relacionador Entidades Rips]
-                WHERE        ([Id Función] = ${Tipo})
+                WHERE        (IdTipoRips = ${Tipo})
                 `,
             (err) => {
                 if (err) {
