@@ -943,5 +943,29 @@ connection.execSql(requestInsert);
 });
 
 
+router.post('/TieneRips/:IdEvaluacion', (req, res) =>{
+    
+    const IdEvaluacion = req.params.IdEvaluacion;
+    console.log("sI ENTRE Y MIRA", IdEvaluacion);
+    const requestUpdate = new Request(
+        `UPDATE [Evaluación Entidad] 
+        SET  [Rips] = 0
+        WHERE  [Id Evaluación Entidad] = ${IdEvaluacion}`,
+        (err) => {
+            if (err) {
+                console.error('Error al actualizar la historia:', err.message);
+                res.status(500).json({error: 'Error añ actualiza la historia'});
+            }else{
+                console.log('Actualizacion ejecutada con exito');
+                res.json({success: true, message: 'Historia ACTUALIZADA Correctamente'})
+            }
+        }
+    );
+
+
+    connection.execSql(requestUpdate);
+
+});
+
 
 module.exports = router;

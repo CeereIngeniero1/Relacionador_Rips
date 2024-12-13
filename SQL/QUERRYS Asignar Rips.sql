@@ -85,13 +85,14 @@ Update [Tipo Rips] set [Código Tipo Rips] = 23 where  [Tipo Rips] = 'Entidad Pr
 ---- ENTIDADES TIPO RIPS
 CREATE VIEW [dbo].[Cnsta Relacionador Entidades Rips]
 AS
-SELECT        dbo.Entidad.[Nombre Completo Entidad] AS NombreCompletoPaciente, dbo.[Función Por Entidad].[Id Función], dbo.Función.Función, dbo.Entidad.[Documento Entidad] AS DocumentoEntidad
+SELECT        dbo.Entidad.[Nombre Completo Entidad] AS NombreCompletoPaciente, dbo.[Función Por Entidad].[Id Función], dbo.Función.Función, dbo.Entidad.[Documento Entidad] AS DocumentoEntidad, MIN(dbo.[Tipo Rips].[Id Tipo Rips]) 
+                         AS IdTipoRips
 FROM            dbo.Entidad INNER JOIN
                          dbo.[Función Por Entidad] ON dbo.Entidad.[Documento Entidad] = dbo.[Función Por Entidad].[Documento Entidad] INNER JOIN
-                         dbo.Función ON dbo.[Función Por Entidad].[Id Función] = dbo.Función.[Id Función]
-WHERE        (dbo.[Función Por Entidad].[Id Función] = 17) OR
-                         (dbo.[Función Por Entidad].[Id Función] = 24) OR
-                         (dbo.[Función Por Entidad].[Id Función] = 23)
+                         dbo.Función ON dbo.[Función Por Entidad].[Id Función] = dbo.Función.[Id Función] INNER JOIN
+                         dbo.[Tipo Rips] ON dbo.[Función Por Entidad].[Id Función] = dbo.[Tipo Rips].[Código Tipo Rips]
+WHERE        (dbo.[Función Por Entidad].[Id Función] IN (17, 24, 23))
+GROUP BY dbo.Entidad.[Nombre Completo Entidad], dbo.[Función Por Entidad].[Id Función], dbo.Función.Función, dbo.Entidad.[Documento Entidad]
 GO
 
 ----Modalidad atencion
@@ -252,6 +253,30 @@ SELECT        dbo.[RIPS Servicios].[Id Servicios], dbo.[RIPS Servicios].[Código
 FROM            dbo.[RIPS Servicios] INNER JOIN
                          dbo.[RIPS Grupo Servicios] ON dbo.[RIPS Servicios].[Codigo Grupo Servicios] = dbo.[RIPS Grupo Servicios].Codigo
 WHERE        (dbo.[RIPS Servicios].[Id Estado] = 7)
+GO
+
+
+--Esto es para habilitar o des habilitar historia con rips  o sin rips 
+alter table [Evaluación Entidad] 
+add Rips bit not null default 1;
+
+
+
+
+ALTER VIEW [dbo].[Cnsta Relacionador Info Historias]
+AS
+SELECT        FORMAT(dbo.[Evaluación Entidad].[Fecha Evaluación Entidad], 'dd/MM/yyyy') AS FechaEvaluacionTexto, dbo.[Evaluación Entidad].[Documento Entidad] AS DocumentoPaciente, 
+                         dbo.[Evaluación Entidad].[Id Tipo de Evaluación] AS IdTipodeEvaluacion, dbo.[Tipo de Evaluación].[Descripción Tipo de Evaluación] AS DescripcionTipodeEvaluación, 
+                         CASE WHEN dbo.[Evaluación Entidad].[Id Tipo de Evaluación] = 4 THEN SUBSTRING(CAST(dbo.[Evaluación Entidad].[Diagnóstico General Evaluación Entidad] AS nvarchar(MAX)), CHARINDEX('\', 
+                         CAST(dbo.[Evaluación Entidad].[Diagnóstico General Evaluación Entidad] AS nvarchar(MAX)), CHARINDEX('\', CAST(dbo.[Evaluación Entidad].[Diagnóstico General Evaluación Entidad] AS nvarchar(MAX))) + 1) + 1, 
+                         LEN(CAST(dbo.[Evaluación Entidad].[Diagnóstico General Evaluación Entidad] AS nvarchar(MAX)))) ELSE CAST(dbo.[Evaluación Entidad].[Diagnóstico General Evaluación Entidad] AS nvarchar(MAX)) END AS Formato_Diagnostico,
+                          dbo.[Evaluación Entidad].[Diagnóstico Específico Evaluación Entidad] AS DiagnósticoEspecíficoEvaluacionEntidad, dbo.[Evaluación Entidad].[Documento Usuario] AS DocumentoUsuario, 
+                         dbo.[Evaluación Entidad].[Id Evaluación Entidad] AS IdEvaluaciónEntidad, RIGHT(CONVERT(VARCHAR(20), dbo.[Evaluación Entidad].[Fecha Evaluación Entidad], 100), 7) AS HoraEvaluacion, 
+                         dbo.[Evaluación Entidad].[Fecha Evaluación Entidad] AS FechaEvaluacion, dbo.[Evaluación Entidad].Rips
+FROM            dbo.[Evaluación Entidad] LEFT OUTER JOIN
+                         dbo.[Evaluación Entidad Rips] ON dbo.[Evaluación Entidad].[Id Evaluación Entidad] = dbo.[Evaluación Entidad Rips].[Id Evaluación Entidad] INNER JOIN
+                         dbo.[Tipo de Evaluación] ON dbo.[Evaluación Entidad].[Id Tipo de Evaluación] = dbo.[Tipo de Evaluación].[Id Tipo de Evaluación]
+WHERE        (dbo.[Evaluación Entidad Rips].[Id Evaluación Entidad Rips] IS NULL) AND (dbo.[Evaluación Entidad].[Id Tipo de Evaluación] <> 2) AND (dbo.[Evaluación Entidad].Rips = 0)
 GO
 
 

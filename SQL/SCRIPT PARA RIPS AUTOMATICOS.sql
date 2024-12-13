@@ -133,3 +133,7 @@ ALTER TABLE [dbo].[Evaluación Entidad Rips] ENABLE TRIGGER [Relacion_Factura_Ri
 GO
 
 
+
+
+
+
