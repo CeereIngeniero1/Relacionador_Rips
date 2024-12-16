@@ -392,5 +392,17 @@ GO
 
 
 
+ALTER VIEW [dbo].[Cnsta Relacionador Usuarios HC]
+AS
+SELECT        dbo.[Evaluación Entidad].[Fecha Evaluación Entidad] AS FechaEvaluacion, dbo.[Evaluación Entidad].[Documento Entidad] AS DocumentoPaciente, dbo.Entidad.[Nombre Completo Entidad] AS NombreCompletoPaciente, 
+                         dbo.[Evaluación Entidad].[Documento Usuario] AS DocumentoUsuario, dbo.[Evaluación Entidad Rips].[Id Evaluación Entidad Rips], dbo.[Evaluación Entidad].Rips
+FROM            dbo.[Evaluación Entidad] INNER JOIN
+                         dbo.Entidad ON dbo.[Evaluación Entidad].[Documento Entidad] = dbo.Entidad.[Documento Entidad] LEFT OUTER JOIN
+                         dbo.[Evaluación Entidad Rips] ON dbo.[Evaluación Entidad].[Id Evaluación Entidad] = dbo.[Evaluación Entidad Rips].[Id Evaluación Entidad]
+WHERE        (dbo.[Evaluación Entidad Rips].[Id Evaluación Entidad Rips] IS NULL) AND (dbo.[Evaluación Entidad].[Id Tipo de Evaluación] <> 2) AND (dbo.[Evaluación Entidad].Rips <> 0)
+GO
+
+
+
 
 
