@@ -140,6 +140,65 @@ FROM            dbo.[RIPS Servicios]
 WHERE        ([Id Estado] = 7)
 GO
 
+GO
+CREATE TABLE [dbo].[RIPS Finalidad Consulta Version2](
+	[Id Finalidad Consulta] [int] IDENTITY(1,1) NOT NULL,
+	[Codigo] [nvarchar](50) NULL,
+	[Nombre RIPS Finalidad Consulta Version2] [nvarchar](100) NULL,
+	[Descripción RIPS Finalidad Consulta Version2] [nvarchar](200) NULL,
+	[Orden RIPS Finalidad Consulta Version2] [int] NULL,
+	[AC] [nvarchar](10) NULL,
+	[AP] [nvarchar](10) NULL,
+	[Id Estado] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id Finalidad Consulta] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [dbo].[RIPS Finalidad Consulta Version2] ON 
+
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (1, N'11', N'VALORACION INTEGRAL PARA LA PROMOCION Y MANTENIMIENTO', NULL, 1, N'SI', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (2, N'12', N'DETECCION TEMPRANA DE ENFERMEDAD GENERAL', NULL, 1, N'SI', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (3, N'13', N'DETECCION TEMPRANA DE ENFERMEDAD LABORAL', NULL, 1, N'SI', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (4, N'14', N'PROTECCION ESPECIFICA', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (5, N'15', N'DIAGNOSTICO', NULL, 1, N'SI', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (6, N'16', N'TRATAMIENTO', NULL, 1, N'SI', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (7, N'17', N'REHABILITACION', NULL, 1, N'SI', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (8, N'18', N'PALIACION', NULL, 1, N'SI', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (9, N'19', N'PLANIFICACION FAMILIAR Y ANTICONCEPCION', NULL, 1, N'SI', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (10, N'20', N'PROMOCION Y APOYO A LA LACTANCIA MATERNA', NULL, 1, N'SI', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (11, N'21', N'ATENCION BASICA DE ORIENTACION FAMILIAR', NULL, 1, N'SI', N'NO', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (12, N'22', N'ATENCION PARA EL CUIDADO PRECONCEPCIONAL', NULL, 1, N'SI', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (13, N'23', N'ATENCION PARA EL CUIDADO PRENATAL', NULL, 1, N'SI', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (14, N'24', N'INTERRUPCION VOLUNTARIA DEL EMBARAZO', NULL, 1, N'SI', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (15, N'25', N'ATENCION DEL PARTO Y PUERPERIO', NULL, 1, N'SI', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (16, N'26', N'ATENCION PARA EL CUIDADO DEL RECIEN NACIDO', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (17, N'27', N'ATENCION PARA EL SEGUIMIENTO DEL RECIEN NACIDO', NULL, 1, N'SI', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (18, N'28', N'PREPARACION PARA LA MATERNIDAD Y LA PATERNIDAD', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (19, N'29', N'PROMOCION DE ACTIVIDAD FISICA', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (20, N'30', N'PROMOCION DE LA CESACION DEL TABAQUISMO', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (21, N'31', N'PREVENCION DEL CONSUMO DE SUSTANCIAS PSICOACTIVAS', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (22, N'32', N'PROMOCION DE LA ALIMENTACION SALUDABLE', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (23, N'33', N'PROMOCION PARA EL EJERCICIO DE LOS DERECHOS SEXUALES Y DERECHOS REPRODUCTIVOS', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (24, N'34', N'PROMOCION PARA EL DESARROLLO DE HABILIDADES PARA LA VIDA', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (25, N'35', N'PROMOCION PARA LA CONSTRUCCION DE ESTRATEGIAS DE AFRONTAMIENTO FRENTE A SUCESOS VITALES', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (26, N'36', N'PROMOCION DE LA SANA CONVIVENCIA Y EL TEJIDO SOCIAL', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (27, N'37', N'PROMOCION DE UN AMBIENTE SEGURO Y DE CUIDADO Y PROTECCION DEL AMBIENTE', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (28, N'38', N'PROMOCION DEL EMPODERAMIENTO PARA EL EJERCICIO DEL DERECHO A LA SALUD', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (29, N'39', N'PROMOCION PARA LA ADOPCION DE PRACTICAS DE CRIANZA Y CUIDADO PARA LA SALUD', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (30, N'40', N'PROMOCION DE LA CAPACIDAD DE LA AGENCIA Y CUIDADO DE LA SALUD', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (31, N'41', N'DESARROLLO DE HABILIDADES COGNITIVAS', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (32, N'42', N'INTERVENCION COLECTIVA', NULL, 1, N'NO', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (33, N'43', N'MODIFICACION DE LA ESTETICA CORPORAL (FINES ESTETICOS)', NULL, 1, N'SI', N'SI', 7)
+INSERT [dbo].[RIPS Finalidad Consulta Version2] ([Id Finalidad Consulta], [Codigo], [Nombre RIPS Finalidad Consulta Version2], [Descripción RIPS Finalidad Consulta Version2], [Orden RIPS Finalidad Consulta Version2], [AC], [AP], [Id Estado]) VALUES (34, N'44', N'OTRA', NULL, 1, N'SI', N'SI', 7)
+SET IDENTITY_INSERT [dbo].[RIPS Finalidad Consulta Version2] OFF
+GO
+ALTER TABLE [dbo].[RIPS Finalidad Consulta Version2] ADD  CONSTRAINT [DF_RIPSFinalidadConsultaVersion2_OrdenRIPSFinalidadConsultaVersion2]  DEFAULT ((1)) FOR [Orden RIPS Finalidad Consulta Version2]
+GO
+ALTER TABLE [dbo].[RIPS Finalidad Consulta Version2] ADD  CONSTRAINT [DF_RIPSFinalidadConsultaVersion2_IdEstado]  DEFAULT ((7)) FOR [Id Estado]
+GO
+
 -- cnsta finalidad V2
 CREATE VIEW [dbo].[Cnsta Relacionador Finalidad]
 AS
@@ -147,6 +206,57 @@ SELECT        [Id Finalidad Consulta] AS IdFinalidadConsulta, Codigo, [Nombre RI
                          [Descripción RIPS Finalidad Consulta Version2] AS DescripcionRIPSFinalidadConsultaVersion2, [Orden RIPS Finalidad Consulta Version2] AS RIPSFinalidadConsultaVersion2, AC, AP, [Id Estado]
 FROM            dbo.[RIPS Finalidad Consulta Version2]
 GO
+
+CREATE TABLE [dbo].[RIPS Causa Externa Version2](
+	[Id RIPS Causa Externa Version2] [int] IDENTITY(1,1) NOT NULL,
+	[Codigo] [nvarchar](50) NULL,
+	[Nombre RIPS Causa Externa Version2] [nvarchar](200) NULL,
+	[Descripción RIPS Causa Externa Version2] [nvarchar](200) NULL,
+	[Orden RIPS Causa Externa Version2] [int] NULL,
+	[Id Estado] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id RIPS Causa Externa Version2] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [dbo].[RIPS Causa Externa Version2] ON 
+
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (1, N'21', N'Accidente de trabajo', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (2, N'22', N'Accidente en el hogar', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (3, N'23', N'Accidente de tránsito de origen común', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (4, N'24', N'Accidente de tránsito de origen laboral', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (5, N'25', N'Accidente en el entorno educativo', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (6, N'26', N'Otro tipo de accidente', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (7, N'27', N'Evento catastrófico de origen natural', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (8, N'28', N'Lesión por agresión', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (9, N'29', N'Lesión auto infligida', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (10, N'30', N'Sospecha de violencia física', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (11, N'31', N'Sospecha de violencia psicológica', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (12, N'32', N'Sospecha de violencia sexual', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (13, N'33', N'Sospecha de negligencia y abandono', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (14, N'34', N'IVE relacionado con peligro a la Salud o vida de la mujer', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (15, N'35', N'IVE por malformación congénita incompatible con la vida', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (16, N'36', N'IVE por violencia sexual, incesto o por inseminación artificial o transferencia de ovulo fecundado no consentida', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (17, N'37', N'Evento adverso en salud', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (18, N'38', N'Enfermedad general', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (19, N'39', N'Enfermedad laboral', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (20, N'40', N'Promoción y mantenimiento de la salud - intervenciones individuales', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (21, N'41', N'Intervención colectiva', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (22, N'42', N'Atención de población materno perinatal', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (23, N'43', N'Riesgo ambiental', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (24, N'44', N'Otros eventos Catastróficos', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (25, N'45', N'Accidente de mina antipersonal - MAP', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (26, N'46', N'Accidente de Artefacto Explosivo Improvisado - AEI', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (27, N'47', N'Accidente de Munición Sin Explotar - MUSE', NULL, 1, 7)
+INSERT [dbo].[RIPS Causa Externa Version2] ([Id RIPS Causa Externa Version2], [Codigo], [Nombre RIPS Causa Externa Version2], [Descripción RIPS Causa Externa Version2], [Orden RIPS Causa Externa Version2], [Id Estado]) VALUES (28, N'48', N'Otra víctima de conflicto armado colombiano', NULL, 1, 7)
+SET IDENTITY_INSERT [dbo].[RIPS Causa Externa Version2] OFF
+GO
+ALTER TABLE [dbo].[RIPS Causa Externa Version2] ADD  CONSTRAINT [DF_RIPSCausaExternaVersion2_OrdenRIPSCausaExternaVersion2]  DEFAULT ((1)) FOR [Orden RIPS Causa Externa Version2]
+GO
+ALTER TABLE [dbo].[RIPS Causa Externa Version2] ADD  CONSTRAINT [DF_RIPSCausaExternaVersion2_IdEstado]  DEFAULT ((7)) FOR [Id Estado]
+GO
+
 
 --CNsta causa externa V2
 CREATE VIEW [dbo].[Cnsta Relacionador Causa Externa]
