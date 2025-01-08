@@ -2276,3 +2276,33 @@ const BotonRegresar = document.getElementById('RegresarAPrincipal');
 BotonRegresar.addEventListener('click', (e) => {
     window.location.href = "RIPS.html";
 })
+
+
+// RIPS POR DEFECTO
+const SelectTipoRIPSPorDefecto = document.getElementById('SelectTipoRIPSPorDefecto');
+const ACPorDefecto = document.getElementById('ACPorDefecto');
+const APPorDefecto = document.getElementById('APPorDefecto');
+SelectTipoRIPSPorDefecto.addEventListener('change', function(e) {
+
+    // Quitar la clase antes de aplicar estilos
+    ACPorDefecto.classList.remove('d-none');
+    APPorDefecto.classList.remove('d-none');
+    switch (this.value) {
+        case '1':
+            ACPorDefecto.style.display = 'block';
+            APPorDefecto.style.display = 'none';
+        break;
+        
+        case '2':
+            ACPorDefecto.style.display = 'none';
+            APPorDefecto.style.display = 'block';
+        break;
+
+        case '':
+            ACPorDefecto.style.display = 'none';
+            APPorDefecto.style.display = 'none';
+        break;
+
+
+    }
+})
