@@ -183,11 +183,12 @@ router.get('/servicios/rips/:numFactura/:numDocumentoIdentificacion/:fechaInicio
     // console.log(`En AC el num factura es: ${numFactura}`)
 
     const request = new Request(
-        `SELECT em2.[Código Empresa] AS codPrestador, 
+        `
+        SELECT em2.[Código Empresa] AS codPrestador, 
         SUBSTRING(CONVERT(VARCHAR, eve.[Fecha Evaluación Entidad], 120), 1, 16) AS fechaInicioAtencion, 
         NULL AS numAutorizacion, everips.[Codigo RIPS] AS codConsulta,
-        '01' AS modalidadGrupoServicioTecSal, '01' AS grupoServicios, '371' AS codServicio,
-        fn.[Código Finalidad Consulta] AS finalidadTecnologiaSalud, ce.[Código Causa Externa] AS causaMotivoAtencion,
+        '01' AS modalidadGrupoServicioTecSal, '01' AS grupoServicios, Serv.[Código Servicios] AS codServicio,
+        everips.[Id Finalidad Consulta] AS finalidadTecnologiaSalud, everips.[Id Causa Externa] AS causaMotivoAtencion,
         everips.[Diagnostico Rips] AS codDiagnosticoPrincipal, 
         CASE WHEN everips.[Diagnostico Rips2] = 'Null' THEN NULL ELSE everips.[Diagnostico Rips2] END AS codDiagnosticoRelacionado1, 
         NULL AS codDiagnosticoRelacionado2, NULL AS codDiagnosticoRelacionado3, 
@@ -206,8 +207,8 @@ router.get('/servicios/rips/:numFactura/:numDocumentoIdentificacion/:fechaInicio
 		LEFT JOIN Empresa as em2 ON eve.[Documento Empresa] = em2.[Documento Empresa]
         INNER JOIN EmpresaV as EmpV ON Empresa.[Documento Empresa] = EmpV.[Documento Empresa]
         LEFT JOIN [Tipo de Diagnóstico Principal] as tdp ON everips.[Id Tipo de Diagnóstico Principal] = tdp.[Id Tipo de Diagnóstico Principal]
-        LEFT JOIN [Finalidad Consulta] AS fn ON everips.[Id Finalidad Consulta] = fn.[Id Finalidad Consulta]
-        LEFT JOIN [Causa Externa] AS ce ON everips.[Id Causa Externa] = ce.[Id Causa Externa]
+
+		left join [RIPS Servicios] AS Serv ON serv.[Id Servicios]  = everips.[Id Servicios]
 
         
         WHERE everips.[Id Acto Quirúrgico] = 1 
