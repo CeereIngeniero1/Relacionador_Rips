@@ -312,20 +312,44 @@ $(document).ready(function() {
         '#SelectProcedimientoRIPSAP1',
         '#SelectProcedimientoRIPSAP2',
         '#SelectDiagnosticoRIPSAP1',
-        '#SelectDiagnosticoRIPSAP2'
+        '#SelectDiagnosticoRIPSAP2',
+        '#SelectPorDefectoConsultaRIPS1AC',
+        '#SelectPorDefectoConsultaRIPS2AC',
+        '#SelectPorDefectoDiagnosticoRIPSAC1',
+        '#SelectPorDefectoDiagnosticoRIPSAC2'
     ]
 
     for (let i = 0; i < ElementosSelectConTextoLargo.length; i+=1) {
-        $(ElementosSelectConTextoLargo[i]).select2({
-            width: '100%', // Ajusta el ancho al contenedor
-            dropdownAutoWidth: true, // Ajusta automáticamente el ancho del menú
-            // placeholder: "Buscar",
-            templateSelection: function (data) {
-                // Truncar el texto a 50 caracteres y añadir puntos suspensivos
-                var truncatedText = data.text.length > 50 ? data.text.substring(0, 50) + '...' : data.text;
-                return $('<span>' + truncatedText + '</span>');
-            }
-        });
+        if (
+            ElementosSelectConTextoLargo[i] === '#SelectPorDefectoConsultaRIPS1AC' ||
+            ElementosSelectConTextoLargo[i] === '#SelectPorDefectoConsultaRIPS2AC' ||
+            ElementosSelectConTextoLargo[i] === '#SelectPorDefectoDiagnosticoRIPSAC1' ||
+            ElementosSelectConTextoLargo[i] === '#SelectPorDefectoDiagnosticoRIPSAC2'
+            ) {
+            $(ElementosSelectConTextoLargo[i]).select2({
+                width: '100%', // Ajusta el ancho al contenedor
+                dropdownAutoWidth: true, // Ajusta automáticamente el ancho del menú
+                // placeholder: "Buscar",
+                dropdownParent: $('#ModalRIPSPorDefecto'), // Reemplaza '#miModal' con el ID de tu modal
+                templateSelection: function (data) {
+                    // Truncar el texto a 50 caracteres y añadir puntos suspensivos
+                    var truncatedText = data.text.length > 50 ? data.text.substring(0, 50) + '...' : data.text;
+                    return $('<span>' + truncatedText + '</span>');
+                }
+            });
+        } else {
+            $(ElementosSelectConTextoLargo[i]).select2({
+                width: '100%', // Ajusta el ancho al contenedor
+                dropdownAutoWidth: true, // Ajusta automáticamente el ancho del menú
+                // placeholder: "Buscar",
+                templateSelection: function (data) {
+                    // Truncar el texto a 50 caracteres y añadir puntos suspensivos
+                    var truncatedText = data.text.length > 50 ? data.text.substring(0, 50) + '...' : data.text;
+                    return $('<span>' + truncatedText + '</span>');
+                }
+            });
+        }
+
     }
 });
   
@@ -2278,7 +2302,7 @@ BotonRegresar.addEventListener('click', (e) => {
 })
 
 
-// RIPS POR DEFECTO
+// ASIGNAR RIPS POR DEFECTO
 const SelectTipoRIPSPorDefecto = document.getElementById('SelectTipoRIPSPorDefecto');
 const ACPorDefecto = document.getElementById('ACPorDefecto');
 const APPorDefecto = document.getElementById('APPorDefecto');
@@ -2291,11 +2315,13 @@ SelectTipoRIPSPorDefecto.addEventListener('change', function(e) {
         case '1':
             ACPorDefecto.style.display = 'block';
             APPorDefecto.style.display = 'none';
+            TraerInfoParaRIPSACPorDefecto();
         break;
         
         case '2':
             ACPorDefecto.style.display = 'none';
             APPorDefecto.style.display = 'block';
+            TraerInfoParaRIPSACPPorDefecto();
         break;
 
         case '':
@@ -2303,6 +2329,392 @@ SelectTipoRIPSPorDefecto.addEventListener('change', function(e) {
             APPorDefecto.style.display = 'none';
         break;
 
-
+        default:
+            console.error("Opción no válida");
+        break;
     }
 })
+
+
+// Captura de los elementos
+const SelectPorDefectoTipoUsuarioRIPS = document.getElementById('SelectPorDefectoTipoUsuarioRIPS');
+const SelectPorDefectoEntidadAC = document.getElementById('SelectPorDefectoEntidadAC');
+const SelectPorDefectoModalidadGrupoServicioTecSalAC = document.getElementById('SelectPorDefectoModalidadGrupoServicioTecSalAC');
+const SelectPoDefectoGrupoServiciosAC = document.getElementById('SelectPoDefectoGrupoServiciosAC');
+const SelectPorDefectoCodigoServicioAC = document.getElementById('SelectPorDefectoCodigoServicioAC');
+const SelectPorDefectoFinalidadTecnologiaSaludAC = document.getElementById('SelectPorDefectoFinalidadTecnologiaSaludAC');
+const SelectPorDefectoCausaMotivoAtencionAC = document.getElementById('SelectPorDefectoCausaMotivoAtencionAC');
+const SelectPorDefectoTipoDiagnosticoPrincipalAC = document.getElementById('SelectPorDefectoTipoDiagnosticoPrincipalAC');
+const SelectPorDefectoConsultaRIPS1AC = document.getElementById('SelectPorDefectoConsultaRIPS1AC');
+const SelectPorDefectoConsultaRIPS2AC = document.getElementById('SelectPorDefectoConsultaRIPS2AC');
+const SelectPorDefectoDiagnosticoRIPSAC1 = document.getElementById('SelectPorDefectoDiagnosticoRIPSAC1');
+const SelectPorDefectoDiagnosticoRIPSAC2 = document.getElementById('SelectPorDefectoDiagnosticoRIPSAC2');
+
+const TraerInfoParaRIPSACPorDefecto = async function() {
+    console.log("CONSULTADO INFORMACIÓN EN LA BASE DE DATOS PARA RIPS AC");
+
+    // Funcionalidad para el llenado del select de tipo de rips
+    const TipoDeUsuarioRIPS = await fetch(`http://${servidor}:3000/api/TipodeRips`)
+    if (!TipoDeUsuarioRIPS) {
+        throw new Error(`Error al obtener los tipos de usuario RIPS: ${TipoDeUsuarioRIPS.statusText}`);
+    }
+    const CargarTipoDeUsuarioRIPS = await TipoDeUsuarioRIPS.json();
+    // console.log('Tipos de Usuario RIPS: ', CargarTipoDeUsuarioRIPS);
+    SelectPorDefectoTipoUsuarioRIPS.innerHTML = '';
+    // Opción por defecto
+    const defaultOption = document.createElement('option');
+    defaultOption.textContent = 'Seleccione un tipo de RIPS';
+    defaultOption.value = '';
+    SelectPorDefectoTipoUsuarioRIPS.appendChild(defaultOption);
+    for (let i = 0; i < CargarTipoDeUsuarioRIPS.length; i+=1) {
+        const option = document.createElement('option');
+        option.value = CargarTipoDeUsuarioRIPS[i].IdTipoRips;
+        option.textContent = CargarTipoDeUsuarioRIPS[i].TipoRips;
+        SelectPorDefectoTipoUsuarioRIPS.appendChild(option);
+    }
+
+    // Funcionalidad para el llenado del select de ModalidadGrupoServicioTecnologíaSalud
+    const ModalidadGrupoServicioTecnologiaSalud = await fetch(`http://${servidor}:3000/api/ModalidadAtencion`);
+    if (!ModalidadGrupoServicioTecnologiaSalud) {
+        throw new Error(`Error al obtener las modalidades de grupo servicio tecnología salud: ${ModalidadGrupoServicioTecnologiaSalud.statusText}`);
+    }
+    const CargarModalidadGrupoServicioTecnologiaSalud = await ModalidadGrupoServicioTecnologiaSalud.json();
+    // console.log('Modalidades de Grupo Servicio Tecnología Salud: ', CargarModalidadGrupoServicioTecnologiaSalud);
+
+    SelectPorDefectoModalidadGrupoServicioTecSalAC.innerHTML = '';
+    // Opción por defecto
+    const defaultOption2 = document.createElement('option');
+    defaultOption2.textContent = 'Seleccione una modalidad';
+    defaultOption2.value = '';
+    SelectPorDefectoModalidadGrupoServicioTecSalAC.appendChild(defaultOption2);
+
+    // Ordenar el array por el nombre completo del paciente
+    CargarModalidadGrupoServicioTecnologiaSalud.sort((a, b) => {
+        if (a.NombreModalidadAtencion < b.NombreModalidadAtencion) return -1;
+        if (a.NombreModalidadAtencion > b.NombreModalidadAtencion) return 1;
+        return 0;
+    });
+
+    for (let i = 0; i < CargarModalidadGrupoServicioTecnologiaSalud.length; i+=1) {
+        const option = document.createElement('option');
+        option.value = CargarModalidadGrupoServicioTecnologiaSalud[i].Codigo;
+        option.textContent = CargarModalidadGrupoServicioTecnologiaSalud[i].NombreModalidadAtencion;
+        SelectPorDefectoModalidadGrupoServicioTecSalAC.appendChild(option);
+    }
+
+
+    // Funcionalidad para el llenado del select de GrupoServiciosAC
+    const GrupoServiciosAC = await fetch(`http://${servidor}:3000/api/GrupoServicios`);
+    if (!GrupoServiciosAC) {
+        throw new Error(`Error al obtener los grupos de servicios AC: ${GrupoServiciosAC.statusText}`);
+    }
+    const CargarGrupoServiciosAC = await GrupoServiciosAC.json();
+    // console.log('Grupos de Servicios AC: ', CargarGrupoServiciosAC);
+    SelectPoDefectoGrupoServiciosAC.innerHTML = '';
+    // Opción por defecto
+    const defaultOption3 = document.createElement('option');
+    defaultOption3.textContent = 'Seleccione un grupo';
+    defaultOption3.value = '';
+    SelectPoDefectoGrupoServiciosAC.appendChild(defaultOption3);
+    // Ordenar el array por el nombre del grupo
+    CargarGrupoServiciosAC.sort((a, b) => {
+        if (a.NombreGrupoServicios < b.NombreGrupoServicios) return -1;
+        if (a.NombreGrupoServicios > b.NombreGrupoServicios) return 1;
+        return 0;
+    });
+
+    // Agregar las opciones al select de GrupoServiciosAC
+    for (let i = 0; i < CargarGrupoServiciosAC.length; i+=1) {
+        const option = document.createElement('option');
+        option.value = CargarGrupoServiciosAC[i].Codigo;
+        option.textContent = CargarGrupoServiciosAC[i].NombreGrupoServicios;
+        SelectPoDefectoGrupoServiciosAC.appendChild(option);
+    }
+
+     // Funcionalidad para el llenado del select de FinalidadTecnologiaSalud
+     const FinalidadParaAC = "AC";
+     const FinalidadTecnologiaSaludAC = await fetch(`http://${servidor}:3000/api/FinalidadV2/${FinalidadParaAC}`);
+     if (!FinalidadTecnologiaSaludAC) {
+         throw new Error(`Error al obtener las finalidades para el tipo AC: ${FinalidadTecnologiaSaludAC.statusText}`);
+     }
+     const CargarFinalidadTecnologiaSaludAC = await FinalidadTecnologiaSaludAC.json();
+     // console.log('Finalidades para el tipo AC: ', CargarFinalidadTecnologiaSaludAC);
+     SelectPorDefectoFinalidadTecnologiaSaludAC.innerHTML = '';
+     // Opción por defecto
+     const defaultOption4 = document.createElement('option');
+     defaultOption4.textContent = 'Seleccione una finalidad';
+     defaultOption4.value = '';
+     SelectPorDefectoFinalidadTecnologiaSaludAC.appendChild(defaultOption4);
+     // Ordenar el array por el nombre del grupo
+     CargarFinalidadTecnologiaSaludAC.sort((a, b) => {
+         if (a.NombreRIPSFinalidadConsultaVersion2 < b.NombreRIPSFinalidadConsultaVersion2) return -1;
+         if (a.NombreRIPSFinalidadConsultaVersion2 > b.NombreRIPSFinalidadConsultaVersion2) return 1;
+         return 0;
+     });
+     // Agregar las opciones al select de FinalidadTecnologiaSalud
+     for (let i = 0; i < CargarFinalidadTecnologiaSaludAC.length; i+=1) {
+         const option = document.createElement('option');
+         option.value = CargarFinalidadTecnologiaSaludAC[i].Codigo;
+         option.textContent = CargarFinalidadTecnologiaSaludAC[i].NombreRIPSFinalidadConsultaVersion2;
+         SelectPorDefectoFinalidadTecnologiaSaludAC.appendChild(option);
+     }
+
+
+    // Funcionalidad para el llenado del select CausaMotivoAtención
+    const CausaMotivoAtencion = await fetch(`http://${servidor}:3000/api/CausaExterna`);
+    if (!CausaMotivoAtencion) {
+        throw new Error(`Error al obtener las causas externas: ${CausaMotivoAtencion.statusText}`);
+    }
+    const CargarCausaMotivoAtencion = await CausaMotivoAtencion.json();
+    // console.log('Causas externas: ', CargarCausaMotivoAtencion);
+    SelectPorDefectoCausaMotivoAtencionAC.innerHTML = '';
+    // Opción por defecto
+    const defaultOption5 = document.createElement('option');
+    defaultOption5.textContent = 'Seleccione una causa externa';
+    defaultOption5.value = '';
+    SelectPorDefectoCausaMotivoAtencionAC.appendChild(defaultOption5);
+    // Ordenar el array por el nombre del grupo
+    CargarCausaMotivoAtencion.sort((a, b) => {
+        if (a.NombreRIPSCausaExternaVersion2 < b.NombreRIPSCausaExternaVersion2) return -1;
+        if (a.NombreRIPSCausaExternaVersion2 > b.NombreRIPSCausaExternaVersion2) return 1;
+        return 0;
+    });
+    // Agregar las opciones al select de CausaMotivoAtencion
+    for (let i = 0; i < CargarCausaMotivoAtencion.length; i+=1) {
+        const option = document.createElement('option');
+        option.value = CargarCausaMotivoAtencion[i].Codigo;
+        option.textContent = CargarCausaMotivoAtencion[i].NombreRIPSCausaExternaVersion2;
+        SelectPorDefectoCausaMotivoAtencionAC.appendChild(option);
+    }
+
+
+    // Funcionalidad para el llenado del select de TipoDiagnósticoPrincipal
+    const TipoDiagnosticoPrincipal = await fetch(`http://${servidor}:3000/api/DXPrincipal`);
+    if (!TipoDiagnosticoPrincipal) {
+        throw new Error(`Error al obtener los tipos de diagnósticos principales: ${TipoDiagnosticoPrincipal.statusText}`);
+    }
+    const CargarTipoDiagnosticoPrincipal = await TipoDiagnosticoPrincipal.json();
+    // console.log('Tipos de diagnósticos principales: ', CargarTipoDiagnosticoPrincipal);
+    SelectPorDefectoTipoDiagnosticoPrincipalAC.innerHTML = '';
+    // Opción por defecto
+    const defaultOption6 = document.createElement('option');
+    defaultOption6.textContent = 'Seleccione un diagnóstico principal';
+    defaultOption6.value = '';
+    SelectPorDefectoTipoDiagnosticoPrincipalAC.appendChild(defaultOption6);
+    // Ordenar el array por el nombre del grupo
+    CargarTipoDiagnosticoPrincipal.sort((a, b) => {
+        if (a.DescripcionTipodeDiagnósticoPrincipal < b.DescripcionTipodeDiagnósticoPrincipal) return -1;
+        if (a.DescripcionTipodeDiagnósticoPrincipal > b.DescripcionTipodeDiagnósticoPrincipal) return 1;
+        return 0;
+    });
+    // Agregar las opciones al select de TipoDiagnosticoPrincipal
+    for (let i = 0; i < CargarTipoDiagnosticoPrincipal.length; i+=1) {
+        const option = document.createElement('option');
+        option.value = CargarTipoDiagnosticoPrincipal[i].CódigoTipodeDiagnósticoPrincipal;
+        option.textContent = CargarTipoDiagnosticoPrincipal[i].DescripcionTipodeDiagnósticoPrincipal;
+        SelectPorDefectoTipoDiagnosticoPrincipalAC.appendChild(option);
+    }
+
+
+    // Funcionalidad para el llenado del select de Consulta RIPS
+    const TipoConsulta1 = "AC";
+    const ConsultaRIPS1 = await fetch(`http://${servidor}:3000/api/Cups/${TipoConsulta1}`);
+    if (!ConsultaRIPS1) {
+        throw new Error(`Error al obtener las consultas RIPS: ${ConsultaRIPS1.statusText}`);
+    }
+    const CargarConsultaRIPS1 = await ConsultaRIPS1.json();
+    // console.log('Consultas RIPS: ', CargarConsultaRIPS1);
+    SelectPorDefectoConsultaRIPS1AC.innerHTML = '';
+    // Opción por defecto
+    const defaultOption7 = document.createElement('option');
+    defaultOption7.textContent = 'Seleccione una consulta RIPS 1';
+    defaultOption7.value = '';
+    SelectPorDefectoConsultaRIPS1AC.appendChild(defaultOption7);
+    // Ordenar el array por el nombre del grupo
+    CargarConsultaRIPS1.sort((a, b) => {
+        if (a.Nombre < b.Nombre) return -1;
+        if (a.Nombre > b.Nombre) return 1;
+        return 0;
+    });
+    // Agregar las opciones al select de ConsultaRIPS
+    for (let i = 0; i < CargarConsultaRIPS1.length; i+=1) {
+        const option = document.createElement('option');
+        option.value = CargarConsultaRIPS1[i].Codigo;
+        option.textContent = CargarConsultaRIPS1[i].Codigo + ' - ' + CargarConsultaRIPS1[i].Nombre;
+        SelectPorDefectoConsultaRIPS1AC.appendChild(option);
+    }
+
+
+    // Funcionalidad para el llenado del select de Consulta RIPS 2
+    const TipoConsulta2 = "AC";
+    const ConsultaRIPS2 = await fetch(`http://${servidor}:3000/api/Cups/${TipoConsulta2}`);
+    if (!ConsultaRIPS2) {
+        throw new Error(`Error al obtener las consultas RIPS: ${ConsultaRIPS2.statusText}`);
+    }
+    const CargarConsultaRIPS2 = await ConsultaRIPS2.json();
+    // console.log('Consultas RIPS: ', CargarConsultaRIPS2);
+    SelectPorDefectoConsultaRIPS2AC.innerHTML = '';
+    // Opción por defecto
+    const defaultOption8 = document.createElement('option');
+    defaultOption8.textContent = 'Seleccione una consulta RIPS 2';
+    defaultOption8.value = '';
+    SelectPorDefectoConsultaRIPS2AC.appendChild(defaultOption8);
+    // Ordenar el array por el nombre del grupo
+    CargarConsultaRIPS2.sort((a, b) => {
+        if (a.Nombre < b.Nombre) return -1;
+        if (a.Nombre > b.Nombre) return 1;
+        return 0;
+    });
+    // Agregar las opciones al select de ConsultaRIPS 2
+    for (let i = 0; i < CargarConsultaRIPS2.length; i+=1) {
+        const option = document.createElement('option');
+        option.value = CargarConsultaRIPS2[i].Codigo;
+        option.textContent = CargarConsultaRIPS2[i].Codigo + ' - ' + CargarConsultaRIPS2[i].Nombre;
+        SelectPorDefectoConsultaRIPS2AC.appendChild(option);
+    }
+
+
+     // Funcinalidad para el llenado del select Diagnósitoco RIPS AC 1
+     const DiasnosticoRIPSAC1 = await fetch(`http://${servidor}:3000/api/Cie`);
+     if (!DiasnosticoRIPSAC1) {
+         throw new Error(`Error al obtener los diagnósticos RIPS: ${DiasnosticoRIPSAC1.statusText}`);
+     }
+     const CargarDiagnosticoRIPSAC1 = await DiasnosticoRIPSAC1.json();
+     // console.log('Diagnósticos RIPS AC 1: ', CargarDiagnosticoRIPSAC1);
+     SelectPorDefectoDiagnosticoRIPSAC1.innerHTML = '';
+     // Opción por defecto
+     const defaultOption9 = document.createElement('option');
+     defaultOption9.textContent = 'Seleccione un diagnóstico RIPS AC 1';
+     defaultOption9.value = '';
+     SelectPorDefectoDiagnosticoRIPSAC1.appendChild(defaultOption9);
+     // Ordenar el array por el nombre del grupo
+     CargarDiagnosticoRIPSAC1.sort((a, b) => {
+         if (a.Nombre < b.Nombre) return -1;
+         if (a.Nombre > b.Nombre) return 1;
+         return 0;
+     });
+     // Agregar las opciones al select Diagnósitoco RIPS AC 1
+     for (let i = 0; i < CargarDiagnosticoRIPSAC1.length; i+=1) {
+         const option = document.createElement('option');
+         option.value = CargarDiagnosticoRIPSAC1[i].Codigo;
+         option.textContent = CargarDiagnosticoRIPSAC1[i].Codigo + ' - ' + CargarDiagnosticoRIPSAC1[i].Nombre;
+         SelectPorDefectoDiagnosticoRIPSAC1.appendChild(option);
+     }
+
+
+     // Funcinalidad para el llenado del select Diagnósitoco RIPS AC 2
+     const DiasnosticoRIPSAC2 = await fetch(`http://${servidor}:3000/api/Cie`);
+     if (!DiasnosticoRIPSAC2) {
+         throw new Error(`Error al obtener los diagnósticos RIPS: ${DiasnosticoRIPSAC2.statusText}`);
+     }
+     const CargarDiagnosticoRIPSAC2 = await DiasnosticoRIPSAC2.json();
+     // console.log('Diagnósticos RIPS AC 1: ', CargarDiagnosticoRIPSAC2);
+     SelectPorDefectoDiagnosticoRIPSAC2.innerHTML = '';
+     // Opción por defecto
+     const defaultOption10 = document.createElement('option');
+     defaultOption10.textContent = 'Seleccione un diagnóstico RIPS AC 2';
+     defaultOption10.value = '';
+     SelectPorDefectoDiagnosticoRIPSAC2.appendChild(defaultOption10);
+     // Ordenar el array por el nombre del grupo
+     CargarDiagnosticoRIPSAC2.sort((a, b) => {
+         if (a.Nombre < b.Nombre) return -1;
+         if (a.Nombre > b.Nombre) return 1;
+         return 0;
+     });
+     // Agregar las opciones al select Diagnósitoco RIPS AC 1
+     for (let i = 0; i < CargarDiagnosticoRIPSAC2.length; i+=1) {
+         const option = document.createElement('option');
+         option.value = CargarDiagnosticoRIPSAC2[i].Codigo;
+         option.textContent = CargarDiagnosticoRIPSAC2[i].Codigo + ' - ' + CargarDiagnosticoRIPSAC2[i].Nombre;
+         SelectPorDefectoDiagnosticoRIPSAC2.appendChild(option);
+     }
+}
+
+
+SelectPorDefectoTipoUsuarioRIPS.addEventListener('change', async function (e) {
+
+    try {
+        if (this.value !== "") {
+            const ValorSelectTipoUsuarioRIPS = this.value;
+            // Funcionalidad para el llenado del select de entidad
+            const EntidadResponsable = await fetch(`http://${servidor}:3000/api/Entidad/${ValorSelectTipoUsuarioRIPS}`);
+            if (!EntidadResponsable) {
+                throw new Error(`Error al obtener las entidades responsables: ${EntidadResponsable.statusText}`);
+            }
+            const CargarEntidadResponsable = await EntidadResponsable.json();
+            // console.log('Entidades Responsables: ', CargarEntidadResponsable);
+    
+            SelectPorDefectoEntidadAC.innerHTML = '';
+            // Opción por defecto
+            const defaultOption = document.createElement('option');
+            defaultOption.textContent = 'Seleccione una entidad';
+            defaultOption.value = '';
+            SelectPorDefectoEntidadAC.appendChild(defaultOption);
+
+            // Ordenar el array por el nombre completo del paciente
+            CargarEntidadResponsable.sort((a, b) => {
+                if (a.NombreCompletoPaciente < b.NombreCompletoPaciente) return -1;
+                if (a.NombreCompletoPaciente > b.NombreCompletoPaciente) return 1;
+                return 0;
+            });
+
+            for (let i = 0; i < CargarEntidadResponsable.length; i++) {
+                const option = document.createElement('option');
+                option.value = CargarEntidadResponsable[i].DocumentoEntidad;
+                option.textContent = CargarEntidadResponsable[i].NombreCompletoPaciente;
+                SelectPorDefectoEntidadAC.appendChild(option);
+            }
+        } else {
+            SelectPorDefectoEntidadAC.innerHTML = '';
+            // Opción por defecto
+            const defaultOption = document.createElement('option');
+            defaultOption.textContent = 'Seleccione una entidad';
+            defaultOption.value = '';
+            SelectPorDefectoEntidadAC.appendChild(defaultOption);
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+
+})
+
+SelectPoDefectoGrupoServiciosAC.addEventListener('change', async function (e) {
+    try {
+        // console.log(this.value);
+        const CargarServicios = await fetch(`http://${servidor}:3000/api/Servicios/${this.value}`);
+        if (!CargarServicios.ok) {
+            throw new Error(`Error al obtener los servicios: ${CargarServicios.statusText}`);
+        }
+        const CargarServiciosAC = await CargarServicios.json();
+        // console.log('Servicios: ', CargarServiciosAC);
+
+        SelectPorDefectoCodigoServicioAC.innerHTML = '';
+        // Opción por defecto
+        const defaultOption = document.createElement('option');
+        defaultOption.textContent = 'Seleccione un servicio';
+        defaultOption.value = '';
+        SelectPorDefectoCodigoServicioAC.appendChild(defaultOption);
+        // Ordenar el array por el nombre del servicio
+        CargarServiciosAC.sort((a, b) => {
+            if (a['Nombre Servicios'] < b['Nombre Servicios']) return -1;
+            if (a['Nombre Servicios'] > b['Nombre Servicios']) return 1;
+            return 0;
+        });
+
+        for (let i = 0; i < CargarServiciosAC.length; i++) {
+            const option = document.createElement('option');
+            option.value = CargarServiciosAC[i]['Id Servicios'];
+            option.textContent = CargarServiciosAC[i]['Nombre Servicios'];
+            SelectPorDefectoCodigoServicioAC.appendChild(option);
+        }
+    } catch (error) {
+        console.error(error);
+    }
+})
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+const TraerInfoParaRIPSACPPorDefecto = async function() {
+    console.log("CONSULTADO INFORMACIÓN EN LA BASE DE DATOS PARA RIPS AP");
+}
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

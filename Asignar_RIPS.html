@@ -126,6 +126,7 @@
                         <label for="">Asginar RIPS por defecto</label>
                         <br>
                         <button type="button" class="btn btn-success btn-sm fw-bolder" data-bs-toggle="modal" data-bs-target="#ModalRIPSPorDefecto">Asignar</button>
+                        <button type="button" class="btn btn-success btn-sm fw-bolder">Cargar</button>
 
                         <!-- MODAL PARA ASIGNAR RIPS POR DEFECTO -->
                         <div class="modal fade modal-lg" id="ModalRIPSPorDefecto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -147,19 +148,19 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <label>Tipo de usuario</label>
-                                                <select name="" id="SelectTipoUsuarioRIPS" class="form-select-sm w-100 border border-secondary">
+                                                <select name="" id="SelectPorDefectoTipoUsuarioRIPS" class="form-select-sm w-100 border border-secondary">
                                                     <option value="Sin Seleccionar">Sin Seleccionar</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
                                                 <label>Entidad</label>
-                                                <select name="" id="SelectTipoUsuarioRIPS" class="form-select-sm w-100 border border-secondary">
+                                                <select name="" id="SelectPorDefectoEntidadAC" class="form-select-sm w-100 border border-secondary">
                                                     <option value="Sin Seleccionar">Sin Seleccionar</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
                                                 <label>ModalidadGrupoServicioTecSal</label>
-                                                <select name="" id="SelectTipoUsuarioRIPS" class="form-select-sm w-100 border border-secondary">
+                                                <select name="" id="SelectPorDefectoModalidadGrupoServicioTecSalAC" class="form-select-sm w-100 border border-secondary">
                                                     <option value="Sin Seleccionar">Sin Seleccionar</option>
                                                 </select>
                                             </div>
@@ -168,19 +169,19 @@
                                         <div class="row mt-1">
                                             <div class="col-md-4">
                                                 <label for="">GrupoServicios</label>
-                                                <select name="" id="" class="form-select-sm w-100 border border-secondary">
+                                                <select name="" id="SelectPoDefectoGrupoServiciosAC" class="form-select-sm w-100 border border-secondary">
                                                     <option value="Sin Seleccionar">Sin Seleccionar</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
                                                 <label for="">CodServicio</label>
-                                                <select name="" id="" class="form-select-sm w-100 border border-secondary">
+                                                <select name="" id="SelectPorDefectoCodigoServicioAC" class="form-select-sm w-100 border border-secondary">
                                                     <option value="Sin Seleccionar">Sin Seleccionar</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
                                                 <label for="">FinalidadTecnologiaSalud</label>
-                                                <select name="" id="" class="form-select-sm w-100 border border-secondary">
+                                                <select name="" id="SelectPorDefectoFinalidadTecnologiaSaludAC" class="form-select-sm w-100 border border-secondary">
                                                     <option value="Sin Seleccionar">Sin Seleccionar</option>
                                                 </select>
                                             </div>
@@ -189,21 +190,16 @@
                                         <div class="row mt-1">
                                             <div class="col-md-4">
                                                 <label for="">CausaMotivoAtención</label>
-                                                <select name="" id="" class="form-select-sm w-100 border border-secondary">
+                                                <select name="" id="SelectPorDefectoCausaMotivoAtencionAC" class="form-select-sm w-100 border border-secondary">
                                                     <option value="Sin Seleccionar">Sin Seleccionar</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
                                                 <label for="">TipoDiagnósticoPrincipal</label>
-                                                <select name="" id="" class="form-select-sm w-100 border border-secondary">
+                                                <select name="" id="SelectPorDefectoTipoDiagnosticoPrincipalAC" class="form-select-sm w-100 border border-secondary">
                                                     <option value="Sin Seleccionar">Sin Seleccionar</option>
                                                 </select>
                                             </div>
-                                            <!-- <div class="col-md-4"><label for=""></label>
-                                                <select name="" id="" class="form-select-sm w-100 border border-secondary">
-                                                    <option value="Sin Seleccionar">Sin Seleccionar</option>
-                                                </select>
-                                            </div> -->
                                         </div>
 
                                         <div class="row mt-1">
@@ -211,7 +207,7 @@
                                                 <label for="">Consulta RIPS 1</label>
                                             </div>
                                             <div class="col-md-8">
-                                                <select name="" id="" class="form-select-sm w-100 border border-secondary">
+                                                <select name="" id="SelectPorDefectoConsultaRIPS1AC" class="form-select-sm w-100 border border-secondary">
                                                     <option value="Sin Seleccionar">Sin Seleccionar</option>
                                                 </select>
                                             </div>
@@ -222,7 +218,7 @@
                                                 <label for="">Consulta RIPS 2</label>
                                             </div>
                                             <div class="col-md-8">
-                                                <select name="" id="" class="form-select-sm w-100 border border-secondary">
+                                                <select name="" id="SelectPorDefectoConsultaRIPS2AC" class="form-select-sm w-100 border border-secondary">
                                                     <option value="Sin Seleccionar">Sin Seleccionar</option>
                                                 </select>
                                             </div>
@@ -233,7 +229,7 @@
                                                 <label for="">Diagnóstico RIPS 1</label>
                                             </div>
                                             <div class="col-md-8">
-                                                <select name="" id="" class="form-select-sm w-100 border border-secondary">
+                                                <select name="" id="SelectPorDefectoDiagnosticoRIPSAC1" class="form-select-sm w-100 border border-secondary">
                                                     <option value="Sin Seleccionar">Sin Seleccionar</option>
                                                 </select>
                                             </div>
@@ -244,7 +240,7 @@
                                                 <label for="">Diagnóstico RIPS 2</label>
                                             </div>
                                             <div class="col-md-8">
-                                                <select name="" id="" class="form-select-sm w-100 border border-secondary">
+                                                <select name="" id="SelectPorDefectoDiagnosticoRIPSAC2" class="form-select-sm w-100 border border-secondary">
                                                     <option value="Sin Seleccionar">Sin Seleccionar</option>
                                                 </select>
                                             </div>
@@ -351,8 +347,9 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
+                                <button type="button" class="btn btn-secondary btn-sm fw-bolder" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-primary btn-sm fw-bolder">Guardar</button>
+                                <button type="button" class="btn btn-primary btn-sm fw-bolder">Actualizar</button>
                                 </div>
                             </div>
                             </div>
