@@ -968,4 +968,58 @@ router.post('/TieneRips/:IdEvaluacion', (req, res) =>{
 });
 
 
+// APIS PARA MANEJAR LOS RIPS POR DEFECTO/PREDEFINIDOS
+router.get('/Consultar', async (req, res) => {
+
+    try {
+        const Consulta = new Request(
+            `
+                SELECT 
+                    *
+                FROM 
+                    [API_RIPS_POR_DEFECTO]
+                WHERE
+                    [DocumentoEntidad] = '70123456' 
+                    AND [TipoDeRips] = 2
+            `,
+            (err) => {
+                if (err) {
+                    console.error(`Error al traer los rips predefinidos.. => [${err}]`)
+                    if (!res.headersSent) {
+                        res.status(500).send(`Error interno de servidor... ${err} `);
+                    }
+                }
+            }
+        );
+
+        const resultados = [];
+        Consulta.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
+            });
+            resultados.push(row);
+        });
+
+        Consulta.on('requestCompleted', () => {
+            console.log('Resultados de la consulta');
+            console.log(resultados);
+            if (!res.headersSent) {
+                res.json(resultados);
+            }
+        });
+
+        Consulta.on('error', (err) => {
+            console.error(' Error en la consulta:', err);
+            if (!res.headersSent) {
+                res.status(500).send('Error interno del servidor');
+            }
+        });
+        connection.execSql(Consulta);
+
+    } catch (Error) {
+
+    }
+})
+
 module.exports = router;

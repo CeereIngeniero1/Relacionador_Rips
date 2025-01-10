@@ -1,4 +1,4 @@
-const servidor = "HPRED241";
+const servidor = "HPGRIS";
 
 function VerificarLogin() {
     const TokenLogin = localStorage.getItem('token');
@@ -3155,107 +3155,123 @@ BotonVerRIPSPorDefecto.addEventListener('click', async function (e) {
             // alertify.confirm("Seleccionaste AP");
             // alertify.alert('This is a modeless dialog, not pinned to the screen.').set('modal', false).unpin(); 
 
-            const Infoo = {
-                1: 'Particular djslkfj klsdjfkl jasdklfj klasjdflkjaskfljklasf',
-                2: '',
-                3: 'TRES',
-                4: '',
-                5: 'CINCO',
-                6: '',
-                7: 'SIETE',
-                8: 'OCHO',
-                9: '',
-                10: 'DIEZ',
-                11: 'ONCE',
-                12: 'DOCE',
-                13: 'TRES',
-                14: 'CUATRO',
-                15: 'CINCO',
+            try {
+                const ConsultarRIPSAPPorDefecto = await fetch(`http://${servidor}:3000/api/Consultar`);
+                if (!ConsultarRIPSAPPorDefecto.ok) {
+                    throw new Error(`Error al obtener los datos: ${ConsultarRIPSAPPorDefecto.statusText}`);
+                }
+                const ConsultarRIPSAPPorDefectoAC = await ConsultarRIPSAPPorDefecto.json();
+                console.log(ConsultarRIPSAPPorDefectoAC);
+
+
+
+                const Infoo = {
+                    1: 'Particular djslkfj klsdjfkl jasdklfj klasjdflkjaskfljklasf',
+                    2: '',
+                    3: 'TRES',
+                    4: '',
+                    5: 'CINCO',
+                    6: '',
+                    7: 'SIETE',
+                    8: 'OCHO',
+                    9: '',
+                    10: 'DIEZ',
+                    11: 'ONCE',
+                    12: 'DOCE',
+                    13: 'TRES',
+                    14: 'CUATRO',
+                    15: 'CINCO',
+                }
+                const TipoDeUsuario = ConsultarRIPSAPPorDefectoAC[0].TipoDeUsuario;
+                const Entidad = ConsultarRIPSAPPorDefectoAC[0].Entidad;
+                const ViaIngresoServicioSalud = ConsultarRIPSAPPorDefectoAC[0].ViaIngresoServicioSalud;
+                alertify.alert(`RIPS AP POR DEFECTO`,
+                    `
+                    <strong>Esto es un mensaje con HTML</strong><br><em></em>
+    
+                    <div class="row">
+                        <div class="col-md-6 border border-success">
+                            <ul>
+                                <li><strong>Tipo de usuario: </strong><br>${TipoDeUsuario}</li>
+                            </ul>
+                        </div>
+    
+                        <div class="col-md-6">
+                            <ul>
+                                <li><strong>Entidad: </strong><br>${Entidad}</li>
+                            </ul>
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="col-md-6 border border-success">
+                            <ul>
+                                <li><strong>ViaIngresoServicioSalud: </strong><br>${ViaIngresoServicioSalud}</li>
+                            </ul>
+                        </div>
+    
+                        <div class="col-md-6">
+                            <ul>
+                                <li><strong>ModalidadGrupoServicioTecSal: </strong><br>${Infoo[1]}</li>
+                            </ul>
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="col-md-6 border border-success">
+                            <ul>
+                                <li><strong>GrupoServicios: </strong><br>${Infoo[1]}</li>
+                            </ul>
+                        </div>
+    
+                        <div class="col-md-6">
+                            <ul>
+                                <li><strong>CodServicio: </strong><br>${Infoo[1]}</li>
+                            </ul>
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="col-md-6 border border-success">
+                            <ul>
+                                <li><strong>FinalidadTecnologíaSalud: </strong><br>${Infoo[1]}</li>
+                            </ul>
+                        </div>
+    
+                        <div class="col-md-6">
+                            <ul>
+                                <li><strong>Procedimiento RIPS 1: </strong><br>${Infoo[1]}</li>
+                            </ul>
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="col-md-6 border border-success">
+                            <ul>
+                                <li><strong>Procedimiento RIPS 2: </strong><br>${Infoo[1]}</li>
+                            </ul>
+                        </div>
+    
+                        <div class="col-md-6">
+                            <ul>
+                                <li><strong>Diagnóstico RIPS 1: </strong><br>${Infoo[1]}</li>
+                            </ul>
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="col-md-6 border border-success">
+                            <ul>
+                                <li><strong>Diagnóstico RIPS 2: </strong><br>${Infoo[1]}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    `
+                ).set('modal', false).set('resizable',true).resizeTo('40%',250); 
+            } catch (Error) {
+
             }
-            alertify.alert(`RIPS AP POR DEFECTO`,
-                `
-                <strong>Esto es un mensaje con HTML</strong><br><em></em>
-
-                <div class="row">
-                    <div class="col-md-6 border border-success">
-                        <ul>
-                            <li><strong>Tipo de usuario: </strong><br>${Infoo[1]}</li>
-                        </ul>
-                    </div>
-
-                    <div class="col-md-6">
-                        <ul>
-                            <li><strong>Entidad: </strong><br>${Infoo[1]}</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 border border-success">
-                        <ul>
-                            <li><strong>ViaIngresoServicioSalud: </strong><br>${Infoo[1]}</li>
-                        </ul>
-                    </div>
-
-                    <div class="col-md-6">
-                        <ul>
-                            <li><strong>ModalidadGrupoServicioTecSal: </strong><br>${Infoo[1]}</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 border border-success">
-                        <ul>
-                            <li><strong>GrupoServicios: </strong><br>${Infoo[1]}</li>
-                        </ul>
-                    </div>
-
-                    <div class="col-md-6">
-                        <ul>
-                            <li><strong>CodServicio: </strong><br>${Infoo[1]}</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 border border-success">
-                        <ul>
-                            <li><strong>FinalidadTecnologíaSalud: </strong><br>${Infoo[1]}</li>
-                        </ul>
-                    </div>
-
-                    <div class="col-md-6">
-                        <ul>
-                            <li><strong>Procedimiento RIPS 1: </strong><br>${Infoo[1]}</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 border border-success">
-                        <ul>
-                            <li><strong>Procedimiento RIPS 2: </strong><br>${Infoo[1]}</li>
-                        </ul>
-                    </div>
-
-                    <div class="col-md-6">
-                        <ul>
-                            <li><strong>Diagnóstico RIPS 1: </strong><br>${Infoo[1]}</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 border border-success">
-                        <ul>
-                            <li><strong>Diagnóstico RIPS 2: </strong><br>${Infoo[1]}</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                `
-            ).set('modal', false).set('resizable',true).resizeTo('40%',250); 
 
 
 
