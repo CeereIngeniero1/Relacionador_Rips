@@ -461,7 +461,7 @@ router.get('/GrupoServicios', async (req, res) => {
 router.get('/Servicios/:Tipo', async (req, res) => {
     try {
         const Tipo = req.params.Tipo;
-
+        console.log("Este es el tipo ", Tipo);
         const request = new Request(
             `
                 SELECT        [Id Servicios], [Código Servicios], [Nombre Servicios], [Descripción Servicios], [Id Estado], [Codigo Grupo Servicios],  [Id Grupo Servicios]
