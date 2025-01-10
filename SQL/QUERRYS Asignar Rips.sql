@@ -403,6 +403,23 @@ WHERE        (dbo.[Evaluación Entidad Rips].[Id Evaluación Entidad Rips] IS NU
 GO
 
 
-
+-- CREACIÓN DE TABLA PARA RIPS POR DEFECTO
+CREATE TABLE API_RIPS_POR_DEFECTO (
+	[DocumentoEntidad] [NVARCHAR] (50) NOT NULL,
+	[TipoDeRips] [INT] NULL,
+	[TipoDeUsuario] [INT] NULL,
+	[Entidad] [NVARCHAR] (50) NULL,
+	[ViaIngresoServicioSalud] [NVARCHAR] (10) NULL,
+	[ModalidadGrupoServicioTecnologiaEnSalud] [NVARCHAR] (10) NULL,
+	[GrupoServicios] [NVARCHAR] (10) NULL,
+	[CodigoServicio] [NVARCHAR] (10) NULL,
+	[FinalidadTecnologiaSalud] [NVARCHAR] (10) NULL,
+	[CausaMotivoAtencion] [NVARCHAR] (10) NULL,
+	[TipoDiagnosticoPrincipal] [NVARCHAR] (10) NULL,
+	[Diagnostico1] [NVARCHAR] (10) NULL,
+	[Diagnostico2] [NVARCHAR] (10) NULL,
+	[Procedimiento1] [NVARCHAR] (10) NULL,
+	[Procedimiento2] [NVARCHAR] (10) NULL,
+);
 
 
