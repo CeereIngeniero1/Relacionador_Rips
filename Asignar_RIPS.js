@@ -3052,3 +3052,268 @@ SelectPorDefectoGrupoServiciosAP.addEventListener('change', async function (e) {
     }
 })
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// FUNCIONALIDAD PARA VER SI EL PROFESIONAL TIENE RIPS POR DEFECTO Y DE TENERLOS, CUÁLES SON
+const BotonVerRIPSPorDefecto = document.getElementById('BotonVerRIPSPorDefecto');
+BotonVerRIPSPorDefecto.addEventListener('click', async function (e) {
+
+    switch (SelectTipoRIPSPorDefecto.value) {
+        case '1':
+            // alertify.confirm("Seleccionaste AC").setHeader('RIPS AC POR DEFECTO');
+            // alertify.alert('Hello World!').setHeader('<em> HTML Header </em> '); 
+                    // Muestra un diálogo de confirmación personalizado con un icono
+        // let Confirmacion = alertify.confirm("<i class='fas fa-question-circle'></i> ¿Realmente quiereres cerrarlo?, se perderan todos los cambios.", 
+        //     function(){ // Callback si el usuario confirma
+        //             alertify.success('Confirmado');
+        //             Swal.close();
+        //             $('#BotonVerCompromisos').click(); 
+        //         },
+        //     function(){ // Callback si el usuario cancela
+        //         alertify.error('Cancelado');
+        //     }
+        //     ).set('labels', {ok:'Confirmar', cancel:'Cancelar'}) // Personaliza las etiquetas de los botones
+        //     .set({
+        //         closable: false, // Evita que el diálogo sea cerrado haciendo clic en la "x"
+        //         escCloses: false, // Evita que el diálogo sea cerrado al presionar la tecla "Esc"
+        //         modal: true // Evita que el usuario haga clic fuera del diálogo para cerrarlo
+        //     });
+    
+        //     // Modifica el encabezado (título) de la ventana del diálogo de confirmación
+        //     Confirmacion.setHeader('Cerrar Agendamiento');
+
+        const Info = {
+            1: 'Particular',
+            2: '',
+            3: 'TRES',
+            4: '',
+            5: 'CINCO',
+            6: '',
+            7: 'SIETE',
+            8: 'OCHO',
+            9: '',
+            10: 'DIEZ',
+            11: 'ONCE',
+            12: 'DOCE',
+            13: 'TRES',
+            14: 'CUATRO',
+            15: 'CINCO',
+        }
+
+        let Mensajito = "Hola mi amor, qué más puesss";
+        alertify.alert('RIPS AC POR DEFECTO', 
+            `
+                <strong>Este es un mensaje con HTML</strong><br><em></em>
+
+                <ul style="text-align: left;">
+<li style="color: #000000">asdfsadfsaf</li>
+                </ul>
+
+                <li style="color: #000000">asdfsadfsaf</li>
+
+                <strong>Tipo de usuario:</strong>
+                <ul>${Info[1]}</ul>
+
+
+                <div>
+                    <button class="btn btn-success">MiBoton</button>
+                </div>
+
+                <div class="row">
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                                    <strong>Tipo de usuario:</strong>
+                <ul>${Info[1]}</ul>
+                    </div>
+
+                    <div class="col-md-6">
+                                    <strong>Tipo de usuario:</strong>
+                <ul>${Info[1]}</ul>
+                    </div>
+                </div>
+
+
+                <ul>
+                    <li><strong>Empresa: </strong><br>${Info[1]}</li>
+                </ul>
+
+                <div style="border: solid green 2px; width: 700px; height: 300px;">
+
+                </div>
+
+                
+            `, 
+            // function() {
+            //     alertify.message('Cierre del alerta');
+            // }   
+        );
+        
+        break;
+
+        case '2':
+            // alertify.confirm("Seleccionaste AP");
+            // alertify.alert('This is a modeless dialog, not pinned to the screen.').set('modal', false).unpin(); 
+
+            const Infoo = {
+                1: 'Particular djslkfj klsdjfkl jasdklfj klasjdflkjaskfljklasf',
+                2: '',
+                3: 'TRES',
+                4: '',
+                5: 'CINCO',
+                6: '',
+                7: 'SIETE',
+                8: 'OCHO',
+                9: '',
+                10: 'DIEZ',
+                11: 'ONCE',
+                12: 'DOCE',
+                13: 'TRES',
+                14: 'CUATRO',
+                15: 'CINCO',
+            }
+            alertify.alert(`RIPS AP POR DEFECTO`,
+                `
+                <strong>Esto es un mensaje con HTML</strong><br><em></em>
+
+                <div class="row">
+                    <div class="col-md-6 border border-success">
+                        <ul>
+                            <li><strong>Tipo de usuario: </strong><br>${Infoo[1]}</li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-6">
+                        <ul>
+                            <li><strong>Entidad: </strong><br>${Infoo[1]}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 border border-success">
+                        <ul>
+                            <li><strong>ViaIngresoServicioSalud: </strong><br>${Infoo[1]}</li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-6">
+                        <ul>
+                            <li><strong>ModalidadGrupoServicioTecSal: </strong><br>${Infoo[1]}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 border border-success">
+                        <ul>
+                            <li><strong>GrupoServicios: </strong><br>${Infoo[1]}</li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-6">
+                        <ul>
+                            <li><strong>CodServicio: </strong><br>${Infoo[1]}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 border border-success">
+                        <ul>
+                            <li><strong>FinalidadTecnologíaSalud: </strong><br>${Infoo[1]}</li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-6">
+                        <ul>
+                            <li><strong>Procedimiento RIPS 1: </strong><br>${Infoo[1]}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 border border-success">
+                        <ul>
+                            <li><strong>Procedimiento RIPS 2: </strong><br>${Infoo[1]}</li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-6">
+                        <ul>
+                            <li><strong>Diagnóstico RIPS 1: </strong><br>${Infoo[1]}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 border border-success">
+                        <ul>
+                            <li><strong>Diagnóstico RIPS 2: </strong><br>${Infoo[1]}</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                `
+            ).set('modal', false).set('resizable',true).resizeTo('40%',250); 
+
+
+
+//             Swal.fire({
+//                 icon: 'success',
+//                 html: `
+//                                 <strong>Este es un mensaje con HTML</strong><br><em></em>
+
+//                 <ul style="text-align: left;">
+// <li style="color: #000000">asdfsadfsaf</li>
+//                 </ul>
+
+//                 <li style="color: #000000">asdfsadfsaf</li>
+
+//                 <strong>Tipo de usuario:</strong>
+//                 <ul>${Infoo[1]}</ul>
+
+
+//                 <div>
+//                     <button class="btn btn-success">MiBoton</button>
+//                 </div>
+
+//                 <div class="row">
+
+//                 </div>
+//                 <div class="row">
+//                     <div class="col-md-6">
+//                                     <strong>Tipo de usuario:</strong>
+//                 <ul>${Infoo[1]}</ul>
+//                     </div>
+
+//                     <div class="col-md-6">
+//                                     <strong>Tipo de usuario:</strong>
+//                 <ul>${Infoo[1]}</ul>
+//                     </div>
+//                 </div>
+
+
+//                 <ul>
+//                     <li><strong>Empresa: </strong><br>${Infoo[1]}</li>
+//                 </ul>
+
+//                 <div style="border: solid green 2px; width: 700px; height: 300px;">
+
+//                 </div>
+//                 `,
+//                 width: 1370,
+//             })
+        break;
+    }
+    // alertify.confirm("This is a confirm dialog.",
+    //     // function(){
+    //     //   alertify.success('Ok');
+    //     // },
+    //     // function(){
+    //     //   alertify.error('Cancel');
+    //     // }
+    // );
+      
+});
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
