@@ -847,7 +847,7 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
     const ViaIngresoServicioSalud = req.params.ViaIngresoServicioSalud;
     const Cups1 = req.params.Cups1;
     const Cups2 = req.params.Cups2;
-    const Cie1 = req.params.Cie1;
+    const Cie1 = req.params.Cie1.trim();
     const Cie2 = req.params.Cie2;
     const TipoRips = req.params.TipoRips;
     var Actoquirurgico;
@@ -969,18 +969,20 @@ router.post('/TieneRips/:IdEvaluacion', (req, res) =>{
 
 
 // APIS PARA MANEJAR LOS RIPS POR DEFECTO/PREDEFINIDOS
-router.get('/Consultar', async (req, res) => {
+router.get('/ConsultarRIPSPorDefecto/:DocumentoProfesional/:TipoRIPS', async (req, res) => {
 
     try {
+        const DocumentoProfesional = req.params.DocumentoProfesional;
+        const TipoRIPS = req.params.TipoRIPS;
         const Consulta = new Request(
             `
                 SELECT 
                     *
-                FROM 
-                    [API_RIPS_POR_DEFECTO]
+                FROM
+                    [ConsultarRIPSPorDefecto]
                 WHERE
-                    [DocumentoEntidad] = '70123456' 
-                    AND [TipoDeRips] = 2
+                    [DocumentoEntidad] = @DocumentoProfesional 
+                    AND [TipoDeRips] = @TipoRIPS
             `,
             (err) => {
                 if (err) {
@@ -991,6 +993,9 @@ router.get('/Consultar', async (req, res) => {
                 }
             }
         );
+
+        Consulta.addParameter('DocumentoProfesional', TYPES.NVarChar, DocumentoProfesional);
+        Consulta.addParameter('TipoRIPS', TYPES.NVarChar, TipoRIPS);
 
         const resultados = [];
         Consulta.on('row', (columns) => {

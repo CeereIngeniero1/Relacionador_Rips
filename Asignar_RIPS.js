@@ -1354,6 +1354,7 @@ const AsignarRIPS = async () => {
             "Diagnóstico2 RIPS": SelectDiagnosticoRIPSAC2,
         }
 
+        console.log(ValoresCapturados);
         let CamposSinLlenar = [];
         if (!SelectTipoUsuarioRIPSAC) CamposSinLlenar.push("Tipo de usuario.");
         if (!SelectEntidadAC || SelectEntidadAC === "" || SelectEntidadAC === "Sin Seleccionar") CamposSinLlenar.push("Entidad.");
@@ -2311,30 +2312,63 @@ BotonRegresar.addEventListener('click', (e) => {
 
 
 // ASIGNAR RIPS POR DEFECTO
+const BotonModalAsignarRIPSPorDefecto = document.getElementById('BotonModalAsignarRIPSPorDefecto');
+const documentousuariologeado = sessionStorage.getItem('documentousuariologeado');
+const BotonGuardarRIPSPorDefecto = document.getElementById('BotonGuardarRIPSPorDefecto');
+const BotonActualizarRIPSPorDefecto = document.getElementById('BotonActualizarRIPSPorDefecto');
+
+BotonModalAsignarRIPSPorDefecto.addEventListener('click', function(e) {
+    BotonGuardarRIPSPorDefecto.disabled = true;
+    BotonActualizarRIPSPorDefecto.disabled = true;
+})
 const SelectTipoRIPSPorDefecto = document.getElementById('SelectTipoRIPSPorDefecto');
 const ACPorDefecto = document.getElementById('ACPorDefecto');
 const APPorDefecto = document.getElementById('APPorDefecto');
-SelectTipoRIPSPorDefecto.addEventListener('change', function(e) {
+SelectTipoRIPSPorDefecto.addEventListener('change', async function(e) {
 
     // Quitar la clase antes de aplicar estilos
     ACPorDefecto.classList.remove('d-none');
     APPorDefecto.classList.remove('d-none');
+    // const documentousuariologeado = sessionStorage.getItem('documentousuariologeado');
+    // const BotonGuardarRIPSPorDefecto = document.getElementById('BotonGuardarRIPSPorDefecto');
+    // const BotonActualizarRIPSPorDefecto = document.getElementById('BotonActualizarRIPSPorDefecto');
+
     switch (this.value) {
         case '1':
             ACPorDefecto.style.display = 'block';
-            APPorDefecto.style.display = 'none';
+            APPorDefecto.style.display = 'none';            
+            const TieneRIPSACPorDefecto = await fetch(`http://${servidor}:3000/api/ConsultarRIPSPorDefecto/${documentousuariologeado}/1`);
+            const RIPSACPorDefecto = await TieneRIPSACPorDefecto.json();
+            if (RIPSACPorDefecto.length === 0) {
+                BotonGuardarRIPSPorDefecto.disabled = false;
+                BotonActualizarRIPSPorDefecto.disabled = true;
+            } else {
+                BotonGuardarRIPSPorDefecto.disabled = true;
+                BotonActualizarRIPSPorDefecto.disabled = false;
+            }
             TraerInfoParaRIPSACPorDefecto();
         break;
         
         case '2':
             ACPorDefecto.style.display = 'none';
             APPorDefecto.style.display = 'block';
+            const TieneRIPSAPPorDefecto = await fetch(`http://${servidor}:3000/api/ConsultarRIPSPorDefecto/${documentousuariologeado}/2`);
+            const RIPSAPPorDefecto = await TieneRIPSAPPorDefecto.json();
+            if (RIPSAPPorDefecto.length === 0) {
+                BotonGuardarRIPSPorDefecto.disabled = false;
+                BotonActualizarRIPSPorDefecto.disabled = true;
+            } else {
+                BotonGuardarRIPSPorDefecto.disabled = true;
+                BotonActualizarRIPSPorDefecto.disabled = false;
+            }
             TraerInfoParaRIPSACPPorDefecto();
         break;
 
         case '':
             ACPorDefecto.style.display = 'none';
             APPorDefecto.style.display = 'none';
+            BotonGuardarRIPSPorDefecto.disabled = true;
+            BotonActualizarRIPSPorDefecto.disabled = true;
         break;
 
         default:
@@ -3057,279 +3091,168 @@ SelectPorDefectoGrupoServiciosAP.addEventListener('change', async function (e) {
 const BotonVerRIPSPorDefecto = document.getElementById('BotonVerRIPSPorDefecto');
 BotonVerRIPSPorDefecto.addEventListener('click', async function (e) {
 
+    const documentousuariologeado = sessionStorage.getItem('documentousuariologeado');
     switch (SelectTipoRIPSPorDefecto.value) {
         case '1':
-            // alertify.confirm("Seleccionaste AC").setHeader('RIPS AC POR DEFECTO');
-            // alertify.alert('Hello World!').setHeader('<em> HTML Header </em> '); 
-                    // Muestra un diálogo de confirmación personalizado con un icono
-        // let Confirmacion = alertify.confirm("<i class='fas fa-question-circle'></i> ¿Realmente quiereres cerrarlo?, se perderan todos los cambios.", 
-        //     function(){ // Callback si el usuario confirma
-        //             alertify.success('Confirmado');
-        //             Swal.close();
-        //             $('#BotonVerCompromisos').click(); 
-        //         },
-        //     function(){ // Callback si el usuario cancela
-        //         alertify.error('Cancelado');
-        //     }
-        //     ).set('labels', {ok:'Confirmar', cancel:'Cancelar'}) // Personaliza las etiquetas de los botones
-        //     .set({
-        //         closable: false, // Evita que el diálogo sea cerrado haciendo clic en la "x"
-        //         escCloses: false, // Evita que el diálogo sea cerrado al presionar la tecla "Esc"
-        //         modal: true // Evita que el usuario haga clic fuera del diálogo para cerrarlo
-        //     });
-    
-        //     // Modifica el encabezado (título) de la ventana del diálogo de confirmación
-        //     Confirmacion.setHeader('Cerrar Agendamiento');
+            try {
+                const ConsultarRIPSACPorDefecto = await fetch(`http://${servidor}:3000/api/ConsultarRIPSPorDefecto/${documentousuariologeado}/1`);
+                if (!ConsultarRIPSACPorDefecto.ok) {
+                    throw new Error(`Error al obtener los datos: ${ConsultarRIPSACPorDefecto.statusText}`);
+                }
+                const ConsultarRIPSACPorDefectoAC = await ConsultarRIPSACPorDefecto.json();
 
-        const Info = {
-            1: 'Particular',
-            2: '',
-            3: 'TRES',
-            4: '',
-            5: 'CINCO',
-            6: '',
-            7: 'SIETE',
-            8: 'OCHO',
-            9: '',
-            10: 'DIEZ',
-            11: 'ONCE',
-            12: 'DOCE',
-            13: 'TRES',
-            14: 'CUATRO',
-            15: 'CINCO',
-        }
-
-        let Mensajito = "Hola mi amor, qué más puesss";
-        alertify.alert('RIPS AC POR DEFECTO', 
-            `
-                <strong>Este es un mensaje con HTML</strong><br><em></em>
-
-                <ul style="text-align: left;">
-<li style="color: #000000">asdfsadfsaf</li>
-                </ul>
-
-                <li style="color: #000000">asdfsadfsaf</li>
-
-                <strong>Tipo de usuario:</strong>
-                <ul>${Info[1]}</ul>
-
-
-                <div>
-                    <button class="btn btn-success">MiBoton</button>
-                </div>
-
-                <div class="row">
-
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                                    <strong>Tipo de usuario:</strong>
-                <ul>${Info[1]}</ul>
-                    </div>
-
-                    <div class="col-md-6">
-                                    <strong>Tipo de usuario:</strong>
-                <ul>${Info[1]}</ul>
-                    </div>
-                </div>
-
-
-                <ul>
-                    <li><strong>Empresa: </strong><br>${Info[1]}</li>
-                </ul>
-
-                <div style="border: solid green 2px; width: 700px; height: 300px;">
-
-                </div>
-
-                
-            `, 
-            // function() {
-            //     alertify.message('Cierre del alerta');
-            // }   
-        );
-        
+                if (ConsultarRIPSACPorDefectoAC.length === 0) {
+                    alertify.alert('', 'El profesional que ha iniciado sesión no tiene RIPS AC por defecto registrados.').set('basic', true);
+                    return;
+                }else {
+                    const TipoDeUsuarioAC = ConsultarRIPSACPorDefectoAC[0].TipoDeUsuario ?? 'Sin asignar';
+                    const EntidadAC = ConsultarRIPSACPorDefectoAC[0].Entidad ?? 'Sin asignar';
+                    const ViaIngresoServicioSaludAC = ConsultarRIPSACPorDefectoAC[0].ViaIngresoServicioSalud ?? 'Sin asignar';
+                    const ModalidadGrupoServicioTecnologiaEnSaludAC = ConsultarRIPSACPorDefectoAC[0].ModalidadGrupoServicioTecnologiaEnSalud ?? 'Sin asignar';
+                    const GrupoServiciosAC = ConsultarRIPSACPorDefectoAC[0].GrupoServicios ?? 'Sin asignar';
+                    const CodigoServicioAC = ConsultarRIPSACPorDefectoAC[0].CodigoServicio ?? 'Sin asignar';
+                    const FinalidadTecnologiaSaludAC = ConsultarRIPSACPorDefectoAC[0].FinalidadTecnologiaSalud ?? 'Sin asignar';
+                    const Diagnostico1AC = ConsultarRIPSACPorDefectoAC[0].Diagnostico1 ?? 'Sin asignar';
+                    const Diagnostico2AC = ConsultarRIPSACPorDefectoAC[0].Diagnostico2 ?? 'Sin asignar';
+                    const Procedimiento1AC = ConsultarRIPSACPorDefectoAC[0].Procedimiento1 ?? 'Sin asignar';
+                    const Procedimiento2AC = ConsultarRIPSACPorDefectoAC[0].Procedimiento2 ?? 'Sin asignar';
+                    alertify.alert(`RIPS AC POR DEFECTO`,
+                        `
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li><strong>Tipo de usuario: </strong><br>${TipoDeUsuarioAC}</li>
+                                    </ul>
+                                </div>
+            
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li><strong>Entidad: </strong><br>${EntidadAC}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        `
+                    ).set('modal', false).set('resizable',true).resizeTo('45%',350); 
+                }
+            } catch (Error) {
+                console.error(`Se generó el siguiente error al mostrar RIPS AC por defecto -> ${Error}`);
+            }
         break;
 
         case '2':
-            // alertify.confirm("Seleccionaste AP");
             // alertify.alert('This is a modeless dialog, not pinned to the screen.').set('modal', false).unpin(); 
-
             try {
-                const ConsultarRIPSAPPorDefecto = await fetch(`http://${servidor}:3000/api/Consultar`);
+                const ConsultarRIPSAPPorDefecto = await fetch(`http://${servidor}:3000/api/ConsultarRIPSPorDefecto/${documentousuariologeado}/2`);
                 if (!ConsultarRIPSAPPorDefecto.ok) {
                     throw new Error(`Error al obtener los datos: ${ConsultarRIPSAPPorDefecto.statusText}`);
                 }
-                const ConsultarRIPSAPPorDefectoAC = await ConsultarRIPSAPPorDefecto.json();
-                console.log(ConsultarRIPSAPPorDefectoAC);
+                const ConsultarRIPSAPPorDefectoAP = await ConsultarRIPSAPPorDefecto.json();
+                // console.log(ConsultarRIPSAPPorDefectoAP);
 
 
-
-                const Infoo = {
-                    1: 'Particular djslkfj klsdjfkl jasdklfj klasjdflkjaskfljklasf',
-                    2: '',
-                    3: 'TRES',
-                    4: '',
-                    5: 'CINCO',
-                    6: '',
-                    7: 'SIETE',
-                    8: 'OCHO',
-                    9: '',
-                    10: 'DIEZ',
-                    11: 'ONCE',
-                    12: 'DOCE',
-                    13: 'TRES',
-                    14: 'CUATRO',
-                    15: 'CINCO',
-                }
-                const TipoDeUsuario = ConsultarRIPSAPPorDefectoAC[0].TipoDeUsuario;
-                const Entidad = ConsultarRIPSAPPorDefectoAC[0].Entidad;
-                const ViaIngresoServicioSalud = ConsultarRIPSAPPorDefectoAC[0].ViaIngresoServicioSalud;
-                alertify.alert(`RIPS AP POR DEFECTO`,
-                    `
-                    <strong>Esto es un mensaje con HTML</strong><br><em></em>
-    
-                    <div class="row">
-                        <div class="col-md-6 border border-success">
-                            <ul>
-                                <li><strong>Tipo de usuario: </strong><br>${TipoDeUsuario}</li>
-                            </ul>
+                if (ConsultarRIPSAPPorDefectoAP.length === 0) {
+                    alertify.alert('', 'El profesional que ha iniciado sesión no tiene RIPS AP por defecto registrados.').set('basic', true);
+                    return;
+                }else {
+                    const TipoDeUsuario = ConsultarRIPSAPPorDefectoAP[0].TipoDeUsuario ?? 'Sin asignar';
+                    const Entidad = ConsultarRIPSAPPorDefectoAP[0].Entidad ?? 'Sin asignar';
+                    const ViaIngresoServicioSalud = ConsultarRIPSAPPorDefectoAP[0].ViaIngresoServicioSalud ?? 'Sin asignar';
+                    const ModalidadGrupoServicioTecnologiaEnSalud = ConsultarRIPSAPPorDefectoAP[0].ModalidadGrupoServicioTecnologiaEnSalud ?? 'Sin asignar';
+                    const GrupoServicios = ConsultarRIPSAPPorDefectoAP[0].GrupoServicios ?? 'Sin asignar';
+                    const CodigoServicio = ConsultarRIPSAPPorDefectoAP[0].CodigoServicio ?? 'Sin asignar';
+                    const FinalidadTecnologiaSalud = ConsultarRIPSAPPorDefectoAP[0].FinalidadTecnologiaSalud ?? 'Sin asignar';
+                    const Diagnostico1 = ConsultarRIPSAPPorDefectoAP[0].Diagnostico1 ?? 'Sin asignar';
+                    const Diagnostico2 = ConsultarRIPSAPPorDefectoAP[0].Diagnostico2 ?? 'Sin asignar';
+                    const Procedimiento1 = ConsultarRIPSAPPorDefectoAP[0].Procedimiento1 ?? 'Sin asignar';
+                    const Procedimiento2 = ConsultarRIPSAPPorDefectoAP[0].Procedimiento2 ?? 'Sin asignar';
+                    alertify.alert(`RIPS AP POR DEFECTO`,
+                        `    
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>Tipo de usuario: </strong><br>${TipoDeUsuario}</li>
+                                </ul>
+                            </div>
+        
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>Entidad: </strong><br>${Entidad}</li>
+                                </ul>
+                            </div>
                         </div>
-    
-                        <div class="col-md-6">
-                            <ul>
-                                <li><strong>Entidad: </strong><br>${Entidad}</li>
-                            </ul>
+        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>ViaIngresoServicioSalud: </strong><br>${ViaIngresoServicioSalud}</li>
+                                </ul>
+                            </div>
+        
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>ModalidadGrupoServicioTecSal: </strong><br>${ModalidadGrupoServicioTecnologiaEnSalud}</li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-    
-                    <div class="row">
-                        <div class="col-md-6 border border-success">
-                            <ul>
-                                <li><strong>ViaIngresoServicioSalud: </strong><br>${ViaIngresoServicioSalud}</li>
-                            </ul>
+        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>GrupoServicios: </strong><br>${GrupoServicios}</li>
+                                </ul>
+                            </div>
+        
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>CodServicio: </strong><br>${CodigoServicio}</li>
+                                </ul>
+                            </div>
                         </div>
-    
-                        <div class="col-md-6">
-                            <ul>
-                                <li><strong>ModalidadGrupoServicioTecSal: </strong><br>${Infoo[1]}</li>
-                            </ul>
+        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>FinalidadTecnologíaSalud: </strong><br>${FinalidadTecnologiaSalud}</li>
+                                </ul>
+                            </div>
+        
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>Procedimiento RIPS 1: </strong><br>${Diagnostico1}</li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-    
-                    <div class="row">
-                        <div class="col-md-6 border border-success">
-                            <ul>
-                                <li><strong>GrupoServicios: </strong><br>${Infoo[1]}</li>
-                            </ul>
+        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>Procedimiento RIPS 2: </strong><br>${Diagnostico2}</li>
+                                </ul>
+                            </div>
+        
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>Diagnóstico RIPS 1: </strong><br>${Procedimiento1}</li>
+                                </ul>
+                            </div>
                         </div>
-    
-                        <div class="col-md-6">
-                            <ul>
-                                <li><strong>CodServicio: </strong><br>${Infoo[1]}</li>
-                            </ul>
+        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>Diagnóstico RIPS 2: </strong><br>${Procedimiento2}</li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-    
-                    <div class="row">
-                        <div class="col-md-6 border border-success">
-                            <ul>
-                                <li><strong>FinalidadTecnologíaSalud: </strong><br>${Infoo[1]}</li>
-                            </ul>
-                        </div>
-    
-                        <div class="col-md-6">
-                            <ul>
-                                <li><strong>Procedimiento RIPS 1: </strong><br>${Infoo[1]}</li>
-                            </ul>
-                        </div>
-                    </div>
-    
-                    <div class="row">
-                        <div class="col-md-6 border border-success">
-                            <ul>
-                                <li><strong>Procedimiento RIPS 2: </strong><br>${Infoo[1]}</li>
-                            </ul>
-                        </div>
-    
-                        <div class="col-md-6">
-                            <ul>
-                                <li><strong>Diagnóstico RIPS 1: </strong><br>${Infoo[1]}</li>
-                            </ul>
-                        </div>
-                    </div>
-    
-                    <div class="row">
-                        <div class="col-md-6 border border-success">
-                            <ul>
-                                <li><strong>Diagnóstico RIPS 2: </strong><br>${Infoo[1]}</li>
-                            </ul>
-                        </div>
-                    </div>
+                        
+                        `
                     
-                    `
-                ).set('modal', false).set('resizable',true).resizeTo('40%',250); 
+                    ).set('modal', false).set('resizable',true).resizeTo('45%',350); 
+                }
             } catch (Error) {
-
+                console.error(`Se generó el siguiente error -> ${Error}`)
             }
-
-
-
-//             Swal.fire({
-//                 icon: 'success',
-//                 html: `
-//                                 <strong>Este es un mensaje con HTML</strong><br><em></em>
-
-//                 <ul style="text-align: left;">
-// <li style="color: #000000">asdfsadfsaf</li>
-//                 </ul>
-
-//                 <li style="color: #000000">asdfsadfsaf</li>
-
-//                 <strong>Tipo de usuario:</strong>
-//                 <ul>${Infoo[1]}</ul>
-
-
-//                 <div>
-//                     <button class="btn btn-success">MiBoton</button>
-//                 </div>
-
-//                 <div class="row">
-
-//                 </div>
-//                 <div class="row">
-//                     <div class="col-md-6">
-//                                     <strong>Tipo de usuario:</strong>
-//                 <ul>${Infoo[1]}</ul>
-//                     </div>
-
-//                     <div class="col-md-6">
-//                                     <strong>Tipo de usuario:</strong>
-//                 <ul>${Infoo[1]}</ul>
-//                     </div>
-//                 </div>
-
-
-//                 <ul>
-//                     <li><strong>Empresa: </strong><br>${Infoo[1]}</li>
-//                 </ul>
-
-//                 <div style="border: solid green 2px; width: 700px; height: 300px;">
-
-//                 </div>
-//                 `,
-//                 width: 1370,
-//             })
         break;
-    }
-    // alertify.confirm("This is a confirm dialog.",
-    //     // function(){
-    //     //   alertify.success('Ok');
-    //     // },
-    //     // function(){
-    //     //   alertify.error('Cancel');
-    //     // }
-    // );
-      
+    }      
 });
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
