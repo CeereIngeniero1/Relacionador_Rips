@@ -846,9 +846,12 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
     const TipoDiagnosticoPrincipal = req.params.TipoDiagnosticoPrincipal;
     const ViaIngresoServicioSalud = req.params.ViaIngresoServicioSalud;
     const Cups1 = req.params.Cups1;
-    const Cups2 = req.params.Cups2;
+    let Cups2 = req.params.Cups2;
+    //Se evalua si viene = 0 para hacerlo NULL
+    if(Cups2 == 0){Cups2 = 'null' }
     const Cie1 = req.params.Cie1.trim();
-    const Cie2 = req.params.Cie2;
+    let Cie2 = req.params.Cie2;
+    if(Cie2 == 0){Cie2 = 'null' }
     const TipoRips = req.params.TipoRips;
     var Actoquirurgico;
     if (TipoRips == 'AC' || TipoRips == 'AP') {
