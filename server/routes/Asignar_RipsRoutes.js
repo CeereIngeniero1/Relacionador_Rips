@@ -854,9 +854,9 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
     if(Cie2 == 0){Cie2 = 'null' }
     const TipoRips = req.params.TipoRips;
     var Actoquirurgico;
-    if (TipoRips == 'AC' || TipoRips == 'AP') {
+    if (TipoRips == 'AC') {
         Actoquirurgico = 1;
-    } else {
+    } else if(TipoRips == 'AP') {
         Actoquirurgico = 2;
     }
     console.log(`IdEvaluacion ${IdEvaluacion}`);
