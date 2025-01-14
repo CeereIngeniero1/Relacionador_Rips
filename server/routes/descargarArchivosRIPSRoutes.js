@@ -289,7 +289,7 @@ router.get('/serviciosAP/rips/:numFactura/:numDocumentoIdentificacion/:fechaInic
         `SELECT em2.[Código Empresa] AS codPrestador, 
         SUBSTRING(CONVERT(VARCHAR, eve.[Fecha Evaluación Entidad], 120), 1, 16) AS fechaInicioAtencion, NULL AS idMIPRES, NULL AS numAutorizacion, 
         everips.[Codigo RIPS] AS codProcedimiento, '01' AS viaIngresoServicioSalud, '01' AS modalidadGrupoServicioTecSal, 
-        '01' AS grupoServicios, '371' AS codServicio, fp.[Código Finalidad del Procedimiento] AS finalidadTecnologiaSalud, 
+        '01' AS grupoServicios, '371' AS codServicio, fp.Codigo AS finalidadTecnologiaSalud, 
         tp.[Tipo de Documento] AS tipoDocumentoIdentificacion, eve.[Documento Entidad] AS numDocumentoIdentificacion, 
         everips.[Diagnostico Rips] AS codDiagnosticoPrincipal, 
         CASE WHEN everips.[Diagnostico Rips2] = 'Null' THEN NULL ELSE everips.[Diagnostico Rips2] END AS codDiagnosticoRelacionado, 
@@ -299,7 +299,7 @@ router.get('/serviciosAP/rips/:numFactura/:numDocumentoIdentificacion/:fechaInic
         FROM  [Evaluación Entidad Rips] as everips
         
         INNER JOIN [Evaluación Entidad] as eve ON everips.[Id Evaluación Entidad] = eve.[Id Evaluación Entidad]
-        LEFT JOIN [Finalidad del Procedimiento] as fp ON everips.[Id Causa Externa] = fp.[Id Finalidad del Procedimiento]
+        LEFT JOIN [RIPS Finalidad Consulta Version2] as fp ON everips.[Id Finalidad Consulta] = fp.Codigo
         LEFT JOIN Entidad ON eve.[Documento Entidad] = Entidad.[Documento Entidad]
         LEFT JOIN [Tipo de Documento] as tp ON Entidad.[Id Tipo de Documento] = tp.[Id Tipo de Documento]
         LEFT JOIN Factura as fc ON fc.[Id Factura] = everips.[Id Factura]
