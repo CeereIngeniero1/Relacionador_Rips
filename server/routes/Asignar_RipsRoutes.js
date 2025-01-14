@@ -1027,4 +1027,18 @@ router.get('/ConsultarRIPSPorDefecto/:DocumentoProfesional/:TipoRIPS', async (re
     }
 })
 
+// CRUD PARA RIPS POR DEFECTO
+// Guardar
+router.post('/GuardarRIPSPorDefecto/:DocumentoProfesional/:TipoRIPS', async (req, res) => {
+
+})
+// Actualizar
+router.post('/ActualizarRIPSPorDefecto/:DocumentoProfesional/:TipoRIPS', async (req, res) => {
+    
+})
+// Eliminar
+router.post('/EliminarRIPSPorDefecto/:DocumentoProfesional/:TipoRIPS', async (req, res) => {
+    
+})
+
 module.exports = router;

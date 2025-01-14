@@ -2316,14 +2316,18 @@ const BotonModalAsignarRIPSPorDefecto = document.getElementById('BotonModalAsign
 const documentousuariologeado = sessionStorage.getItem('documentousuariologeado');
 const BotonGuardarRIPSPorDefecto = document.getElementById('BotonGuardarRIPSPorDefecto');
 const BotonActualizarRIPSPorDefecto = document.getElementById('BotonActualizarRIPSPorDefecto');
+const BotonEliminarRIPSPorDefecto = document.getElementById('BotonEliminarRIPSPorDefecto');
 
 BotonModalAsignarRIPSPorDefecto.addEventListener('click', function(e) {
     BotonGuardarRIPSPorDefecto.disabled = true;
     BotonActualizarRIPSPorDefecto.disabled = true;
+    BotonVerRIPSPorDefectoo.disabled = true;
+    BotonEliminarRIPSPorDefecto.disabled = true;
 })
 const SelectTipoRIPSPorDefecto = document.getElementById('SelectTipoRIPSPorDefecto');
 const ACPorDefecto = document.getElementById('ACPorDefecto');
 const APPorDefecto = document.getElementById('APPorDefecto');
+const BotonVerRIPSPorDefectoo = document.getElementById('BotonVerRIPSPorDefecto');
 SelectTipoRIPSPorDefecto.addEventListener('change', async function(e) {
 
     // Quitar la clase antes de aplicar estilos
@@ -2337,14 +2341,17 @@ SelectTipoRIPSPorDefecto.addEventListener('change', async function(e) {
         case '1':
             ACPorDefecto.style.display = 'block';
             APPorDefecto.style.display = 'none';            
+            BotonVerRIPSPorDefectoo.disabled = false;
             const TieneRIPSACPorDefecto = await fetch(`http://${servidor}:3000/api/ConsultarRIPSPorDefecto/${documentousuariologeado}/1`);
             const RIPSACPorDefecto = await TieneRIPSACPorDefecto.json();
             if (RIPSACPorDefecto.length === 0) {
                 BotonGuardarRIPSPorDefecto.disabled = false;
                 BotonActualizarRIPSPorDefecto.disabled = true;
+                BotonEliminarRIPSPorDefecto.disabled = true;
             } else {
                 BotonGuardarRIPSPorDefecto.disabled = true;
                 BotonActualizarRIPSPorDefecto.disabled = false;
+                BotonEliminarRIPSPorDefecto.disabled = false;
             }
             TraerInfoParaRIPSACPorDefecto();
         break;
@@ -2352,14 +2359,17 @@ SelectTipoRIPSPorDefecto.addEventListener('change', async function(e) {
         case '2':
             ACPorDefecto.style.display = 'none';
             APPorDefecto.style.display = 'block';
+            BotonVerRIPSPorDefectoo.disabled = false;
             const TieneRIPSAPPorDefecto = await fetch(`http://${servidor}:3000/api/ConsultarRIPSPorDefecto/${documentousuariologeado}/2`);
             const RIPSAPPorDefecto = await TieneRIPSAPPorDefecto.json();
             if (RIPSAPPorDefecto.length === 0) {
                 BotonGuardarRIPSPorDefecto.disabled = false;
                 BotonActualizarRIPSPorDefecto.disabled = true;
+                BotonEliminarRIPSPorDefecto.disabled = true;
             } else {
                 BotonGuardarRIPSPorDefecto.disabled = true;
                 BotonActualizarRIPSPorDefecto.disabled = false;
+                BotonEliminarRIPSPorDefecto.disabled = false;
             }
             TraerInfoParaRIPSACPPorDefecto();
         break;
@@ -3100,14 +3110,14 @@ BotonVerRIPSPorDefecto.addEventListener('click', async function (e) {
                     throw new Error(`Error al obtener los datos: ${ConsultarRIPSACPorDefecto.statusText}`);
                 }
                 const ConsultarRIPSACPorDefectoAC = await ConsultarRIPSACPorDefecto.json();
+                console.log('RIPS AC por defecto: ', ConsultarRIPSACPorDefectoAC);
 
                 if (ConsultarRIPSACPorDefectoAC.length === 0) {
-                    alertify.alert('', 'El profesional que ha iniciado sesión no tiene RIPS AC por defecto registrados.').set('basic', true);
+                    alertify.alert('', 'El profesional que ha iniciado sesión no tiene RIPS AC por defecto registrados.').set('basic', true).set('movable', false);
                     return;
                 }else {
                     const TipoDeUsuarioAC = ConsultarRIPSACPorDefectoAC[0].TipoDeUsuario ?? 'Sin asignar';
                     const EntidadAC = ConsultarRIPSACPorDefectoAC[0].Entidad ?? 'Sin asignar';
-                    const ViaIngresoServicioSaludAC = ConsultarRIPSACPorDefectoAC[0].ViaIngresoServicioSalud ?? 'Sin asignar';
                     const ModalidadGrupoServicioTecnologiaEnSaludAC = ConsultarRIPSACPorDefectoAC[0].ModalidadGrupoServicioTecnologiaEnSalud ?? 'Sin asignar';
                     const GrupoServiciosAC = ConsultarRIPSACPorDefectoAC[0].GrupoServicios ?? 'Sin asignar';
                     const CodigoServicioAC = ConsultarRIPSACPorDefectoAC[0].CodigoServicio ?? 'Sin asignar';
@@ -3116,6 +3126,8 @@ BotonVerRIPSPorDefecto.addEventListener('click', async function (e) {
                     const Diagnostico2AC = ConsultarRIPSACPorDefectoAC[0].Diagnostico2 ?? 'Sin asignar';
                     const Procedimiento1AC = ConsultarRIPSACPorDefectoAC[0].Procedimiento1 ?? 'Sin asignar';
                     const Procedimiento2AC = ConsultarRIPSACPorDefectoAC[0].Procedimiento2 ?? 'Sin asignar';
+                    const CausaMotivoAtencionAC = ConsultarRIPSACPorDefectoAC[0].CausaMotivoAtencion ?? 'Sin asignar';
+                    const TipoDiagnosticoPrincipalAC = ConsultarRIPSACPorDefectoAC[0].TipoDiagnosticoPrincipal ?? 'Sin asignar';
                     alertify.alert(`RIPS AC POR DEFECTO`,
                         `
                             <div class="row">
@@ -3128,6 +3140,76 @@ BotonVerRIPSPorDefecto.addEventListener('click', async function (e) {
                                 <div class="col-md-6">
                                     <ul>
                                         <li><strong>Entidad: </strong><br>${EntidadAC}</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li><strong>ModalidadGrupoServicioTecSal: </strong><br>${ModalidadGrupoServicioTecnologiaEnSaludAC}</li>
+                                    </ul>
+                                </div>
+            
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li><strong>GrupoServicios: </strong><br>${GrupoServiciosAC}</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li><strong>CodServicio: </strong><br>${CodigoServicioAC}</li>
+                                    </ul>
+                                </div>
+            
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li><strong>FinalidadTecnologiaSalud: </strong><br>${FinalidadTecnologiaSaludAC}</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li><strong>CausaMotivoAtención: </strong><br>${CausaMotivoAtencionAC}</li>
+                                    </ul>
+                                </div>
+            
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li><strong>TipoDiagnósticoPrincipal: </strong><br>${TipoDiagnosticoPrincipalAC}</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li><strong>Consulta RIPS 1: </strong><br>${Diagnostico1AC}</li>
+                                    </ul>
+                                </div>
+            
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li><strong>Consulta RIPS 1: </strong><br>${Diagnostico2AC}</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li><strong>Diagnóstico RIPS 1: </strong><br>${Procedimiento1AC}</li>
+                                    </ul>
+                                </div>
+            
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li><strong>Diagnóstico RIPS 1: </strong><br>${Procedimiento2AC}</li>
                                     </ul>
                                 </div>
                             </div>
@@ -3151,7 +3233,7 @@ BotonVerRIPSPorDefecto.addEventListener('click', async function (e) {
 
 
                 if (ConsultarRIPSAPPorDefectoAP.length === 0) {
-                    alertify.alert('', 'El profesional que ha iniciado sesión no tiene RIPS AP por defecto registrados.').set('basic', true);
+                    alertify.alert('', 'El profesional que ha iniciado sesión no tiene RIPS AP por defecto registrados.').set('basic', true).set('movable', false);
                     return;
                 }else {
                     const TipoDeUsuario = ConsultarRIPSAPPorDefectoAP[0].TipoDeUsuario ?? 'Sin asignar';
@@ -3255,4 +3337,62 @@ BotonVerRIPSPorDefecto.addEventListener('click', async function (e) {
         break;
     }      
 });
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// FUNCIONALIDAD PARA LIMPIAR/REINICAR LOS CAMPOS DEL MODAL PARA ASIGNACIÓN DE RIPS POR DEFECTOS, AL MOMENTO DE CERRAR
+const Boton1CerrarModalAsignarRIPSPordefecto = document.getElementById('Boton1CerrarModalAsignarRIPSPordefecto');
+const Boton2CerrarModalAsignarRIPSPordefecto = document.getElementById('Boton2CerrarModalAsignarRIPSPordefecto');
+const ModalRIPSPorDefecto = document.getElementById('ModalRIPSPorDefecto');
+// Función para reiniciar el valor del select y despachar un evento 'change'
+function reiniciarSelect() {
+    // Reiniciar el valor del select
+    SelectTipoRIPSPorDefecto.value = '';
+
+    // Crear y despachar un evento 'change'
+    const event = new Event('change', {
+        bubbles: true,
+        cancelable: true
+    });
+    SelectTipoRIPSPorDefecto.dispatchEvent(event);
+
+    const selects = ModalRIPSPorDefecto.querySelectorAll('select');
+    selects.forEach(select => {
+        // Excluir el select con id 'selectExcluido'
+        if (select.id !== 'SelectTipoRIPSPorDefecto') {
+            select.innerHTML = ''; // Vaciar las opciones
+        }
+    });
+
+}
+Boton1CerrarModalAsignarRIPSPordefecto.addEventListener('click', reiniciarSelect);
+Boton2CerrarModalAsignarRIPSPordefecto.addEventListener('click', reiniciarSelect);
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// FUNCIONALIDAD CRUD PARA RIPS POR DEFECTO (GUARDAR, ACTULIZAR Y ELIMINAR)
+async function GuardarRIPSPorDefecto() {
+    Swal.fire({
+        icon: 'success',
+        text: 'RIPS AC GUARDADO CORRECTAMENTE'
+    })
+}
+
+async function ActualizarRIPSPorDefecto() {
+    Swal.fire({
+        icon:'success',
+        text: 'RIPS ACTUALIZADO CORRECTAMENTE'
+    })
+}
+
+async function EliminarRIPSPorDefecto() {
+    Swal.fire({
+        icon: 'error',
+        text: 'RIPS ELIMINADO CORRECTAMENTE'
+    })
+}
+
+BotonGuardarRIPSPorDefecto.addEventListener('click', GuardarRIPSPorDefecto);
+BotonActualizarRIPSPorDefecto.addEventListener('click', ActualizarRIPSPorDefecto);
+BotonEliminarRIPSPorDefecto.addEventListener('click', EliminarRIPSPorDefecto);
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
