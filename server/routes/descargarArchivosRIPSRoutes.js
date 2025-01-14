@@ -243,8 +243,8 @@ router.get('/servicios/rips/:numFactura/:numDocumentoIdentificacion/:fechaInicio
             modalidadGrupoServicioTecSal: columns[4].value,
             grupoServicios: columns[5].value,
             codServicio: parseInt(columns[6].value, 10),
-            finalidadTecnologiaSalud: columns[7].value,
-            causaMotivoAtencion: columns[8].value,
+            finalidadTecnologiaSalud: columns[7].value.toString() ,
+            causaMotivoAtencion: columns[8].value.toString(),
             codDiagnosticoPrincipal: columns[9].value,
             codDiagnosticoRelacionado1: columns[10].value,
             codDiagnosticoRelacionado2: columns[11].value,
@@ -331,7 +331,6 @@ router.get('/serviciosAP/rips/:numFactura/:numDocumentoIdentificacion/:fechaInic
     const resultadosServicios = [];
 
     request.on('row', (columns) => {
-
         const servicio = {
             codPrestador: columns[0].value,
             fechaInicioAtencion: columns[1].value,
@@ -342,7 +341,7 @@ router.get('/serviciosAP/rips/:numFactura/:numDocumentoIdentificacion/:fechaInic
             modalidadGrupoServicioTecSal: columns[6].value,
             grupoServicios: columns[7].value,
             codServicio: parseInt(columns[8].value, 10),
-            finalidadTecnologiaSalud: columns[9].value,
+            finalidadTecnologiaSalud: columns[9].value.toString() ,
             tipoDocumentoIdentificacion: columns[10].value,
             numDocumentoIdentificacion: columns[11].value,
             codDiagnosticoPrincipal: columns[12].value,
