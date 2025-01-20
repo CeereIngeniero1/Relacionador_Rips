@@ -2379,6 +2379,8 @@ SelectTipoRIPSPorDefecto.addEventListener('change', async function(e) {
             APPorDefecto.style.display = 'none';
             BotonGuardarRIPSPorDefecto.disabled = true;
             BotonActualizarRIPSPorDefecto.disabled = true;
+            BotonEliminarRIPSPorDefecto.disabled = true;
+            BotonVerRIPSPorDefectoo.disabled = true;
         break;
 
         default:
@@ -3113,7 +3115,7 @@ BotonVerRIPSPorDefecto.addEventListener('click', async function (e) {
                 console.log('RIPS AC por defecto: ', ConsultarRIPSACPorDefectoAC);
 
                 if (ConsultarRIPSACPorDefectoAC.length === 0) {
-                    alertify.alert('', 'El profesional que ha iniciado sesión no tiene RIPS AC por defecto registrados.').set('basic', true).set('movable', false);
+                    alertify.alert('', 'El profesional que ha iniciado sesión no tiene RIPS AC por defecto registrados.').set('basic', true).set('movable', false).resizeTo('60%', 250);
                     return;
                 }else {
                     const TipoDeUsuarioAC = ConsultarRIPSACPorDefectoAC[0].TipoDeUsuario ?? 'Sin asignar';
@@ -3372,23 +3374,337 @@ Boton2CerrarModalAsignarRIPSPordefecto.addEventListener('click', reiniciarSelect
 
 // FUNCIONALIDAD CRUD PARA RIPS POR DEFECTO (GUARDAR, ACTULIZAR Y ELIMINAR)
 async function GuardarRIPSPorDefecto() {
-    Swal.fire({
-        icon: 'success',
-        text: 'RIPS AC GUARDADO CORRECTAMENTE'
-    })
+    const SelectTipoRIPSPorDefecto = document.getElementById('SelectTipoRIPSPorDefecto').value;
+    switch (SelectTipoRIPSPorDefecto) {
+        case '1':
+            const SelectPorDefectoTipoUsuarioRIPS = document.getElementById('SelectPorDefectoTipoUsuarioRIPS').value ?? null;
+            const SelectPorDefectoEntidadAC = document.getElementById('SelectPorDefectoEntidadAC').value ?? null;
+            const SelectPorDefectoModalidadGrupoServicioTecSalAC = document.getElementById('SelectPorDefectoModalidadGrupoServicioTecSalAC').value ?? null;
+            const SelectPoDefectoGrupoServiciosAC = document.getElementById('SelectPoDefectoGrupoServiciosAC').value ?? null;
+            const SelectPorDefectoCodigoServicioAC = document.getElementById('SelectPorDefectoCodigoServicioAC').value ?? null;
+            const SelectPorDefectoFinalidadTecnologiaSaludAC = document.getElementById('SelectPorDefectoFinalidadTecnologiaSaludAC').value ?? null;
+            const SelectPorDefectoCausaMotivoAtencionAC = document.getElementById('SelectPorDefectoCausaMotivoAtencionAC').value ?? null;
+            const SelectPorDefectoTipoDiagnosticoPrincipalAC = document.getElementById('SelectPorDefectoTipoDiagnosticoPrincipalAC').value ?? null;
+            const SelectPorDefectoConsultaRIPS1AC = document.getElementById('SelectPorDefectoConsultaRIPS1AC').value ?? null;
+            const SelectPorDefectoConsultaRIPS2AC = document.getElementById('SelectPorDefectoConsultaRIPS2AC').value ?? null;
+            const SelectPorDefectoDiagnosticoRIPSAC1 = document.getElementById('SelectPorDefectoDiagnosticoRIPSAC1').value ?? null;
+            const SelectPorDefectoDiagnosticoRIPSAC2 = document.getElementById('SelectPorDefectoDiagnosticoRIPSAC2').value ?? null;
+
+
+            // Se organizan datos de envío
+            const Datos = {
+                DocumentoProfesional: documentousuariologeado, 
+                TipoRIPS: SelectTipoRIPSPorDefecto,
+                TipoUsuario: SelectPorDefectoTipoUsuarioRIPS,
+                Entidad: SelectPorDefectoEntidadAC,
+                ModalidadGrupoServicioTecSal: SelectPorDefectoModalidadGrupoServicioTecSalAC,
+                GrupoServicio: SelectPoDefectoGrupoServiciosAC,
+                CodigoServicio: SelectPorDefectoCodigoServicioAC,
+                FinalidadTecnologiaSalud: SelectPorDefectoFinalidadTecnologiaSaludAC,
+                CausaMotivoAtencion: SelectPorDefectoCausaMotivoAtencionAC,
+                TipoDiagnosticoPrincipal: SelectPorDefectoTipoDiagnosticoPrincipalAC,
+                ConsultaRIPS1: SelectPorDefectoConsultaRIPS1AC,
+                ConsultaRIPS2: SelectPorDefectoConsultaRIPS2AC,
+                DiagnosticoRIPS1: SelectPorDefectoDiagnosticoRIPSAC1,
+                DiagnosticoRIPS2: SelectPorDefectoDiagnosticoRIPSAC2
+            }
+
+            const GuardarRIPSACPorDefecto = await fetch(`http://${servidor}:3000/api/GuardarRIPSPorDefecto`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(Datos)
+                }
+            )
+
+            if (GuardarRIPSACPorDefecto.ok) {
+                const respuesta = await GuardarRIPSACPorDefecto.json();
+                console.log('Respuesta del servidor:', respuesta);
+                Swal.fire({
+                    icon: 'success',
+                    html:
+                    `
+                        <strong class="text-light">El RIPS AC por defecto se guardó correctamente</strong>
+                    `
+                })
+                reiniciarSelect();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al guardar el RIPS AC por defecto',
+                    text: 'Por favor, intente nuevamente.'
+                })
+                console.error('Error en la solicitud:', GuardarRIPSACPorDefecto.status);
+            }
+
+            // Codiguitoooooooooooooooo
+                // const ACPorDefecto = document.getElementById('ACPorDefecto');
+                // const Valores = ACPorDefecto.querySelectorAll('select');
+
+                // Valores.forEach(select => {
+                //     // Excluir el select con id 'selectExcluido'
+                //     // if (select.id !== 'SelectTipoRIPSPorDefecto') {
+                //     //     select.innerHTML = ''; // Vaciar las opciones
+                //     // }
+                //     console.log(select.id);
+                // });
+            // FIN FIN FIN FIN DE Codiguitoooooooooooooooo
+            break;
+        case '2':
+            const SelectPorDefectoTipoUsuarioRIPSAP = document.getElementById('SelectPorDefectoTipoUsuarioRIPSAP').value ?? null;
+            const SelectPorDefectoEntidadAP = document.getElementById('SelectPorDefectoEntidadAP').value ?? null;
+            const SelectPorDefectoViaIngresoServicioSaludAP = document.getElementById('SelectPorDefectoViaIngresoServicioSaludAP').value ?? null;
+            const SelectPorDefectoModalidadGrupoServicioTecSalAP = document.getElementById('SelectPorDefectoModalidadGrupoServicioTecSalAP').value ?? null;
+            const SelectPorDefectoGrupoServiciosAP = document.getElementById('SelectPorDefectoGrupoServiciosAP').value ?? null;
+            const SelectPorDefectoCodServicioAP = document.getElementById('SelectPorDefectoCodServicioAP').value ?? null;
+            const SelectPorDefectoFinalidadTecnologíaSaludAP = document.getElementById('SelectPorDefectoFinalidadTecnologíaSaludAP').value ?? null;
+            const SelectPorDefectoProcedimientoRIPSAP1 = document.getElementById('SelectPorDefectoProcedimientoRIPSAP1').value ?? null;
+            const SelectPorDefectoProcedimientoRIPSAP2 = document.getElementById('SelectPorDefectoProcedimientoRIPSAP2').value ?? null;
+            const SelectPorDefectoDiagnosticoRIPSAP1 = document.getElementById('SelectPorDefectoDiagnosticoRIPSAP1').value ?? null;
+            const SelectPorDefectoDiagnosticoRIPSAP2 = document.getElementById('SelectPorDefectoDiagnosticoRIPSAP2').value ?? null;
+
+            // Se organizan datos de envío
+            const DatosAP = {
+                DocumentoProfesional: documentousuariologeado,
+                TipoRIPS: SelectTipoRIPSPorDefecto,
+                TipoUsuario: SelectPorDefectoTipoUsuarioRIPSAP,
+                Entidad: SelectPorDefectoEntidadAP,
+                ViaIngresoServicioSalud: SelectPorDefectoViaIngresoServicioSaludAP,
+                ModalidadGrupoServicioTecSal: SelectPorDefectoModalidadGrupoServicioTecSalAP,
+                GrupoServicio: SelectPorDefectoGrupoServiciosAP,
+                CodigoServicio: SelectPorDefectoCodServicioAP,
+                FinalidadTecnologiaSalud: SelectPorDefectoFinalidadTecnologíaSaludAP,
+                ConsultaRIPS1: SelectPorDefectoProcedimientoRIPSAP1,
+                ConsultaRIPS2: SelectPorDefectoProcedimientoRIPSAP2,
+                DiagnosticoRIPS1: SelectPorDefectoDiagnosticoRIPSAP1,
+                DiagnosticoRIPS2: SelectPorDefectoDiagnosticoRIPSAP2
+            };
+
+            const GuardarRIPSAPPorDefecto = await fetch(`http://${servidor}:3000/api/GuardarRIPSPorDefecto`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(DatosAP)
+                }
+            );
+            if (GuardarRIPSAPPorDefecto.ok) {
+                const respuesta = await GuardarRIPSAPPorDefecto.json();
+                console.log('Respuesta del servidor:', respuesta);
+                Swal.fire({
+                    icon: 'success',
+                    html:
+                    `
+                        <strong class="text-light">El RIPS AP por defecto se guardó correctamente</strong>
+                    `
+                })
+                reiniciarSelect();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Error al guardar el RIPS AP por defecto'
+                    
+                })
+                console.error('Error en la solicitud:', GuardarRIPSAPPorDefecto.status);
+            }
+
+            // Codiguitoooooooooooooooo
+                // const APPorDefecto = document.getElementById('APPorDefecto');
+                // const ValoresAP = APPorDefecto.querySelectorAll('select');
+        
+                // ValoresAP.forEach(select => {
+                //     // Excluir el select con id 'selectExcluido'
+                //     // if (select.id !== 'SelectTipoRIPSPorDefecto') {
+                //     //     select.innerHTML = ''; // Vaciar las opciones
+                //     // }
+                //     console.log(`const ${select.id} = document.getElementById('${select.id}');`);
+                // });
+            // FIN FIN FIN FIN DE Codiguitoooooooooooooooo
+            break;
+        case '3':
+            // await GuardarRIPS3();
+            break;
+        default:
+            Swal.fire({
+                icon: 'error',
+                text: 'SELECCIONE UN TIPO DE RIPS'
+            });
+    }
 }
 
 async function ActualizarRIPSPorDefecto() {
-    Swal.fire({
-        icon:'success',
-        text: 'RIPS ACTUALIZADO CORRECTAMENTE'
-    })
+    const NombreTipoRIPS = SelectTipoRIPSPorDefecto.options[SelectTipoRIPSPorDefecto.selectedIndex].text;
+    switch (SelectTipoRIPSPorDefecto.value) {
+        case '1':
+            const SelectPorDefectoTipoUsuarioRIPS = document.getElementById('SelectPorDefectoTipoUsuarioRIPS').value ?? null;
+            const SelectPorDefectoEntidadAC = document.getElementById('SelectPorDefectoEntidadAC').value ?? null;
+            const SelectPorDefectoModalidadGrupoServicioTecSalAC = document.getElementById('SelectPorDefectoModalidadGrupoServicioTecSalAC').value ?? null;
+            const SelectPoDefectoGrupoServiciosAC = document.getElementById('SelectPoDefectoGrupoServiciosAC').value ?? null;
+            const SelectPorDefectoCodigoServicioAC = document.getElementById('SelectPorDefectoCodigoServicioAC').value ?? null;
+            const SelectPorDefectoFinalidadTecnologiaSaludAC = document.getElementById('SelectPorDefectoFinalidadTecnologiaSaludAC').value ?? null;
+            const SelectPorDefectoCausaMotivoAtencionAC = document.getElementById('SelectPorDefectoCausaMotivoAtencionAC').value ?? null;
+            const SelectPorDefectoTipoDiagnosticoPrincipalAC = document.getElementById('SelectPorDefectoTipoDiagnosticoPrincipalAC').value ?? null;
+            const SelectPorDefectoConsultaRIPS1AC = document.getElementById('SelectPorDefectoConsultaRIPS1AC').value ?? null;
+            const SelectPorDefectoConsultaRIPS2AC = document.getElementById('SelectPorDefectoConsultaRIPS2AC').value ?? null;
+            const SelectPorDefectoDiagnosticoRIPSAC1 = document.getElementById('SelectPorDefectoDiagnosticoRIPSAC1').value ?? null;
+            const SelectPorDefectoDiagnosticoRIPSAC2 = document.getElementById('SelectPorDefectoDiagnosticoRIPSAC2').value ?? null;
+
+            // Se organizan datos de envío
+            const Datos = {
+                DocumentoProfesional: documentousuariologeado, 
+                TipoRIPS: SelectTipoRIPSPorDefecto.value,
+                TipoUsuario: SelectPorDefectoTipoUsuarioRIPS,
+                Entidad: SelectPorDefectoEntidadAC,
+                ModalidadGrupoServicioTecSal: SelectPorDefectoModalidadGrupoServicioTecSalAC,
+                GrupoServicio: SelectPoDefectoGrupoServiciosAC,
+                CodigoServicio: SelectPorDefectoCodigoServicioAC,
+                FinalidadTecnologiaSalud: SelectPorDefectoFinalidadTecnologiaSaludAC,
+                CausaMotivoAtencion: SelectPorDefectoCausaMotivoAtencionAC,
+                TipoDiagnosticoPrincipal: SelectPorDefectoTipoDiagnosticoPrincipalAC,
+                ConsultaRIPS1: SelectPorDefectoConsultaRIPS1AC,
+                ConsultaRIPS2: SelectPorDefectoConsultaRIPS2AC,
+                DiagnosticoRIPS1: SelectPorDefectoDiagnosticoRIPSAC1,
+                DiagnosticoRIPS2: SelectPorDefectoDiagnosticoRIPSAC2
+            }
+
+            const ActualizarRIPSACPorDefecto = await fetch(`http://${servidor}:3000/api/ActualizarRIPSPorDefecto`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(Datos)
+                }
+            )
+            if (ActualizarRIPSACPorDefecto.ok) {
+                const respuesta = await ActualizarRIPSACPorDefecto.json();
+                console.log('Respuesta del servidor:', respuesta);
+                Swal.fire({
+                    icon:'success',
+                    html:
+                    `
+                        <strong class="text-light">El RIPS AC por defecto se actualizó correctamente</strong>
+                    `
+                })
+                reiniciarSelect();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Error al actualizar el RIPS AC por defecto'
+                })
+                console.error('Error en la solicitud:', ActualizarRIPSACPorDefecto.status);
+            }
+        break;
+
+        case '2':
+            const SelectPorDefectoTipoUsuarioRIPSAP = document.getElementById('SelectPorDefectoTipoUsuarioRIPSAP').value ?? null;
+            const SelectPorDefectoEntidadAP = document.getElementById('SelectPorDefectoEntidadAP').value ?? null;
+            const SelectPorDefectoViaIngresoServicioSaludAP = document.getElementById('SelectPorDefectoViaIngresoServicioSaludAP').value ?? null;
+            const SelectPorDefectoModalidadGrupoServicioTecSalAP = document.getElementById('SelectPorDefectoModalidadGrupoServicioTecSalAP').value ?? null;
+            const SelectPorDefectoGrupoServiciosAP = document.getElementById('SelectPorDefectoGrupoServiciosAP').value ?? null;
+            const SelectPorDefectoCodServicioAP = document.getElementById('SelectPorDefectoCodServicioAP').value ?? null;
+            const SelectPorDefectoFinalidadTecnologíaSaludAP = document.getElementById('SelectPorDefectoFinalidadTecnologíaSaludAP').value ?? null;
+            const SelectPorDefectoProcedimientoRIPSAP1 = document.getElementById('SelectPorDefectoProcedimientoRIPSAP1').value ?? null;
+            const SelectPorDefectoProcedimientoRIPSAP2 = document.getElementById('SelectPorDefectoProcedimientoRIPSAP2').value ?? null;
+            const SelectPorDefectoDiagnosticoRIPSAP1 = document.getElementById('SelectPorDefectoDiagnosticoRIPSAP1').value ?? null;
+            const SelectPorDefectoDiagnosticoRIPSAP2 = document.getElementById('SelectPorDefectoDiagnosticoRIPSAP2').value ?? null;
+
+            // Se organizan datos de envío
+            const DatosAP = {
+                DocumentoProfesional: documentousuariologeado,
+                TipoRIPS: SelectTipoRIPSPorDefecto.value,
+                TipoUsuario: SelectPorDefectoTipoUsuarioRIPSAP,
+                Entidad: SelectPorDefectoEntidadAP,
+                ViaIngresoServicioSalud: SelectPorDefectoViaIngresoServicioSaludAP,
+                ModalidadGrupoServicioTecSal: SelectPorDefectoModalidadGrupoServicioTecSalAP,
+                GrupoServicio: SelectPorDefectoGrupoServiciosAP,
+                CodigoServicio: SelectPorDefectoCodServicioAP,
+                FinalidadTecnologiaSalud: SelectPorDefectoFinalidadTecnologíaSaludAP,
+                ConsultaRIPS1: SelectPorDefectoProcedimientoRIPSAP1,
+                ConsultaRIPS2: SelectPorDefectoProcedimientoRIPSAP2,
+                DiagnosticoRIPS1: SelectPorDefectoDiagnosticoRIPSAP1,
+                DiagnosticoRIPS2: SelectPorDefectoDiagnosticoRIPSAP2
+            };
+
+            const ActualizarRIPSAPPorDefecto = await fetch(`http://${servidor}:3000/api/ActualizarRIPSPorDefecto`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(DatosAP)
+                }
+            )
+            if (ActualizarRIPSAPPorDefecto.ok) {
+                const respuesta = await ActualizarRIPSAPPorDefecto.json();
+                console.log('Respuesta del servidor:', respuesta);
+                Swal.fire({
+                    icon:'success',
+                    html:
+                    `
+                        <strong class="text-light">El RIPS AP por defecto se actualizó correctamente</strong>
+                    `
+                })
+                reiniciarSelect();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Error al actualizar el RIPS AC por defecto'
+                })
+                console.error('Error en la solicitud:', ActualizarRIPSAPPorDefecto.status);
+            }
+        break;
+    }
 }
 
 async function EliminarRIPSPorDefecto() {
+    const NombreTipoRIPS = SelectTipoRIPSPorDefecto.options[SelectTipoRIPSPorDefecto.selectedIndex].text;
     Swal.fire({
-        icon: 'error',
-        text: 'RIPS ELIMINADO CORRECTAMENTE'
+        icon: 'question',
+        html:
+        `
+            <strong class="text-light">¿Realmente quieres eliminar el RIPS ${NombreTipoRIPS} por defecto?</strong>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No'
+    }).then(async function(response) {
+        if (response.isConfirmed) {
+            const ParametrosParaEliminar = {
+                DocumentoProfesional: documentousuariologeado,
+                TipoRIPS: SelectTipoRIPSPorDefecto.value
+            };
+            const ElimnarRIPSPorDefecto = await fetch(`http://${servidor}:3000/Api/EliminarRIPSPorDefecto`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(ParametrosParaEliminar)
+                }
+            );
+            if (ElimnarRIPSPorDefecto.ok) {
+                const respuesta = await ElimnarRIPSPorDefecto.json();
+                console.log('Respuesta del servidor:', respuesta);
+                reiniciarSelect();
+                Swal.fire({
+                    icon:'success',
+                    html:
+                    `
+                        <strong class="text-light"> El RIPS ${NombreTipoRIPS} por defecto fue eliminado</strong>
+                    `
+                })
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Error al eliminar el RIPS por defecto'
+                })
+                console.error('Error en la solicitud:', ElimnarRIPSPorDefecto.status);
+            }
+        }
     })
 }
 
@@ -3396,3 +3712,266 @@ BotonGuardarRIPSPorDefecto.addEventListener('click', GuardarRIPSPorDefecto);
 BotonActualizarRIPSPorDefecto.addEventListener('click', ActualizarRIPSPorDefecto);
 BotonEliminarRIPSPorDefecto.addEventListener('click', EliminarRIPSPorDefecto);
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// FUNCIONALIDAD PARA CARGAR/MOSTRAR LOS RIPS POR DEFECTO QUE HAYA CONFIGURADO EL PROFESIONAL
+const BotonCargarRIPSPorDefecto = document.getElementById('BotonCargarRIPSPorDefecto');
+
+async function CargarRIPSPorDefecto() {
+    if (!radioAC.checked && !radioAP.checked) {
+        Swal.fire({
+            icon: 'warning',
+            html:
+            `
+                <strong class="text-light">Para poder cargar los RIPS por defecto, debe seleccionar un tipo de RIPS (AC o AP)</strong>
+            `
+        })
+        return;
+    }else {
+        let TipoRIPS;
+        let NombreTipoRIPS;
+        if (radioAC.checked) {
+            TipoRIPS = 1;
+            NombreTipoRIPS = 'AC';
+            console.log(`CON AC => ${TipoRIPS}`);
+        }        
+        if (radioAP.checked) {
+            TipoRIPS = 2;
+            NombreTipoRIPS = 'AP';
+            console.log(`CON AP => ${TipoRIPS}`);
+        }
+        const ParametrosParaConsulta = {
+            DocumentoProfesional: documentousuariologeado
+        };
+        const RIPSPorDefecto = await fetch(`http://${servidor}:3000/api/ConsultarRIPSPorDefecto/${documentousuariologeado}/${TipoRIPS}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                // body: JSON.stringify(ParametrosParaConsulta)
+            }
+        );
+        if (RIPSPorDefecto.ok) {
+            const respuesta = await RIPSPorDefecto.json();
+            console.log('Respuesta del servidor:', respuesta);
+            if (respuesta.length > 0) {
+                switch (NombreTipoRIPS) {
+                    case 'AC':
+                        // SelectPorDefectoTipoUsuarioRIPSAC.value = respuesta[0].TipoUsuario;
+                        // SelectPorDefectoEntidadAC.value = respuesta[0].Entidad;
+                        // SelectPorDefectoViaIngresoServicioSaludAC.value = respuesta[0].ViaIngresoServicioSalud;
+                        // SelectPorDefectoModalidadGrupoServicioTecSalAC.value = respuesta[0].ModalidadGrupoServicioTecSalud;
+                        // SelectPorDefectoGrupoServiciosAC.value = respuesta[0].GrupoServicios;
+                        // SelectPorDefectoCodServicioAC.value = respuesta[0].CodigoServicio;
+                        // SelectPorDefectoFinalidadTecnologíaSaludAC.value = respuesta[0].FinalidadTecnologiaSalud;
+                        // SelectPorDefectoProcedimientoRIPSAC1.value = respuesta[0].ConsultaRIPS1;
+                        // SelectPorDefectoProcedimientoRIPSAC2.value = respuesta[0].ConsultaRIPS2;
+                        // SelectPorDefectoDiagnosticoRIPSAC1.value = respuesta[0].DiagnosticoRIPS1;
+                        // SelectPorDefectoDiagnosticoRIPSAC2.value = respuesta[0].DiagnosticoRIPS2;
+
+                        // const TipoAC = document.getElementById('TipoAC');
+                        // const ValoresAC = TipoAC.querySelectorAll('select');
+                        // ValoresAC.forEach(select => {
+                        //     console.log(`const ${select.id} = document.getElementById('${select.id}');`);
+                        // });
+
+                        const SelectTipoUsuarioRIPS = document.getElementById('SelectTipoUsuarioRIPS');
+                        const SelectEntidad = document.getElementById('SelectEntidad');
+                        const SelectModalidadGrupoServicioTecnologiaSalud = document.getElementById('SelectModalidadGrupoServicioTecnologiaSalud');
+                        const SelectGrupoServiciosAC = document.getElementById('SelectGrupoServiciosAC');
+                        const SelectServiciosAC = document.getElementById('SelectServiciosAC');
+                        const SelectFinalidadTecnologiaSaludAC = document.getElementById('SelectFinalidadTecnologiaSaludAC');
+                        const SelectCausaMotivoAtencion = document.getElementById('SelectCausaMotivoAtencion');
+                        const SelectTipoDiagnosticoPrincipalAC = document.getElementById('SelectTipoDiagnosticoPrincipalAC');
+                        const SelectConsultaRIPSAC1 = document.getElementById('SelectConsultaRIPSAC1');
+                        const SelectConsultaRIPSAC2 = document.getElementById('SelectConsultaRIPSAC2');
+                        const SelectDiagnosticoRIPSAC1 = document.getElementById('SelectDiagnosticoRIPSAC1');
+                        const SelectDiagnosticoRIPSAC2 = document.getElementById('SelectDiagnosticoRIPSAC2');
+
+
+                        // SelectTipoUsuarioRIPS.options[SelectTipoUsuarioRIPS.selectedIndex].text = respuesta[0].TipoDeUsuario;
+
+
+                        // Recorrer las opciones del select
+                        for (let i = 0; i < SelectTipoUsuarioRIPS.options.length; i+=1) {
+                            if (SelectTipoUsuarioRIPS.options[i].text === respuesta[0].TipoDeUsuario) {
+                                SelectTipoUsuarioRIPS.selectedIndex = i; // Marcar la opción
+                                // Simular el evento change
+                                var event = new Event('change', {
+                                    bubbles: true,
+                                    cancelable: true
+                                });
+                                SelectTipoUsuarioRIPS.dispatchEvent(event); // Disparar el evento
+                                break; // Salir del bucle una vez encontrada
+                            }
+                        }
+
+                        for (let i = 0; i < SelectEntidad.options.length; i+=1) {
+                            console.log(`Valores = > ${SelectEntidad.options[i].text} Respuesta => ${respuesta[0].Entidad}`);
+                            if (SelectEntidad[i].text === respuesta[0].Entidad) {
+                                SelectEntidad.selectedIndex = i; // Marcar la opción
+                                break; // Salir del bucle una vez encontrada
+                            }
+                        }
+
+
+                        for (let i = 0; i < SelectModalidadGrupoServicioTecnologiaSalud.options.length; i+=1) {
+                            console.log(`Valores = > ${SelectModalidadGrupoServicioTecnologiaSalud.options[i].text} Respuesta => ${respuesta[0].ModalidadGrupoServicioTecnologiaEnSalud}`);
+                            if (SelectModalidadGrupoServicioTecnologiaSalud[i].text === respuesta[0].ModalidadGrupoServicioTecnologiaEnSalud) {
+                                SelectModalidadGrupoServicioTecnologiaSalud.selectedIndex = i; // Marcar la opción
+                                break; // Salir del bucle una vez encontrada
+                            }
+                        }
+
+                        for (let i = 0; i < SelectGrupoServiciosAC.options.length; i+=1) {
+                            if (SelectGrupoServiciosAC[i].text === respuesta[0].GrupoServicios) {
+                                SelectGrupoServiciosAC.selectedIndex = i; // Marcar la opción
+                                // Simular el evento change
+                                var event = new Event('change', {
+                                    bubbles: true,
+                                    cancelable: true
+                                });
+                                SelectGrupoServiciosAC.dispatchEvent(event); // Disparar el evento
+                                break; // Salir del bucle una vez encontrada
+                            }
+                        }
+
+                        for (let i = 0; i < SelectServiciosAC.options.length; i+=1) {
+                            if (SelectServiciosAC[i].text === respuesta[0].CodigoServicio) {
+                                SelectServiciosAC.selectedIndex = i; // Marcar la opción
+                                break; // Salir del bucle una vez encontrada
+                            }
+                        }
+
+                        for (let i = 0; i < SelectFinalidadTecnologiaSaludAC.options.length; i+=1) {
+                            if (SelectFinalidadTecnologiaSaludAC[i].text === respuesta[0].FinalidadTecnologiaSalud) {
+                                SelectFinalidadTecnologiaSaludAC.selectedIndex = i; // Marcar la opción
+                                break; // Salir del bucle una vez encontrada
+                            }
+                        }
+
+                        for (let i = 0; i < SelectCausaMotivoAtencion.options.length; i+=1) {
+                            if (SelectCausaMotivoAtencion[i].text === respuesta[0].CausaMotivoAtencion) {
+                                SelectCausaMotivoAtencion.selectedIndex = i; // Marcar la opción
+                                break; // Salir del bucle una vez encontrada
+                            }
+                        }
+
+                        for (let i = 0; i < SelectTipoDiagnosticoPrincipalAC.options.length; i+=1) {
+                            if (SelectTipoDiagnosticoPrincipalAC[i].text === respuesta[0].TipoDiagnosticoPrincipal) {
+                                SelectTipoDiagnosticoPrincipalAC.selectedIndex = i; // Marcar la opción
+                                break; // Salir del bucle una vez encontrada
+                            }
+                        }
+
+                        for (let i = 0; i < SelectConsultaRIPSAC1.options.length; i+=1) {
+                            if (SelectConsultaRIPSAC1[i].text === respuesta[0].Diagnostico1) {
+                                SelectConsultaRIPSAC1.selectedIndex = i; // Marcar la opción
+                                break; // Salir del bucle una vez encontrada
+                            }
+                        }
+
+                        for (let i = 0; i < SelectConsultaRIPSAC2.options.length; i+=1) {
+                            if (SelectConsultaRIPSAC2[i].text === respuesta[0].Diagnostico2) {
+                                SelectConsultaRIPSAC2.selectedIndex = i; // Marcar la opción
+                                break; // Salir del bucle una vez encontrada
+                            }
+                        }
+
+                        for (let i = 0; i < SelectDiagnosticoRIPSAC1.options.length; i+=1) {
+                            if (SelectDiagnosticoRIPSAC1[i].text === respuesta[0].Procedimiento1) {
+                                SelectDiagnosticoRIPSAC1.selectedIndex = i; // Marcar la opción
+                                break; // Salir del bucle una vez encontrada
+                            }
+                        }
+
+                        // for (let i = 0; i < SelectDiagnosticoRIPSAC2.options.length; i+=1) {
+                        //     console.log(`Opcion => ${SelectDiagnosticoRIPSAC2.options[i].text} Respuesta => ${respuesta[0].Procedimiento2}`)
+                        //     if (SelectDiagnosticoRIPSAC2[i].text === respuesta[0].Procedimiento2) {
+                        //         SelectDiagnosticoRIPSAC2.selectedIndex = i; // Marcar la opción
+                        //         break; // Salir del bucle una vez encontrada
+                        //     }
+                        // }
+
+
+                        for (let i = 0; i < SelectDiagnosticoRIPSAC2.options.length; i++) {
+                            // Dividir el texto de la opción en partes antes y después del guion
+                            let textoOpcion = SelectDiagnosticoRIPSAC2.options[i].text.split(' - ')[1]?.trim(); // Tomar la parte después del guion y quitar espacios
+                        
+                            // Imprimir para depuración
+                            console.log(`Opción => ${textoOpcion} Respuesta => ${respuesta[0].Procedimiento2}`);
+
+                            let Valorcito = respuesta[0].Procedimiento2.trim();
+                            console.log(`Valorcito => ${Valorcito}`);
+                        
+                            // Comparar la parte después del guion con la respuesta
+                            if (textoOpcion === respuesta[0].Procedimiento2.trim()) {
+                                SelectDiagnosticoRIPSAC2.selectedIndex = i; // Marcar la opción
+                                break; // Salir del bucle una vez encontrada
+                            }
+                        }
+                        // =====================================
+
+
+
+                        // let Opciones = SelectModalidadGrupoServicioTecnologiaSalud.options;
+
+                        // for (let i = 0; i < Opciones.length; i++) {
+                        //     let opcion = Opciones[i];
+                        //     console.log(`Opción ${i + 1}:`);
+                        //     console.log(`Valor: ${opcion.value}`);
+                        //     console.log(`Texto: ${opcion.text}`);
+                        //     console.log(`Seleccionado: ${opcion.selected}`);
+                        //     console.log('---');
+                        // }                                      
+                    break;
+
+                    case 'AP':
+                        SelectPorDefectoTipoUsuarioRIPSAP.value = respuesta[0].TipoUsuario;
+                        SelectPorDefectoEntidadAP.value = respuesta[0].Entidad;
+                        SelectPorDefectoViaIngresoServicioSaludAP.value = respuesta[0].ViaIngresoServicioSalud;
+                        SelectPorDefectoModalidadGrupoServicioTecSalAP.value = respuesta[0].ModalidadGrupoServicioTecSalud;
+                        SelectPorDefectoGrupoServiciosAP.value = respuesta[0].GrupoServicios;
+                        SelectPorDefectoCodServicioAP.value = respuesta[0].CodigoServicio;
+                        SelectPorDefectoFinalidadTecnologíaSaludAP.value = respuesta[0].FinalidadTecnologiaSalud;
+                        SelectPorDefectoProcedimientoRIPSAP1.value = respuesta[0].ConsultaRIPS1;
+                        SelectPorDefectoProcedimientoRIPSAP2.value = respuesta[0].ConsultaRIPS2;
+                        SelectPorDefectoDiagnosticoRIPSAP1.value = respuesta[0].DiagnosticoRIPS1;
+                        SelectPorDefectoDiagnosticoRIPSAP2.value = respuesta[0].DiagnosticoRIPS2;
+                    break;
+                }
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    html:
+                    `
+                        <strong class="text-light">El profesional no ha configurado ningún RIPS ${NombreTipoRIPS} por defecto</strong>
+                    `
+                });
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                text: 'Error al consultar los RIPS por defecto'
+            })
+            console.error('Error en la solicitud:', RIPSPorDefecto);
+            return;
+        }
+    }
+}
+
+BotonCargarRIPSPorDefecto.addEventListener('click', CargarRIPSPorDefecto);
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+radioAC.addEventListener('click', function(e) {
+    if (radioAC.checked) {
+        radioAP.checked = false;
+    }
+})
+
+radioAP.addEventListener('click', function(e) {
+    if (radioAP.checked) {
+        radioAC.checked = false;
+    }
+})

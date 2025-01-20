@@ -1032,16 +1032,221 @@ router.get('/ConsultarRIPSPorDefecto/:DocumentoProfesional/:TipoRIPS', async (re
 
 // CRUD PARA RIPS POR DEFECTO
 // Guardar
-router.post('/GuardarRIPSPorDefecto/:DocumentoProfesional/:TipoRIPS', async (req, res) => {
+// router.post('/GuardarRIPSPorDefecto/:DocumentoProfesional/:TipoRIPS', async (req, res) => {
+router.post('/GuardarRIPSPorDefecto', async (req, res) => {
+    // Se reciben los datos enviados por el cliente
+    const { 
+        DocumentoProfesional,
+        TipoRIPS,
+        TipoUsuario,
+        Entidad,
+        ViaIngresoServicioSalud,
+        ModalidadGrupoServicioTecSal,
+        GrupoServicio,
+        CodigoServicio,
+        FinalidadTecnologiaSalud,
+        CausaMotivoAtencion,
+        TipoDiagnosticoPrincipal,
+        ConsultaRIPS1,
+        ConsultaRIPS2,
+        DiagnosticoRIPS1,
+        DiagnosticoRIPS2
+    } = req.body;
 
+    // Se ejecuta la consulta para guardar los datos en la base de datos
+    try {
+        const GuardarRIPSPorDefecto = new Request(`
+            INSERT INTO [dbo].[API_RIPS_POR_DEFECTO]
+                ([DocumentoEntidad]
+                ,[TipoDeRips]
+                ,[TipoDeUsuario]
+                ,[Entidad]
+                ,[ViaIngresoServicioSalud]
+                ,[ModalidadGrupoServicioTecnologiaEnSalud]
+                ,[GrupoServicios]
+                ,[CodigoServicio]
+                ,[FinalidadTecnologiaSalud]
+                ,[CausaMotivoAtencion]
+                ,[TipoDiagnosticoPrincipal]
+                ,[Diagnostico1]
+                ,[Diagnostico2]
+                ,[Procedimiento1]
+                ,[Procedimiento2])
+            VALUES
+                (
+                    @DocumentoProfesional,
+                    @TipoRIPS,
+                    @TipoUsuario,
+                    @Entidad,
+                    @ViaIngresoServicioSalud,
+                    @ModalidadGrupoServicioTecSal,
+                    @GrupoServicio,
+                    @CodigoServicio,
+                    @FinalidadTecnologiaSalud,
+                    @CausaMotivoAtencion,
+                    @TipoDiagnosticoPrincipal,
+                    @Diagnostico1,
+                    @Diagnostico2,
+                    @Procedimiento1,
+                    @Procedimiento2
+                )
+        `, (err) => {
+            if (err) {
+                console.error('Error al guardar los rips predefinidos:', err.message);
+                return res.status(500).json({ error: 'Error al guardar los rips predefinidos' });
+            }
+            console.log('Datos guardados correctamente');
+            return res.status(200).json({ message: 'Datos guardados correctamente', DocumentoProfesional, TipoRIPS });
+        });
+
+        // Se le pasan los parámetros
+        GuardarRIPSPorDefecto.addParameter('DocumentoProfesional', TYPES.NVarChar, DocumentoProfesional);
+        GuardarRIPSPorDefecto.addParameter('TipoRIPS', TYPES.NVarChar, TipoRIPS);
+        GuardarRIPSPorDefecto.addParameter('TipoUsuario', TYPES.NVarChar, TipoUsuario);
+        GuardarRIPSPorDefecto.addParameter('Entidad', TYPES.NVarChar, Entidad);
+        GuardarRIPSPorDefecto.addParameter('ViaIngresoServicioSalud', TYPES.NVarChar, ViaIngresoServicioSalud);
+        GuardarRIPSPorDefecto.addParameter('ModalidadGrupoServicioTecSal', TYPES.NVarChar, ModalidadGrupoServicioTecSal);
+        GuardarRIPSPorDefecto.addParameter('GrupoServicio', TYPES.NVarChar, GrupoServicio);
+        GuardarRIPSPorDefecto.addParameter('CodigoServicio', TYPES.NVarChar, CodigoServicio);
+        GuardarRIPSPorDefecto.addParameter('FinalidadTecnologiaSalud', TYPES.NVarChar, FinalidadTecnologiaSalud);
+        GuardarRIPSPorDefecto.addParameter('CausaMotivoAtencion', TYPES.NVarChar, CausaMotivoAtencion);
+        GuardarRIPSPorDefecto.addParameter('TipoDiagnosticoPrincipal', TYPES.NVarChar, TipoDiagnosticoPrincipal);
+        GuardarRIPSPorDefecto.addParameter('Diagnostico1', TYPES.NVarChar, ConsultaRIPS1);
+        GuardarRIPSPorDefecto.addParameter('Diagnostico2', TYPES.NVarChar, ConsultaRIPS2);
+        GuardarRIPSPorDefecto.addParameter('Procedimiento1', TYPES.NVarChar, DiagnosticoRIPS1);
+        GuardarRIPSPorDefecto.addParameter('Procedimiento2', TYPES.NVarChar, DiagnosticoRIPS2);
+
+        // Se ejecuta la consulta
+        connection.execSql(GuardarRIPSPorDefecto);
+    } catch (Error) {
+        console.error('Error en el guardado:', Error);
+        return res.status(500).json({ error: 'Error en el guardado' });
+    }
+    // res.status(200).json({ message: 'Datos recibidos correctamente', DocumentoProfesional, TipoRIPS });
+    // console.log(res);
+    const InformacionRecibida = {
+        DocumentoProfesional,
+        TipoRIPS,
+        TipoUsuario,
+        Entidad,
+        ModalidadGrupoServicioTecSal,
+        GrupoServicio,
+        CodigoServicio,
+        FinalidadTecnologiaSalud,
+        CausaMotivoAtencion,
+        TipoDiagnosticoPrincipal,
+        ConsultaRIPS1,
+        ConsultaRIPS2,
+        DiagnosticoRIPS1,
+        DiagnosticoRIPS2
+    }
+    console.log(InformacionRecibida);
 })
 // Actualizar
-router.post('/ActualizarRIPSPorDefecto/:DocumentoProfesional/:TipoRIPS', async (req, res) => {
-    
+// router.post('/ActualizarRIPSPorDefecto/:DocumentoProfesional/:TipoRIPS', async (req, res) => {
+router.post('/ActualizarRIPSPorDefecto', async (req, res) => {    
+    const {
+        DocumentoProfesional,
+        TipoRIPS,
+        TipoUsuario,
+        Entidad,
+        ViaIngresoServicioSalud,
+        ModalidadGrupoServicioTecSal,
+        GrupoServicio,
+        CodigoServicio,
+        FinalidadTecnologiaSalud,
+        CausaMotivoAtencion,
+        TipoDiagnosticoPrincipal,
+        ConsultaRIPS1,
+        ConsultaRIPS2,
+        DiagnosticoRIPS1,
+        DiagnosticoRIPS2
+    } = req.body;
+
+    try {
+        const ActualizarRIPSPorDefecto = new Request(`
+            UPDATE [dbo].[API_RIPS_POR_DEFECTO]
+            SET [DocumentoEntidad] = @DocumentoEntidad,
+                [TipoDeRips] = @TipoDeRips,
+                [TipoDeUsuario] = @TipoDeUsuario,
+                [Entidad] = @Entidad,
+                [ViaIngresoServicioSalud] = @ViaIngresoServicioSalud,
+                [ModalidadGrupoServicioTecnologiaEnSalud] = @ModalidadGrupoServicioTecnologiaEnSalud,
+                [GrupoServicios] = @GrupoServicios,
+                [CodigoServicio] = @CodigoServicio,
+                [FinalidadTecnologiaSalud] = @FinalidadTecnologiaSalud,
+                [CausaMotivoAtencion] = @CausaMotivoAtencion,
+                [TipoDiagnosticoPrincipal] = @TipoDiagnosticoPrincipal,
+                [Diagnostico1] = @Diagnostico1,
+                [Diagnostico2] = @Diagnostico2,
+                [Procedimiento1] = @Procedimiento1,
+                [Procedimiento2] = @Procedimiento2
+            WHERE
+                [DocumentoEntidad] = @DocumentoEntidad AND
+                [TipoDeRips] = @TipoDeRips
+        `, (err) => {
+            if (err) {
+                console.error('Error al actualizar los rips predefinidos:', err.message);
+                return res.status(500).json({ error: 'Error al actualizar los rips predefinidos' });
+            }
+            console.log('Datos actualizados correctamente');
+            return res.status(200).json({ message: 'Datos actualizados correctamente' });
+        })
+        // Se le pasan los parámetros
+        ActualizarRIPSPorDefecto.addParameter('DocumentoEntidad', TYPES.NVarChar, req.body.DocumentoProfesional);
+        ActualizarRIPSPorDefecto.addParameter('TipoDeRips', TYPES.NVarChar, req.body.TipoRIPS);
+        ActualizarRIPSPorDefecto.addParameter('TipoDeUsuario', TYPES.NVarChar, req.body.TipoUsuario);
+        ActualizarRIPSPorDefecto.addParameter('Entidad', TYPES.NVarChar, req.body.Entidad);
+        ActualizarRIPSPorDefecto.addParameter('ViaIngresoServicioSalud', TYPES.NVarChar, req.body.ViaIngresoServicioSalud);
+        ActualizarRIPSPorDefecto.addParameter('ModalidadGrupoServicioTecnologiaEnSalud', TYPES.NVarChar, req.body.ModalidadGrupoServicioTecSal);
+        ActualizarRIPSPorDefecto.addParameter('GrupoServicios', TYPES.NVarChar, req.body.GrupoServicio);
+        ActualizarRIPSPorDefecto.addParameter('CodigoServicio', TYPES.NVarChar, req.body.CodigoServicio);
+        ActualizarRIPSPorDefecto.addParameter('FinalidadTecnologiaSalud', TYPES.NVarChar, req.body.FinalidadTecnologiaSalud);
+        ActualizarRIPSPorDefecto.addParameter('CausaMotivoAtencion', TYPES.NVarChar, req.body.CausaMotivoAtencion);
+        ActualizarRIPSPorDefecto.addParameter('TipoDiagnosticoPrincipal', TYPES.NVarChar, req.body.TipoDiagnosticoPrincipal);
+        ActualizarRIPSPorDefecto.addParameter('Diagnostico1', TYPES.NVarChar, req.body.ConsultaRIPS1);
+        ActualizarRIPSPorDefecto.addParameter('Diagnostico2', TYPES.NVarChar, req.body.ConsultaRIPS2);
+        ActualizarRIPSPorDefecto.addParameter('Procedimiento1', TYPES.NVarChar, req.body.DiagnosticoRIPS1);
+        ActualizarRIPSPorDefecto.addParameter('Procedimiento2', TYPES.NVarChar, req.body.DiagnosticoRIPS2);
+        // Se ejecuta la consulta
+        connection.execSql(ActualizarRIPSPorDefecto);
+    } catch (Error) {
+        console.error('Error en la actualización:', Error);
+        return res.status(500).json({ error: `Error en la actualización => ${Error}`  });
+    }
 })
 // Eliminar
-router.post('/EliminarRIPSPorDefecto/:DocumentoProfesional/:TipoRIPS', async (req, res) => {
-    
+// router.post('/EliminarRIPSPorDefecto/:DocumentoProfesional/:TipoRIPS', async (req, res) => {
+router.post('/EliminarRIPSPorDefecto', async (req, res) => {
+    const {
+        DocumentoProfesional,
+        TipoRIPS
+    } = req.body;
+
+    try {
+        const EliminarRIPSPorDefecto = new Request(`
+            DELETE FROM [dbo].[API_RIPS_POR_DEFECTO]
+            WHERE
+                [DocumentoEntidad] = @DocumentoProfesional
+                AND [TipoDeRips] = @TipoRIPS
+        `, (err) => {
+            if (err) {
+                console.error('Error al eliminar los rips predefinidos:', err.message);
+                return res.status(500).json({ error: 'Error al eliminar los rips predefinidos' });
+            }
+            console.log('Datos eliminados correctamente');
+            return res.status(200).json({ message: 'Datos eliminados correctamente' });
+        })
+
+        // Se le pasan los parámetros
+        EliminarRIPSPorDefecto.addParameter('DocumentoProfesional', TYPES.NVarChar, DocumentoProfesional);
+        EliminarRIPSPorDefecto.addParameter('TipoRIPS', TYPES.NVarChar, TipoRIPS);
+        // Se ejecuta la consulta
+        connection.execSql(EliminarRIPSPorDefecto);
+    } catch (Error) {
+        console.error('Error al eliminar los rips predefinidos:', Error.message);
+        return res.status(500).json({ error: 'Error al eliminar los rips predefinidos' });
+    }
 })
 
 module.exports = router;
