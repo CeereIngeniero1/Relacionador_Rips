@@ -26,7 +26,12 @@ router.get('/usuarios/rips/:fechaInicio/:fechaFin/:ResolucionesRips/:documentoEm
         CONVERT(VARCHAR, en3.[Fecha Nacimiento EntidadIII], 23) AS [fechaNacimiento], Sexo.[Sexo] AS [codSexo], 
         País.País AS [codPaisResidencia], Ciu.[Código Ciudad] AS [codMunicipioResidencia], 
         '0' + zr.[Código Zona Residencia] as [codZonaTerritorialResidencia], 'NO' AS incapacidad,
-        1 AS consecutivo, pais2.País AS [codPaisOrigen], eve.[Id Evaluación Entidad], everips.[Id Tipo de Rips]
+        DENSE_RANK() OVER (ORDER BY en.[Documento Entidad] DESC) AS consecutivo, pais2.País AS [codPaisOrigen], eve.[Id Evaluación Entidad], everips.[Id Tipo de Rips], 
+		CASE
+			WHEN fc.[Documento Responsable] in (select [Documento Entidad] from [Función Por Entidad] where [Id Función] in ( select [Id Función] from Función where Función like ('%eps%' ) or Función like ('%prepa%') )) 
+				THEN 1 
+			ELSE 0
+		END AS 'Prepagada'
 
         FROM Entidad as en
 
@@ -50,6 +55,7 @@ router.get('/usuarios/rips/:fechaInicio/:fechaFin/:ResolucionesRips/:documentoEm
 
         WHERE CONVERT(DATE, eve.[Fecha Evaluación Entidad], 23) BETWEEN @fechaInicio AND @fechaFin
         AND eve.[Documento Empresa] = @documentoEmpresaSeleccionada
+        ORDER BY en.[Documento Entidad] DESC
         `,
         (err) => {
             if (err) {
