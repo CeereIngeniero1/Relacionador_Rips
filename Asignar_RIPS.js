@@ -34,26 +34,6 @@ function VerificarLogin() {
 // Llamar a la función al cargar la página
 VerificarLogin();
 
-// const ejecutar = async () => {
-//     try {
-//         const abc = await fetch(`http://${servidor}:3000/api/pruebahc`);
-        
-//         if (!abc.ok) {
-//             // Captura un error en caso de que la respuesta no sea 'ok'
-//             throw new Error(`Error en la solicitud: ${abc.status} ${abc.statusText}`);
-//         }
-
-//         const Datos = await abc.json();
-//         console.log('Pacientes:', Datos);
-        
-//     } catch (error) {
-//         // Manejo de errores de red o de la API
-//         console.error('Ocurrió un error al realizar la solicitud:', error.message);
-//     }
-// };
-// ejecutar();
-
-
 const BotonConsultar = document.getElementById('BotonConsultar');
 const ModalConsultar = document.getElementById('ModalConsultar');
 
@@ -405,6 +385,42 @@ radioAC.addEventListener('change', async function (e) {
                 SelectTipoUsuarioRIPS.appendChild(option);
             }
 
+            // Funcionalidad para el llenado del select de entidad
+            const EntidadResponsable = await fetch(`http://${servidor}:3000/api/Entidad`);
+            if (!EntidadResponsable) {
+                throw new Error(`Error al obtener las entidades responsables: ${EntidadResponsable.statusText}`);
+            }
+            const CargarEntidadResponsable = await EntidadResponsable.json();
+            // console.log('Entidades Responsables: ', CargarEntidadResponsable);
+    
+            SelectEntidadResponsable.innerHTML = '';
+            // Opción por defecto
+            const defaultOptionn = document.createElement('option');
+            defaultOptionn.textContent = 'Seleccione una entidad';
+            defaultOptionn.value = '';
+            SelectEntidadResponsable.appendChild(defaultOptionn);
+
+            // Ordenar el array por el nombre completo del paciente
+            CargarEntidadResponsable.sort((a, b) => {
+                if (a.NombreCompletoPaciente < b.NombreCompletoPaciente) return -1;
+                if (a.NombreCompletoPaciente > b.NombreCompletoPaciente) return 1;
+                return 0;
+            });
+
+            for (let i = 0; i < CargarEntidadResponsable.length; i++) {
+                const option = document.createElement('option');
+                option.value = CargarEntidadResponsable[i].DocumentoEntidad;
+                option.textContent = CargarEntidadResponsable[i].NombreCompletoPaciente;
+                option.setAttribute('data-category', CargarEntidadResponsable[i]['IdTipoRips']);
+                SelectEntidadResponsable.appendChild(option);
+            }
+            // Ocultar todas las opciones excepto la primera
+            Array.from(SelectEntidadResponsable.options).forEach((option, index) => {
+                if (index !== 0) { // Si no es la primera opción
+                    option.style.display = 'none'; // Ocultar opción
+                }
+            });
+
             // Funcionalidad para el llenado del select de ModalidadGrupoServicioTecnologíaSalud
             const ModalidadGrupoServicioTecnologiaSalud = await fetch(`http://${servidor}:3000/api/ModalidadAtencion`);
             if (!ModalidadGrupoServicioTecnologiaSalud) {
@@ -462,6 +478,45 @@ radioAC.addEventListener('change', async function (e) {
                 SelectGrupoServiciosAC.appendChild(option);
             }
     
+            // Funcionalidad para el llenado del select de servicios
+            const CargarServicios = await fetch(`http://${servidor}:3000/api/Servicios`);
+            if (!CargarServicios.ok) {
+                // throw new Error(`Error al obtener los servicios: ${CargarServicios.statusText}`);
+                // throw new Error(`Error al obtener los servicios: ${CargarServicios}`);
+    
+                const errorDetails = await CargarServicios.text(); // O usa .json() si esperas un JSON
+                throw new Error(`Error al obtener los servicios: ${CargarServicios.status} ${CargarServicios.statusText}. Detalles: ${errorDetails}`);
+            }
+            const CargarServiciosAC = await CargarServicios.json();
+            // console.log('Servicios: ', CargarServiciosAC);
+    
+            SelectServiciosAC.innerHTML = '';
+            // Opción por defecto
+            const defaultOption20 = document.createElement('option');
+            defaultOption20.textContent = 'Seleccione un servicio';
+            defaultOption20.value = '';
+            SelectServiciosAC.appendChild(defaultOption20);
+            // Ordenar el array por el nombre del servicio
+            CargarServiciosAC.sort((a, b) => {
+                if (a['Nombre Servicios'] < b['Nombre Servicios']) return -1;
+                if (a['Nombre Servicios'] > b['Nombre Servicios']) return 1;
+                return 0;
+            });
+    
+            for (let i = 0; i < CargarServiciosAC.length; i++) {
+                const option = document.createElement('option');
+                option.value = CargarServiciosAC[i]['Id Servicios'];
+                option.textContent = CargarServiciosAC[i]['Nombre Servicios'];
+                option.setAttribute('data-category', CargarServiciosAC[i]['Codigo Grupo Servicios']);
+                SelectServiciosAC.appendChild(option);
+            }
+            // Ocultar todas las opciones excepto la primera
+            Array.from(SelectServiciosAC.options).forEach((option, index) => {
+                if (index !== 0) { // Si no es la primera opción
+                    option.style.display = 'none'; // Ocultar opción
+                }
+            });
+
             // Funcionalidad para el llenado del select de FinalidadTecnologiaSalud
             const FinalidadParaAC = "AC";
             const FinalidadTecnologiaSaludAC = await fetch(`http://${servidor}:3000/api/FinalidadV2/${FinalidadParaAC}`);
@@ -684,35 +739,15 @@ SelectTipoDeUsuarioRIPS.addEventListener('change', async function (e) {
 
     try {
         if (this.value !== "") {
-            const ValorSelectTipoUsuarioRIPS = this.value;
-            // Funcionalidad para el llenado del select de entidad
-            const EntidadResponsable = await fetch(`http://${servidor}:3000/api/Entidad/${ValorSelectTipoUsuarioRIPS}`);
-            if (!EntidadResponsable) {
-                throw new Error(`Error al obtener las entidades responsables: ${EntidadResponsable.statusText}`);
-            }
-            const CargarEntidadResponsable = await EntidadResponsable.json();
-            // console.log('Entidades Responsables: ', CargarEntidadResponsable);
-    
-            SelectEntidadResponsable.innerHTML = '';
-            // Opción por defecto
-            const defaultOption = document.createElement('option');
-            defaultOption.textContent = 'Seleccione una entidad';
-            defaultOption.value = '';
-            SelectEntidadResponsable.appendChild(defaultOption);
-
-            // Ordenar el array por el nombre completo del paciente
-            CargarEntidadResponsable.sort((a, b) => {
-                if (a.NombreCompletoPaciente < b.NombreCompletoPaciente) return -1;
-                if (a.NombreCompletoPaciente > b.NombreCompletoPaciente) return 1;
-                return 0;
+            const selectedCategory = this.value;
+            // Mostrar u ocultar opciones en el segundo select
+            Array.from(SelectEntidadResponsable.options).forEach(option => {
+                if (option.getAttribute('data-category') === selectedCategory) {
+                    option.style.display = 'block'; // Mostrar opción
+                } else {
+                    option.style.display = 'none'; // Ocultar opción
+                }
             });
-
-            for (let i = 0; i < CargarEntidadResponsable.length; i++) {
-                const option = document.createElement('option');
-                option.value = CargarEntidadResponsable[i].DocumentoEntidad;
-                option.textContent = CargarEntidadResponsable[i].NombreCompletoPaciente;
-                SelectEntidadResponsable.appendChild(option);
-            }
 
             if (e.detail && e.detail.parametro && e.detail.parametro.length > 0) {
                 const parametro2 = e.detail.parametro.trim(); // Limpiar espacios
@@ -748,38 +783,17 @@ const SelectGrupoServiciosAC = document.getElementById('SelectGrupoServiciosAC')
 const SelectServiciosAC = document.getElementById('SelectServiciosAC');
 SelectGrupoServiciosAC.addEventListener('change', async function (e) {
     try {
-        // console.log(this.value);
-        const CargarServicios = await fetch(`http://${servidor}:3000/api/Servicios/${this.value}`);
-        if (!CargarServicios.ok) {
-            // throw new Error(`Error al obtener los servicios: ${CargarServicios.statusText}`);
-            // throw new Error(`Error al obtener los servicios: ${CargarServicios}`);
-
-            const errorDetails = await CargarServicios.text(); // O usa .json() si esperas un JSON
-            throw new Error(`Error al obtener los servicios: ${CargarServicios.status} ${CargarServicios.statusText}. Detalles: ${errorDetails}`);
-        }
-        const CargarServiciosAC = await CargarServicios.json();
-        // console.log('Servicios: ', CargarServiciosAC);
-
-        SelectServiciosAC.innerHTML = '';
-        // Opción por defecto
-        const defaultOption = document.createElement('option');
-        defaultOption.textContent = 'Seleccione un servicio';
-        defaultOption.value = '';
-        SelectServiciosAC.appendChild(defaultOption);
-        // Ordenar el array por el nombre del servicio
-        CargarServiciosAC.sort((a, b) => {
-            if (a['Nombre Servicios'] < b['Nombre Servicios']) return -1;
-            if (a['Nombre Servicios'] > b['Nombre Servicios']) return 1;
-            return 0;
+        const selectedCategory = this.value;
+        // Mostrar u ocultar opciones en el segundo select
+        Array.from(SelectServiciosAC.options).forEach(option => {
+            if (option.getAttribute('data-category') === selectedCategory) {
+                option.style.display = 'block'; // Mostrar opción
+            } else {
+                option.style.display = 'none'; // Ocultar opción
+            }
         });
-
-        for (let i = 0; i < CargarServiciosAC.length; i++) {
-            const option = document.createElement('option');
-            option.value = CargarServiciosAC[i]['Id Servicios'];
-            option.textContent = CargarServiciosAC[i]['Nombre Servicios'];
-            SelectServiciosAC.appendChild(option);
-        }
-
+        
+        // // Si hay un parámetro en el evento, seleccionar la opción que coincida con él
         if (e.detail && e.detail.parametro && e.detail.parametro.length > 0) {
             const parametro2 = e.detail.parametro.trim(); // Limpiar espacios
             const SeleccionarServicioACPorDefecto = Array.from(SelectServiciosAC.options).find(option => {
@@ -848,6 +862,39 @@ radioAP.addEventListener('change', async function (e) {
             option.textContent = CargarTipoUsuarioRIPSAP[i]['TipoRips'];
             SelectTipoUsurioRIPSAP.appendChild(option);
         }
+
+        // Funcionalidad para el llenado del select entidad de rips ap
+        const EntidadesAP = await fetch(`http://${servidor}:3000/api/Entidad`);
+        if (!EntidadesAP) {
+            throw new Error(`Error al obtener las entidades de RIPS: ${EntidadesAP.statusText}`);
+        }
+        const CargarEntidadesAP = await EntidadesAP.json();
+        // console.log('Entidades de RIPS AP: ', CargarEntidadesAP);
+        SelectEntidadAP.innerHTML = '';
+        // Opción por defecto
+        const defaultoptionEntidadAP = document.createElement('option');
+        defaultoptionEntidadAP.textContent = 'Seleccione una entidad';
+        defaultoptionEntidadAP.value = '';
+        SelectEntidadAP.appendChild(defaultoptionEntidadAP);
+        // Ordenar el array por el nombre de la entidad
+        CargarEntidadesAP.sort((a, b) => {
+            if (a['NombreCompletoPaciente'] < b['NombreCompletoPaciente']) return -1;
+            if (a['NombreCompletoPaciente'] > b['NombreCompletoPaciente']) return 1;
+            return 0;
+        });
+        for (let i = 0; i < CargarEntidadesAP.length; i++) {
+            const option = document.createElement('option');
+            option.value = CargarEntidadesAP[i]['DocumentoEntidad'];
+            option.textContent = CargarEntidadesAP[i]['NombreCompletoPaciente'];
+            option.setAttribute('data-category', CargarEntidadesAP[i]['IdTipoRips']);
+            SelectEntidadAP.appendChild(option);
+        }
+        // Ocultar todas las opciones excepto la primera
+        Array.from(SelectEntidadAP.options).forEach((option, index) => {
+            if (index !== 0) { // Si no es la primera opción
+                option.style.display = 'none'; // Ocultar opción
+            }
+        });
 
         // Funcionalidad para el llendao del select ViaIngresoServicioSalud
         const ViaIngresoServicioSaludAP = await fetch(`http://${servidor}:3000/api/ViaIngresoUsuario`);
@@ -926,6 +973,39 @@ radioAP.addEventListener('change', async function (e) {
             option.textContent = CargarGrupoServiciosAP[i]['NombreGrupoServicios'];
             SelectGrupoServiciosAP.appendChild(option);
         }
+
+        // Funcionalidad para el llenado del select servicio de rips ap
+        const ServiciosAP = await fetch(`http://${servidor}:3000/api/Servicios`);
+        if (!ServiciosAP) {
+            throw new Error(`Error al obtener los servicios de RIPS: ${ServiciosAP.statusText}`);
+        }
+        const CargarServiciosAP = await ServiciosAP.json();
+        // console.log('Servicios de RIPS AP: ', CargarServiciosAP);
+        SelectServicioAP.innerHTML = '';
+        // Opción por defecto
+        const defaultoptionservicioap = document.createElement('option');
+        defaultoptionservicioap.textContent = 'Seleccione un servicio';
+        defaultoptionservicioap.value = '';
+        SelectServicioAP.appendChild(defaultoptionservicioap);
+        // Ordenar el array por el nombre del servicio
+        CargarServiciosAP.sort((a, b) => {
+            if (a['Nombre Servicios'] < b['Nombre Servicios']) return -1;
+            if (a['Nombre Servicios'] > b['Nombre Servicios']) return 1;
+            return 0;
+        });
+        for (let i = 0; i < CargarServiciosAP.length; i++) {
+            const option2 = document.createElement('option');
+            option2.value = CargarServiciosAP[i]['Id Servicios'];
+            option2.textContent = CargarServiciosAP[i]['Nombre Servicios'];
+            option2.setAttribute('data-category', CargarServiciosAP[i]['Codigo Grupo Servicios']);
+            SelectServicioAP.appendChild(option2);
+        }
+        // Ocultar todas las opciones excepto la primera
+        Array.from(SelectServicioAP.options).forEach((option, index) => {
+            if (index !== 0) { // Si no es la primera opción
+                option.style.display = 'none'; // Ocultar opción
+            }
+        });
 
         // Funcionalidad para el llenado del select FinalidadTecnologiaSaludAP
         const FinalidadRIPSAP = "AP";
@@ -1060,57 +1140,24 @@ radioAP.addEventListener('change', async function (e) {
             SelectDiagnosticoRIPSAP2.appendChild(option);
         }
     }
-    // if (radioAP.checked) {
-
-    //     procedimientoRIPS.textContent = 'codProcedimiento'; // Asignar el valor deseado
-    //     causaViaIngreso.textContent = 'viaIngresoServicioSalud';
-    //     listaCausa.style.display = 'none'
-    //     listaViaIngreso.style.display = 'block'
-    //     codDiagnosticoRelacionado.textContent = 'codDiagnosticoRelacionado'
-    //     codDiagnosticoRelacionado2.textContent = 'codComplicación'
-    //     codDiagnosticoRelacionado3.style.display = 'none'
-    //     tipoDiagnosticoPrincipal.style.display = 'none'
-
-    //     ejecutarConsultasAP();
-    // }
 });
 
 const SelectEntidadAP = document.getElementById('SelectEntidadAP');
 const TipoUsuarioRIPSAP = document.getElementById('SelectTipoUsurioRIPSAP');
 
 TipoUsuarioRIPSAP.addEventListener('change', async function (e) {
-    // Funcionalidad para el llenado del select entidad de rips ap
-    const EntidadesAP = await fetch(`http://${servidor}:3000/api/Entidad/${this.value}`);
-    if (!EntidadesAP) {
-        throw new Error(`Error al obtener las entidades de RIPS: ${EntidadesAP.statusText}`);
-    }
-    const CargarEntidadesAP = await EntidadesAP.json();
-    // console.log('Entidades de RIPS AP: ', CargarEntidadesAP);
-    SelectEntidadAP.innerHTML = '';
-    // Opción por defecto
-    const defaultOption = document.createElement('option');
-    defaultOption.textContent = 'Seleccione una entidad';
-    defaultOption.value = '';
-    SelectEntidadAP.appendChild(defaultOption);
-    // Ordenar el array por el nombre de la entidad
-    CargarEntidadesAP.sort((a, b) => {
-        if (a['NombreCompletoPaciente'] < b['NombreCompletoPaciente']) return -1;
-        if (a['NombreCompletoPaciente'] > b['NombreCompletoPaciente']) return 1;
-        return 0;
+    const selectedCategory = this.value;
+    // Mostrar u ocultar opciones en el segundo select
+    Array.from(SelectEntidadAP.options).forEach(option => {
+        if (option.getAttribute('data-category') === selectedCategory) {
+            option.style.display = 'block'; // Mostrar opción
+        } else {
+            option.style.display = 'none'; // Ocultar opción
+        }
     });
-    for (let i = 0; i < CargarEntidadesAP.length; i++) {
-        const option = document.createElement('option');
-        option.value = CargarEntidadesAP[i]['DocumentoEntidad'];
-        option.textContent = CargarEntidadesAP[i]['NombreCompletoPaciente'];
-        SelectEntidadAP.appendChild(option);
-    }
-
-    // console.log('Evento change disparado');
-    // console.log('Parámetro enviado:', e.detail.parametro); // Acceder al parámetro
-    // Verificar si el parámetro existe y tiene longitud
-    if (e.detail && e.detail.parametro && e.detail.parametro.length > 0) {
-        const parametro2 = e.detail.EntidadAPPorDefecto.trim(); // Limpiar espacios
-        console.log(`Este es el parametro enviado para entidadap por defecto => ${parametro2}`);
+    
+    if (e.detail && e.detail.entidadappordefecto && e.detail.entidadappordefecto.length > 0) {
+        const parametro2 = e.detail.entidadappordefecto.trim(); // Limpiar espacios
         const SeleccionarEntidadAPPorDefecto = Array.from(SelectEntidadAP.options).find(option => {
             return option.text.trim() === parametro2; // Comparar texto
         });
@@ -1121,7 +1168,7 @@ TipoUsuarioRIPSAP.addEventListener('change', async function (e) {
             console.log('No se encontró la opción con el texto:', parametro2);
         }
     } else {
-        // console.log('No se envió un parámetro válido o no se recibió el evento correctamente.');
+        console.log('No se envió un parámetro válido o no se recibió el evento correctamente.');
     }
 
 })
@@ -1129,31 +1176,15 @@ TipoUsuarioRIPSAP.addEventListener('change', async function (e) {
 const GrupoServicioAP = document.getElementById('SelectGrupoServiciosAP');
 const SelectServicioAP = document.getElementById('SelectServicioAP');
 GrupoServicioAP.addEventListener('change', async function (e) {
-    // Funcionalidad para el llenado del select servicio de rips ap
-    const ServiciosAP = await fetch(`http://${servidor}:3000/api/Servicios/${this.value}`);
-    if (!ServiciosAP) {
-        throw new Error(`Error al obtener los servicios de RIPS: ${ServiciosAP.statusText}`);
-    }
-    const CargarServiciosAP = await ServiciosAP.json();
-    // console.log('Servicios de RIPS AP: ', CargarServiciosAP);
-    SelectServicioAP.innerHTML = '';
-    // Opción por defecto
-    const defaultOption2 = document.createElement('option');
-    defaultOption2.textContent = 'Seleccione un servicio';
-    defaultOption2.value = '';
-    SelectServicioAP.appendChild(defaultOption2);
-    // Ordenar el array por el nombre del servicio
-    CargarServiciosAP.sort((a, b) => {
-        if (a['Nombre Servicios'] < b['Nombre Servicios']) return -1;
-        if (a['Nombre Servicios'] > b['Nombre Servicios']) return 1;
-        return 0;
+    const selectedCategory = this.value;
+    // Mostrar u ocultar opciones en el segundo select
+    Array.from(SelectServicioAP.options).forEach(option => {
+        if (option.getAttribute('data-category') === selectedCategory) {
+            option.style.display = 'block'; // Mostrar opción
+        } else {
+            option.style.display = 'none'; // Ocultar opción
+        }
     });
-    for (let i = 0; i < CargarServiciosAP.length; i++) {
-        const option2 = document.createElement('option');
-        option2.value = CargarServiciosAP[i]['Id Servicios'];
-        option2.textContent = CargarServiciosAP[i]['Nombre Servicios'];
-        SelectServicioAP.appendChild(option2);
-    }
 
     // Verificar si el parámetro existe y tiene longitud
     if (e.detail && e.detail.parametro && e.detail.parametro.length > 0) {
@@ -1184,43 +1215,6 @@ const listaServicios = document.getElementById('listaServicios');
 const listaFinalidad = document.getElementById('listaFinalidad');
 const listaTipoDiagnostico = document.getElementById('listaTipoDiagnostico');
 // LISTA VIA INGRESO Y LISTA CAUSA YA ESTAN DEFINIDAS ARRIBA POR ESO NO APARECEN ACÁ
-
-// const pruebaAlert = async () => {
-//     const swalWithBootstrapButtons = Swal.mixin({
-//         customClass: {
-//             cancelButton: "btn btn-danger",
-//             confirmButton: "btn btn-success"
-
-//         },
-//         buttonsStyling: false
-//     });
-//     swalWithBootstrapButtons.fire({
-//         title: "¿Esta seguro de querer asignar el RIPS a la paciente?",
-//         text: "You won't be able to revert this!",
-//         icon: "warning",
-//         showCancelButton: true,
-//         confirmButtonText: "Yes, delete it!",
-//         cancelButtonText: "No, cancel!",
-//         reverseButtons: true
-//     }).then((result) => {
-//         if (result.isConfirmed) {
-//             swalWithBootstrapButtons.fire({
-//                 title: "Deleted!",
-//                 text: "Your file has been deleted.",
-//                 icon: "success"
-//             });
-//         } else if (
-//             /* Read more about handling dismissals below */
-//             result.dismiss === Swal.DismissReason.cancel
-//         ) {
-//             swalWithBootstrapButtons.fire({
-//                 title: "Cancelled",
-//                 text: "Your imaginary file is safe :)",
-//                 icon: "error"
-//             });
-//         }
-//     });
-// }
 
 const pruebaAlert = async () => {
     const selectHistoriaClinica = document.querySelector('#listaHC');
@@ -1741,17 +1735,6 @@ const RegistrarRIPS = async () => {
     }
 }
 
-// 
-// listaTipoUsuario.addEventListener('change', quitarBordeRojo);
-// listaEntidad.addEventListener('change', quitarBordeRojo);
-// listaCodConsulta.addEventListener('change', quitarBordeRojo);
-// listamodalidadAtencion.addEventListener('change', quitarBordeRojo);
-// listaGrupoServicios.addEventListener('change', quitarBordeRojo);
-// listaServicios.addEventListener('change', quitarBordeRojo);
-// listaFinalidad.addEventListener('change', quitarBordeRojo);
-// listaCausa.addEventListener('change', quitarBordeRojo);
-// listaViaIngreso.addEventListener('change', quitarBordeRojo);
-
 
 // Función para quitar el borde rojo
 function quitarBordeRojo(event) {
@@ -1930,12 +1913,6 @@ const getTipoUsuario = async () => {
 };
 
 const selectTipoUsuario = document.getElementById('listaTipoUsuario');
-
-// selectTipoUsuario.addEventListener('change', async () => {
-//     const usuarioSeleecionado = selectTipoUsuario.options[selectTipoUsuario.selectedIndex].text;
-//     await getTipoEntidad(usuarioSeleecionado)
-//     console.log(usuarioSeleecionado);
-// })
 
 const updateTipoEntidad = (tipoEntidades) => {
     const selectTipoEntidad = document.querySelector('#listaEntidad');
@@ -2403,10 +2380,6 @@ SelectTipoRIPSPorDefecto.addEventListener('change', async function(e) {
     // Quitar la clase antes de aplicar estilos
     ACPorDefecto.classList.remove('d-none');
     APPorDefecto.classList.remove('d-none');
-    // const documentousuariologeado = sessionStorage.getItem('documentousuariologeado');
-    // const BotonGuardarRIPSPorDefecto = document.getElementById('BotonGuardarRIPSPorDefecto');
-    // const BotonActualizarRIPSPorDefecto = document.getElementById('BotonActualizarRIPSPorDefecto');
-
     switch (this.value) {
         case '1':
             ACPorDefecto.style.display = 'block';
@@ -3851,14 +3824,6 @@ async function CargarRIPSPorDefecto() {
 
                         if (SeleccionarTipoUsuarioPorDefecto) {
                             SelectTipoUsuarioRIPS.selectedIndex = SeleccionarTipoUsuarioPorDefecto.index; // Marcar la opción
-
-                            // // Simular el evento change
-                            // var event = new Event('change', {
-                            //     bubbles: true,
-                            //     cancelable: true
-                            // });
-                            // SelectTipoUsuarioRIPS.dispatchEvent(event); // Disparar el evento
-
                             const ValorRecibidoParaEntidadACPorDefecto = respuesta[0].Entidad;
                             console.log(ValorRecibidoParaEntidadACPorDefecto);
                             // Crear un evento personalizado con un detalle
@@ -3884,7 +3849,7 @@ async function CargarRIPSPorDefecto() {
                         if (SeleccionarGrupoServicioPorDefecto) {
                             SelectGrupoServiciosAC.selectedIndex = SeleccionarGrupoServicioPorDefecto.index; // Marcar la opción
 
-                            const ValorRecibidoParaGrupoServicioACPorDefecto = respuesta[0].GrupoServicios;
+                            const ValorRecibidoParaGrupoServicioACPorDefecto = respuesta[0].CodigoServicio;
                             // Crear un evento personalizado con un detalle
                             var event = new CustomEvent('change', {
                                 detail: { parametro:  ValorRecibidoParaGrupoServicioACPorDefecto } // Aquí puedes enviar cualquier dato
@@ -3982,22 +3947,15 @@ async function CargarRIPSPorDefecto() {
                         // Seleccionar el Tipo de Usuario para AP por defecto
                         const SeleccionarTipoUsurioRIPSAPPorDefecto = Array.from(SelectTipoUsurioRIPSAP.options).find(option => {
                             return option.text === respuesta[0].TipoDeUsuario
-                        })
+                        });
+
                         if (SeleccionarTipoUsurioRIPSAPPorDefecto) {
                             SelectTipoUsurioRIPSAP.selectedIndex = SeleccionarTipoUsurioRIPSAPPorDefecto.index; // Marcar la opción
-                            // Simular el evento change
-                            // var event = new Event('change', {
-                            //     // bubbles: true,
-                            //     // cancelable: true
-                            // });
-                            // SelectTipoUsurioRIPSAP.dispatchEvent(event); // Disparar el evento
-
-
                             const ValorRecibidoParaEntidadAPPorDefecto = respuesta[0].Entidad;
-                            console.log(ValorRecibidoParaEntidadAPPorDefecto);
+                            // console.log(ValorRecibidoParaEntidadAPPorDefecto);
                             // Crear un evento personalizado con un detalle
                             var event = new CustomEvent('change', {
-                                detail: { EntidadAPPorDefecto:  ValorRecibidoParaEntidadAPPorDefecto } // Aquí puedes enviar cualquier dato
+                                detail: { entidadappordefecto:  ValorRecibidoParaEntidadAPPorDefecto } // Aquí puedes enviar cualquier dato
                             });
                             
                             SelectTipoUsurioRIPSAP.dispatchEvent(event); // Disparar el evento

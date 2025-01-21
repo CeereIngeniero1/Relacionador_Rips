@@ -354,6 +354,59 @@ router.get('/Entidad/:Tipo', async (req, res) => {
     }
 });
 
+router.get('/Entidad', async (req, res) => {
+    try {
+        const Tipo = req.params.Tipo;
+
+        const request = new Request(
+            `
+                SELECT         NombreCompletoPaciente, [Id Función], Función, DocumentoEntidad, IdTipoRips
+                FROM            [Cnsta Relacionador Entidades Rips]
+                --WHERE        (IdTipoRips = ${Tipo})
+                `,
+            (err) => {
+                if (err) {
+                    console.error(`Error de ejecución: ${err}`);
+                    if (!res.headersSent) {
+                        // res.status(500).send("Error interno de servidor");
+                        res.status(500).json(`Error interno de servidor: ${err}`);
+                    }
+                }
+            }
+        );
+
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
+            });
+            resultados.push(row);
+        });
+
+        request.on('requestCompleted', () => {
+            console.log('Resultados de la consulta');
+            console.log(resultados);
+            if (!res.headersSent) {
+                res.json(resultados);
+            }
+        });
+
+        request.on('error', (err) => {
+            console.error(' Error en la consulta:', err);
+            if (!res.headersSent) {
+                res.status(500).send('Error interno del servidor');
+            }
+        });
+        connection.execSql(request);
+
+
+
+    } catch (error) {
+
+    }
+});
+
 router.get('/ModalidadAtencion', async (req, res) => {
     try {
 
@@ -582,6 +635,72 @@ router.get('/Servicios/:Tipo', async (req, res) => {
     }
 });
 
+router.get('/Servicios', async (req, res) => {
+    try {
+        // const Tipo = req.params.Tipo;
+        // console.log("Este es el tipo", Tipo);
+
+        const query = `
+            SELECT 
+                [Id Servicios], [Código Servicios], [Nombre Servicios], 
+                [Descripción Servicios], [Id Estado], [Codigo Grupo Servicios],  
+                [Id Grupo Servicios]
+            FROM 
+                [Cnsta Relacionador Servicios]
+            --WHERE 
+            --    [Id Grupo Servicios] = @Tipo
+        `;
+
+        const request = new Request(query, (err) => {
+            if (err) {
+                console.error(`Error de ejecución: ${err}`);
+                if (!res.headersSent) {
+                    res.status(500).json(`Error interno de servidor => ${err}`);
+                }
+            }
+        });
+
+        // request.addParameter('Tipo', TYPES.NVarChar, Tipo);
+
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
+            });
+            resultados.push(row);
+        });
+
+        request.on('requestCompleted', () => {
+            console.log('Resultados de la consulta');
+            console.log(resultados);
+            if (!res.headersSent) {
+                res.json(resultados);
+            }
+        });
+
+        request.on('error', (err) => {
+            console.error('Error en la consulta:', err);
+            if (!res.headersSent) {
+                res.status(500).json(`Error interno de servidor => ${err}`);
+            }
+        });
+
+        // Verificar el estado de la conexión antes de ejecutar
+        if (connection.state.name === 'LoggedIn') {
+            connection.execSql(request);
+        } else {
+            console.error('La conexión no está en el estado LoggedIn');
+            res.status(500).send('Error interno del servidor: Conexión no disponible');
+        }
+
+    } catch (error) {
+        console.error('Error interno del servidor:', error);
+        if (!res.headersSent) {
+            res.status(500).json(`Error interno de servidor => ${err}`);
+        }
+    }
+});
 
 router.get('/FinalidadV2/:Tipo', async (req, res) => {
     try {
