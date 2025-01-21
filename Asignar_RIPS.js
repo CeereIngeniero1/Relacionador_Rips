@@ -713,6 +713,21 @@ SelectTipoDeUsuarioRIPS.addEventListener('change', async function (e) {
                 option.textContent = CargarEntidadResponsable[i].NombreCompletoPaciente;
                 SelectEntidadResponsable.appendChild(option);
             }
+
+            if (e.detail && e.detail.parametro && e.detail.parametro.length > 0) {
+                const parametro2 = e.detail.parametro.trim(); // Limpiar espacios
+                const SeleccionarEntidadACPorDefecto = Array.from(SelectEntidadResponsable.options).find(option => {
+                    return option.text.trim() === parametro2; // Comparar texto
+                });
+        
+                if (SeleccionarEntidadACPorDefecto) {
+                    SelectEntidadResponsable.selectedIndex = SeleccionarEntidadACPorDefecto.index; // Marcar la opción
+                } else {
+                    console.log('No se encontró la opción con el texto:', parametro2);
+                }
+            } else {
+                // console.log('No se envió un parámetro válido o no se recibió el evento correctamente.');
+            }
         } else {
             SelectEntidadResponsable.innerHTML = '';
             // Opción por defecto
@@ -736,7 +751,11 @@ SelectGrupoServiciosAC.addEventListener('change', async function (e) {
         // console.log(this.value);
         const CargarServicios = await fetch(`http://${servidor}:3000/api/Servicios/${this.value}`);
         if (!CargarServicios.ok) {
-            throw new Error(`Error al obtener los servicios: ${CargarServicios.statusText}`);
+            // throw new Error(`Error al obtener los servicios: ${CargarServicios.statusText}`);
+            // throw new Error(`Error al obtener los servicios: ${CargarServicios}`);
+
+            const errorDetails = await CargarServicios.text(); // O usa .json() si esperas un JSON
+            throw new Error(`Error al obtener los servicios: ${CargarServicios.status} ${CargarServicios.statusText}. Detalles: ${errorDetails}`);
         }
         const CargarServiciosAC = await CargarServicios.json();
         // console.log('Servicios: ', CargarServiciosAC);
@@ -759,6 +778,21 @@ SelectGrupoServiciosAC.addEventListener('change', async function (e) {
             option.value = CargarServiciosAC[i]['Id Servicios'];
             option.textContent = CargarServiciosAC[i]['Nombre Servicios'];
             SelectServiciosAC.appendChild(option);
+        }
+
+        if (e.detail && e.detail.parametro && e.detail.parametro.length > 0) {
+            const parametro2 = e.detail.parametro.trim(); // Limpiar espacios
+            const SeleccionarServicioACPorDefecto = Array.from(SelectServiciosAC.options).find(option => {
+                return option.text.trim() === parametro2; // Comparar texto
+            });
+    
+            if (SeleccionarServicioACPorDefecto) {
+                SelectServiciosAC.selectedIndex = SeleccionarServicioACPorDefecto.index; // Marcar la opción
+            } else {
+                console.log('No se encontró la opción con el texto:', parametro2);
+            }
+        } else {
+            // console.log('No se envió un parámetro válido o no se recibió el evento correctamente.');
         }
     } catch (error) {
         console.error(error);
@@ -1070,6 +1104,26 @@ TipoUsuarioRIPSAP.addEventListener('change', async function (e) {
         option.textContent = CargarEntidadesAP[i]['NombreCompletoPaciente'];
         SelectEntidadAP.appendChild(option);
     }
+
+    // console.log('Evento change disparado');
+    // console.log('Parámetro enviado:', e.detail.parametro); // Acceder al parámetro
+    // Verificar si el parámetro existe y tiene longitud
+    if (e.detail && e.detail.parametro && e.detail.parametro.length > 0) {
+        const parametro2 = e.detail.EntidadAPPorDefecto.trim(); // Limpiar espacios
+        console.log(`Este es el parametro enviado para entidadap por defecto => ${parametro2}`);
+        const SeleccionarEntidadAPPorDefecto = Array.from(SelectEntidadAP.options).find(option => {
+            return option.text.trim() === parametro2; // Comparar texto
+        });
+
+        if (SeleccionarEntidadAPPorDefecto) {
+            SelectEntidadAP.selectedIndex = SeleccionarEntidadAPPorDefecto.index; // Marcar la opción
+        } else {
+            console.log('No se encontró la opción con el texto:', parametro2);
+        }
+    } else {
+        // console.log('No se envió un parámetro válido o no se recibió el evento correctamente.');
+    }
+
 })
 
 const GrupoServicioAP = document.getElementById('SelectGrupoServiciosAP');
@@ -1099,6 +1153,22 @@ GrupoServicioAP.addEventListener('change', async function (e) {
         option2.value = CargarServiciosAP[i]['Id Servicios'];
         option2.textContent = CargarServiciosAP[i]['Nombre Servicios'];
         SelectServicioAP.appendChild(option2);
+    }
+
+    // Verificar si el parámetro existe y tiene longitud
+    if (e.detail && e.detail.parametro && e.detail.parametro.length > 0) {
+        const parametro2 = e.detail.parametro.trim(); // Limpiar espacios
+        const SeleccionarGrupoServicioAPPorDefecto = Array.from(SelectServicioAP.options).find(option => {
+            return option.text.trim() === parametro2; // Comparar texto
+        });
+
+        if (SeleccionarGrupoServicioAPPorDefecto) {
+            SelectServicioAP.selectedIndex = SeleccionarGrupoServicioAPPorDefecto.index; // Marcar la opción
+        } else {
+            console.log('No se encontró la opción con el texto:', parametro2);
+        }
+    } else {
+        // console.log('No se envió un parámetro válido o no se recibió el evento correctamente.');
     }
 })
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -3197,7 +3267,7 @@ BotonVerRIPSPorDefecto.addEventListener('click', async function (e) {
             
                                 <div class="col-md-6">
                                     <ul>
-                                        <li><strong>Consulta RIPS 1: </strong><br>${Diagnostico2AC}</li>
+                                        <li><strong>Consulta RIPS 2: </strong><br>${Diagnostico2AC}</li>
                                     </ul>
                                 </div>
                             </div>
@@ -3211,7 +3281,7 @@ BotonVerRIPSPorDefecto.addEventListener('click', async function (e) {
             
                                 <div class="col-md-6">
                                     <ul>
-                                        <li><strong>Diagnóstico RIPS 1: </strong><br>${Procedimiento2AC}</li>
+                                        <li><strong>Diagnóstico RIPS 2: </strong><br>${Procedimiento2AC}</li>
                                     </ul>
                                 </div>
                             </div>
@@ -3758,24 +3828,6 @@ async function CargarRIPSPorDefecto() {
             if (respuesta.length > 0) {
                 switch (NombreTipoRIPS) {
                     case 'AC':
-                        // SelectPorDefectoTipoUsuarioRIPSAC.value = respuesta[0].TipoUsuario;
-                        // SelectPorDefectoEntidadAC.value = respuesta[0].Entidad;
-                        // SelectPorDefectoViaIngresoServicioSaludAC.value = respuesta[0].ViaIngresoServicioSalud;
-                        // SelectPorDefectoModalidadGrupoServicioTecSalAC.value = respuesta[0].ModalidadGrupoServicioTecSalud;
-                        // SelectPorDefectoGrupoServiciosAC.value = respuesta[0].GrupoServicios;
-                        // SelectPorDefectoCodServicioAC.value = respuesta[0].CodigoServicio;
-                        // SelectPorDefectoFinalidadTecnologíaSaludAC.value = respuesta[0].FinalidadTecnologiaSalud;
-                        // SelectPorDefectoProcedimientoRIPSAC1.value = respuesta[0].ConsultaRIPS1;
-                        // SelectPorDefectoProcedimientoRIPSAC2.value = respuesta[0].ConsultaRIPS2;
-                        // SelectPorDefectoDiagnosticoRIPSAC1.value = respuesta[0].DiagnosticoRIPS1;
-                        // SelectPorDefectoDiagnosticoRIPSAC2.value = respuesta[0].DiagnosticoRIPS2;
-
-                        // const TipoAC = document.getElementById('TipoAC');
-                        // const ValoresAC = TipoAC.querySelectorAll('select');
-                        // ValoresAC.forEach(select => {
-                        //     console.log(`const ${select.id} = document.getElementById('${select.id}');`);
-                        // });
-
                         const SelectTipoUsuarioRIPS = document.getElementById('SelectTipoUsuarioRIPS');
                         const SelectEntidad = document.getElementById('SelectEntidad');
                         const SelectModalidadGrupoServicioTecnologiaSalud = document.getElementById('SelectModalidadGrupoServicioTecnologiaSalud');
@@ -3789,156 +3841,255 @@ async function CargarRIPSPorDefecto() {
                         const SelectDiagnosticoRIPSAC1 = document.getElementById('SelectDiagnosticoRIPSAC1');
                         const SelectDiagnosticoRIPSAC2 = document.getElementById('SelectDiagnosticoRIPSAC2');
 
-
                         // SelectTipoUsuarioRIPS.options[SelectTipoUsuarioRIPS.selectedIndex].text = respuesta[0].TipoDeUsuario;
 
+                        // Seleccioanar Tipo de Usuario AC por defecto
+                        // Convertir HTMLOptionsCollection a un array y buscar la opción
+                        const SeleccionarTipoUsuarioPorDefecto = Array.from(SelectTipoUsuarioRIPS.options).find(option => 
+                            option.text === respuesta[0].TipoDeUsuario
+                        );
 
-                        // Recorrer las opciones del select
-                        for (let i = 0; i < SelectTipoUsuarioRIPS.options.length; i+=1) {
-                            if (SelectTipoUsuarioRIPS.options[i].text === respuesta[0].TipoDeUsuario) {
-                                SelectTipoUsuarioRIPS.selectedIndex = i; // Marcar la opción
-                                // Simular el evento change
-                                var event = new Event('change', {
-                                    bubbles: true,
-                                    cancelable: true
-                                });
-                                SelectTipoUsuarioRIPS.dispatchEvent(event); // Disparar el evento
-                                break; // Salir del bucle una vez encontrada
-                            }
+                        if (SeleccionarTipoUsuarioPorDefecto) {
+                            SelectTipoUsuarioRIPS.selectedIndex = SeleccionarTipoUsuarioPorDefecto.index; // Marcar la opción
+
+                            // // Simular el evento change
+                            // var event = new Event('change', {
+                            //     bubbles: true,
+                            //     cancelable: true
+                            // });
+                            // SelectTipoUsuarioRIPS.dispatchEvent(event); // Disparar el evento
+
+                            const ValorRecibidoParaEntidadACPorDefecto = respuesta[0].Entidad;
+                            console.log(ValorRecibidoParaEntidadACPorDefecto);
+                            // Crear un evento personalizado con un detalle
+                            var event = new CustomEvent('change', {
+                                detail: { parametro:  ValorRecibidoParaEntidadACPorDefecto } // Aquí puedes enviar cualquier dato
+                            });
+                            
+                            SelectTipoUsuarioRIPS.dispatchEvent(event); // Disparar el evento
                         }
 
-                        for (let i = 0; i < SelectEntidad.options.length; i+=1) {
-                            console.log(`Valores = > ${SelectEntidad.options[i].text} Respuesta => ${respuesta[0].Entidad}`);
-                            if (SelectEntidad[i].text === respuesta[0].Entidad) {
-                                SelectEntidad.selectedIndex = i; // Marcar la opción
-                                break; // Salir del bucle una vez encontrada
-                            }
+                        // Seleccionar modalidad grupo servicio tecnología salud por defecto
+                        const SeleccionarModalidadGrupoServicioPorDefecto = Array.from(SelectModalidadGrupoServicioTecnologiaSalud.options).find(option => {
+                            return option.text === respuesta[0].ModalidadGrupoServicioTecnologiaEnSalud
+                        })
+                        if (SeleccionarModalidadGrupoServicioPorDefecto) {
+                            SelectModalidadGrupoServicioTecnologiaSalud.selectedIndex = SeleccionarModalidadGrupoServicioPorDefecto.index; // Marcar la opción
                         }
 
+                        // Seleccionar grupo servicios por defecto
+                        const SeleccionarGrupoServicioPorDefecto = Array.from(SelectGrupoServiciosAC.options).find(option => {
+                            return option.text === respuesta[0].GrupoServicios
+                        })
+                        if (SeleccionarGrupoServicioPorDefecto) {
+                            SelectGrupoServiciosAC.selectedIndex = SeleccionarGrupoServicioPorDefecto.index; // Marcar la opción
 
-                        for (let i = 0; i < SelectModalidadGrupoServicioTecnologiaSalud.options.length; i+=1) {
-                            console.log(`Valores = > ${SelectModalidadGrupoServicioTecnologiaSalud.options[i].text} Respuesta => ${respuesta[0].ModalidadGrupoServicioTecnologiaEnSalud}`);
-                            if (SelectModalidadGrupoServicioTecnologiaSalud[i].text === respuesta[0].ModalidadGrupoServicioTecnologiaEnSalud) {
-                                SelectModalidadGrupoServicioTecnologiaSalud.selectedIndex = i; // Marcar la opción
-                                break; // Salir del bucle una vez encontrada
-                            }
+                            const ValorRecibidoParaGrupoServicioACPorDefecto = respuesta[0].GrupoServicios;
+                            // Crear un evento personalizado con un detalle
+                            var event = new CustomEvent('change', {
+                                detail: { parametro:  ValorRecibidoParaGrupoServicioACPorDefecto } // Aquí puedes enviar cualquier dato
+                            });
+                            
+                            SelectGrupoServiciosAC.dispatchEvent(event); // Disparar el evento
                         }
 
-                        for (let i = 0; i < SelectGrupoServiciosAC.options.length; i+=1) {
-                            if (SelectGrupoServiciosAC[i].text === respuesta[0].GrupoServicios) {
-                                SelectGrupoServiciosAC.selectedIndex = i; // Marcar la opción
-                                // Simular el evento change
-                                var event = new Event('change', {
-                                    bubbles: true,
-                                    cancelable: true
-                                });
-                                SelectGrupoServiciosAC.dispatchEvent(event); // Disparar el evento
-                                break; // Salir del bucle una vez encontrada
-                            }
+                        // Seleccionar finalidad tecnologia salud por defecto
+                        const SeleccionarFinalidadTecnologiaSaludPorDefecto = Array.from(SelectFinalidadTecnologiaSaludAC.options).find(option => {
+                            return option.text === respuesta[0].FinalidadTecnologiaSalud
+                        })
+                        if (SeleccionarFinalidadTecnologiaSaludPorDefecto) {
+                            SelectFinalidadTecnologiaSaludAC.selectedIndex = SeleccionarFinalidadTecnologiaSaludPorDefecto.index; // Marcar la opción
                         }
 
-                        for (let i = 0; i < SelectServiciosAC.options.length; i+=1) {
-                            if (SelectServiciosAC[i].text === respuesta[0].CodigoServicio) {
-                                SelectServiciosAC.selectedIndex = i; // Marcar la opción
-                                break; // Salir del bucle una vez encontrada
-                            }
+                        // Seleccionar causa motivo atención por defecto
+                        const SeleccionarCausaMotivoAtencionPorDefecto = Array.from(SelectCausaMotivoAtencion.options).find(option => {
+                            return option.text === respuesta[0].CausaMotivoAtencion
+                        })
+                        if (SeleccionarCausaMotivoAtencionPorDefecto) {
+                            SelectCausaMotivoAtencion.selectedIndex = SeleccionarCausaMotivoAtencionPorDefecto.index; // Marcar la opción
                         }
 
-                        for (let i = 0; i < SelectFinalidadTecnologiaSaludAC.options.length; i+=1) {
-                            if (SelectFinalidadTecnologiaSaludAC[i].text === respuesta[0].FinalidadTecnologiaSalud) {
-                                SelectFinalidadTecnologiaSaludAC.selectedIndex = i; // Marcar la opción
-                                break; // Salir del bucle una vez encontrada
-                            }
+                        // Seleccionar tipo diagnostico principal por defecto
+                        const SeleccionarTipoDiagnosticoPrincipalPorDefecto = Array.from(SelectTipoDiagnosticoPrincipalAC.options).find(option => {
+                            return option.text === respuesta[0].TipoDiagnosticoPrincipal
+                        })
+                        if (SeleccionarTipoDiagnosticoPrincipalPorDefecto) {
+                            SelectTipoDiagnosticoPrincipalAC.selectedIndex = SeleccionarTipoDiagnosticoPrincipalPorDefecto.index; // Marcar la opción
                         }
 
-                        for (let i = 0; i < SelectCausaMotivoAtencion.options.length; i+=1) {
-                            if (SelectCausaMotivoAtencion[i].text === respuesta[0].CausaMotivoAtencion) {
-                                SelectCausaMotivoAtencion.selectedIndex = i; // Marcar la opción
-                                break; // Salir del bucle una vez encontrada
-                            }
+                        // Seleccionar diagnostico 1 por defecto
+                        const SeleccionarDiagnostico1PorDefecto = Array.from(SelectConsultaRIPSAC1.options).find(option => {
+                            // return option.text === respuesta[0].Diagnostico1
+                            // Obtener el texto después del guion
+                            const textoOpcion = option.text.split(' - ')[1]?.trim(); // Usar trim() para eliminar espacios en blanco
+                            return textoOpcion === respuesta[0].Diagnostico1; // Comparar
+                        })
+                        if (SeleccionarDiagnostico1PorDefecto) {
+                            SelectConsultaRIPSAC1.selectedIndex = SeleccionarDiagnostico1PorDefecto.index; // Marcar la opción
+                            $(SelectConsultaRIPSAC1).trigger('change'); // Disparar el evento change
                         }
 
-                        for (let i = 0; i < SelectTipoDiagnosticoPrincipalAC.options.length; i+=1) {
-                            if (SelectTipoDiagnosticoPrincipalAC[i].text === respuesta[0].TipoDiagnosticoPrincipal) {
-                                SelectTipoDiagnosticoPrincipalAC.selectedIndex = i; // Marcar la opción
-                                break; // Salir del bucle una vez encontrada
-                            }
+                        // Seleccionar diagnostico 2 por defecto
+                        const SeleccionarDiagnostico2PorDefecto = Array.from(SelectConsultaRIPSAC2.options).find(option => {
+                            // return option.text === respuesta[0].Diagnostico2
+                            // Obtener el texto después del guion
+                            const textoOpcion = option.text.split(' - ')[1]?.trim(); // Usar trim() para eliminar espacios en blanco
+                            return textoOpcion === respuesta[0].Diagnostico2; // Comparar
+                        })
+                        if (SeleccionarDiagnostico2PorDefecto) {
+                            SelectConsultaRIPSAC2.selectedIndex = SeleccionarDiagnostico2PorDefecto.index; // Marcar la opción
+                            $(SelectConsultaRIPSAC2).trigger('change'); // Disparar el evento change
                         }
 
-                        for (let i = 0; i < SelectConsultaRIPSAC1.options.length; i+=1) {
-                            if (SelectConsultaRIPSAC1[i].text === respuesta[0].Diagnostico1) {
-                                SelectConsultaRIPSAC1.selectedIndex = i; // Marcar la opción
-                                break; // Salir del bucle una vez encontrada
-                            }
+                        // Seleccionar procedimiento 1 por defecto
+                        const SeleccionarProcedimiento1PorDefecto = Array.from(SelectDiagnosticoRIPSAC1.options).find(option => {
+                            // return option.text === respuesta[0].Procedimiento1
+                            // Obtener el texto después del guion
+                            const textoOpcion = option.text.split(' - ')[1]?.trim(); // Usar trim() para eliminar espacios en blanco
+                            return textoOpcion === respuesta[0].Procedimiento1; // Comparar
+                        })
+                        if (SeleccionarProcedimiento1PorDefecto) {
+                            SelectDiagnosticoRIPSAC1.selectedIndex = SeleccionarProcedimiento1PorDefecto.index; // Marcar la opción
+                            $(SelectDiagnosticoRIPSAC1).trigger('change'); // Disparar el evento change
                         }
 
-                        for (let i = 0; i < SelectConsultaRIPSAC2.options.length; i+=1) {
-                            if (SelectConsultaRIPSAC2[i].text === respuesta[0].Diagnostico2) {
-                                SelectConsultaRIPSAC2.selectedIndex = i; // Marcar la opción
-                                break; // Salir del bucle una vez encontrada
-                            }
-                        }
-
-                        for (let i = 0; i < SelectDiagnosticoRIPSAC1.options.length; i+=1) {
-                            if (SelectDiagnosticoRIPSAC1[i].text === respuesta[0].Procedimiento1) {
-                                SelectDiagnosticoRIPSAC1.selectedIndex = i; // Marcar la opción
-                                break; // Salir del bucle una vez encontrada
-                            }
-                        }
-
-                        // for (let i = 0; i < SelectDiagnosticoRIPSAC2.options.length; i+=1) {
-                        //     console.log(`Opcion => ${SelectDiagnosticoRIPSAC2.options[i].text} Respuesta => ${respuesta[0].Procedimiento2}`)
-                        //     if (SelectDiagnosticoRIPSAC2[i].text === respuesta[0].Procedimiento2) {
-                        //         SelectDiagnosticoRIPSAC2.selectedIndex = i; // Marcar la opción
-                        //         break; // Salir del bucle una vez encontrada
-                        //     }
-                        // }
-
-
-                        for (let i = 0; i < SelectDiagnosticoRIPSAC2.options.length; i++) {
-                            // Dividir el texto de la opción en partes antes y después del guion
-                            let textoOpcion = SelectDiagnosticoRIPSAC2.options[i].text.split(' - ')[1]?.trim(); // Tomar la parte después del guion y quitar espacios
-                        
-                            // Imprimir para depuración
-                            console.log(`Opción => ${textoOpcion} Respuesta => ${respuesta[0].Procedimiento2}`);
-
-                            let Valorcito = respuesta[0].Procedimiento2.trim();
-                            console.log(`Valorcito => ${Valorcito}`);
-                        
-                            // Comparar la parte después del guion con la respuesta
-                            if (textoOpcion === respuesta[0].Procedimiento2.trim()) {
-                                SelectDiagnosticoRIPSAC2.selectedIndex = i; // Marcar la opción
-                                break; // Salir del bucle una vez encontrada
-                            }
-                        }
-                        // =====================================
-
-
-
-                        // let Opciones = SelectModalidadGrupoServicioTecnologiaSalud.options;
-
-                        // for (let i = 0; i < Opciones.length; i++) {
-                        //     let opcion = Opciones[i];
-                        //     console.log(`Opción ${i + 1}:`);
-                        //     console.log(`Valor: ${opcion.value}`);
-                        //     console.log(`Texto: ${opcion.text}`);
-                        //     console.log(`Seleccionado: ${opcion.selected}`);
-                        //     console.log('---');
-                        // }                                      
+                        // Seleccionar procedimiento 2 por defecto
+                        const SeleccionarProcedimiento2PorDefecto = Array.from(SelectDiagnosticoRIPSAC2.options).find(option => {
+                            // return option.text === respuesta[0].Procedimiento2
+                            // Obtener el texto después del guion
+                            const textoOpcion = option.text.split(' - ')[1]?.trim(); // Usar trim() para eliminar espacios en blanco
+                            return textoOpcion === respuesta[0].Procedimiento2; // Comparar
+                        })
+                        if (SeleccionarProcedimiento2PorDefecto) {
+                            SelectDiagnosticoRIPSAC2.selectedIndex = SeleccionarProcedimiento2PorDefecto.index; // Marcar la opción
+                            $(SelectDiagnosticoRIPSAC2).trigger('change'); // Disparar el evento change
+                        }                             
                     break;
 
                     case 'AP':
-                        SelectPorDefectoTipoUsuarioRIPSAP.value = respuesta[0].TipoUsuario;
-                        SelectPorDefectoEntidadAP.value = respuesta[0].Entidad;
-                        SelectPorDefectoViaIngresoServicioSaludAP.value = respuesta[0].ViaIngresoServicioSalud;
-                        SelectPorDefectoModalidadGrupoServicioTecSalAP.value = respuesta[0].ModalidadGrupoServicioTecSalud;
-                        SelectPorDefectoGrupoServiciosAP.value = respuesta[0].GrupoServicios;
-                        SelectPorDefectoCodServicioAP.value = respuesta[0].CodigoServicio;
-                        SelectPorDefectoFinalidadTecnologíaSaludAP.value = respuesta[0].FinalidadTecnologiaSalud;
-                        SelectPorDefectoProcedimientoRIPSAP1.value = respuesta[0].ConsultaRIPS1;
-                        SelectPorDefectoProcedimientoRIPSAP2.value = respuesta[0].ConsultaRIPS2;
-                        SelectPorDefectoDiagnosticoRIPSAP1.value = respuesta[0].DiagnosticoRIPS1;
-                        SelectPorDefectoDiagnosticoRIPSAP2.value = respuesta[0].DiagnosticoRIPS2;
+                        const SelectTipoUsurioRIPSAP = document.getElementById('SelectTipoUsurioRIPSAP');
+                        const SelectEntidadAP = document.getElementById('SelectEntidadAP');
+                        const SelectViaIngresoServicioSaludAP = document.getElementById('SelectViaIngresoServicioSaludAP');
+                        const SelectModalidadGrupoServicioTecSalAP = document.getElementById('SelectModalidadGrupoServicioTecSalAP');
+                        const SelectGrupoServiciosAP = document.getElementById('SelectGrupoServiciosAP');
+                        const SelectServicioAP = document.getElementById('SelectServicioAP');
+                        const SelectFinalidadTecnologiaSaludAP = document.getElementById('SelectFinalidadTecnologiaSaludAP');
+                        const SelectProcedimientoRIPSAP1 = document.getElementById('SelectProcedimientoRIPSAP1');
+                        const SelectProcedimientoRIPSAP2 = document.getElementById('SelectProcedimientoRIPSAP2');
+                        const SelectDiagnosticoRIPSAP1 = document.getElementById('SelectDiagnosticoRIPSAP1');
+                        const SelectDiagnosticoRIPSAP2 = document.getElementById('SelectDiagnosticoRIPSAP2');
+
+                        // Seleccionar el Tipo de Usuario para AP por defecto
+                        const SeleccionarTipoUsurioRIPSAPPorDefecto = Array.from(SelectTipoUsurioRIPSAP.options).find(option => {
+                            return option.text === respuesta[0].TipoDeUsuario
+                        })
+                        if (SeleccionarTipoUsurioRIPSAPPorDefecto) {
+                            SelectTipoUsurioRIPSAP.selectedIndex = SeleccionarTipoUsurioRIPSAPPorDefecto.index; // Marcar la opción
+                            // Simular el evento change
+                            // var event = new Event('change', {
+                            //     // bubbles: true,
+                            //     // cancelable: true
+                            // });
+                            // SelectTipoUsurioRIPSAP.dispatchEvent(event); // Disparar el evento
+
+
+                            const ValorRecibidoParaEntidadAPPorDefecto = respuesta[0].Entidad;
+                            console.log(ValorRecibidoParaEntidadAPPorDefecto);
+                            // Crear un evento personalizado con un detalle
+                            var event = new CustomEvent('change', {
+                                detail: { EntidadAPPorDefecto:  ValorRecibidoParaEntidadAPPorDefecto } // Aquí puedes enviar cualquier dato
+                            });
+                            
+                            SelectTipoUsurioRIPSAP.dispatchEvent(event); // Disparar el evento
+                        }
+
+                        // Seleccionar Vía de Ingreso del Servicio de Salud para AP por defecto
+                        const SeleccionarViaIngresoServicioSaludAPPorDefecto = Array.from(SelectViaIngresoServicioSaludAP.options).find(option => {
+                            return option.text === respuesta[0].ViaIngresoServicioSalud
+                        })
+                        if (SeleccionarViaIngresoServicioSaludAPPorDefecto) {
+                            SelectViaIngresoServicioSaludAP.selectedIndex = SeleccionarViaIngresoServicioSaludAPPorDefecto.index; // Marcar la opción
+                        }
+
+                        // Seleccionar Modalidad de Grupo de Servicio Tecnológico para AP por defecto
+                        const SeleccionarModalidadGrupoServicioTecSalAPorDefecto = Array.from(SelectModalidadGrupoServicioTecSalAP.options).find(option => {
+                            return option.text === respuesta[0].ModalidadGrupoServicioTecnologiaEnSalud
+                        })
+                        if (SeleccionarModalidadGrupoServicioTecSalAPorDefecto) {
+                            SelectModalidadGrupoServicioTecSalAP.selectedIndex = SeleccionarModalidadGrupoServicioTecSalAPorDefecto.index; // Marcar la opción
+                        }
+
+                        // Seleccionar Grupo de Servicios para AP por defecto
+                        const SeleccionarGrupoServiciosAPPorDefecto = Array.from(SelectGrupoServiciosAP.options).find(option => {
+                            return option.text === respuesta[0].GrupoServicios
+                        })
+                        if (SeleccionarGrupoServiciosAPPorDefecto) {
+                            SelectGrupoServiciosAP.selectedIndex = SeleccionarGrupoServiciosAPPorDefecto.index; // Marcar la opción
+
+                            const ValorRecibidoParaGrupoServicioAPPorDefecto = respuesta[0].CodigoServicio;
+                            // Crear un evento personalizado con un detalle
+                            var event = new CustomEvent('change', {
+                                detail: { parametro:  ValorRecibidoParaGrupoServicioAPPorDefecto } // Aquí puedes enviar cualquier dato
+                            });
+                            
+                            SelectGrupoServiciosAP.dispatchEvent(event); // Disparar el evento
+                        }
+
+                        // Seleccionar Servicio para AP por defecto
+                        const SeleccionarServicioAPPorDefecto = Array.from(SelectServicioAP.options).find(option => {
+                            return option.text === respuesta[0].CodigoServicio
+                        })
+                        if (SeleccionarServicioAPPorDefecto) {
+                            SelectServicioAP.selectedIndex = SeleccionarServicioAPPorDefecto.index; // Marcar la opción
+                        }
+
+                        // Seleccionar Finalidad Tecnológica de Salud para AP por defecto
+                        const SeleccionarFinalidadTecnologiaSaludAPPorDefecto = Array.from(SelectFinalidadTecnologiaSaludAP.options).find(option => {
+                            return option.text === respuesta[0].FinalidadTecnologiaSalud
+                        })
+                        if (SeleccionarFinalidadTecnologiaSaludAPPorDefecto) {
+                            SelectFinalidadTecnologiaSaludAP.selectedIndex = SeleccionarFinalidadTecnologiaSaludAPPorDefecto.index; // Marcar la opción
+                        }
+
+                        // Seleccionar Procedimiento RIPS para AP por defecto
+                        const SeleccionarProcedimientoRIPSAPPorDefecto1 = Array.from(SelectProcedimientoRIPSAP1.options).find(option => {
+                            const textoOpcion = option.text.split(' - ')[1]?.trim(); // Usar trim() para eliminar espacios en blanco
+                            return textoOpcion === respuesta[0].Diagnostico1
+                        })
+                        if (SeleccionarProcedimientoRIPSAPPorDefecto1) {
+                            SelectProcedimientoRIPSAP1.selectedIndex = SeleccionarProcedimientoRIPSAPPorDefecto1.index; // Marcar la opción
+                            $(SelectProcedimientoRIPSAP1).trigger('change'); // Disparar el evento change
+                        }
+
+                        // Seleccionar Procedimiento RIPS para AP por defecto
+                        const SeleccionarProcedimientoRIPSAPPorDefecto2 = Array.from(SelectProcedimientoRIPSAP2.options).find(option => {
+                            const textoOpcion = option.text.split(' - ')[1]?.trim(); // Usar trim() para eliminar espacios en blanco
+                            return textoOpcion === respuesta[0].Diagnostico2; // Comparar
+                        })
+                        if (SeleccionarProcedimientoRIPSAPPorDefecto2) {
+                            SelectProcedimientoRIPSAP2.selectedIndex = SeleccionarProcedimientoRIPSAPPorDefecto2.index; // Marcar la opción
+                            $(SelectProcedimientoRIPSAP2).trigger('change'); // Disparar el evento change
+                        }
+
+                        // Seleccionar Diagnostico RIPS para AP por defecto
+                        const SeleccionarDiagnosticoRIPSAPPorDefecto1 = Array.from(SelectDiagnosticoRIPSAP1.options).find(option => {
+                            const textoOpcion = option.text.split(' - ')[1]?.trim(); // Usar trim() para eliminar espacios en blanco
+                            return textoOpcion === respuesta[0].Procedimiento1
+                        })
+                        if (SeleccionarDiagnosticoRIPSAPPorDefecto1) {
+                            SelectDiagnosticoRIPSAP1.selectedIndex = SeleccionarDiagnosticoRIPSAPPorDefecto1.index; // Marcar la opción
+                            $(SelectDiagnosticoRIPSAP1).trigger('change'); // Disparar el evento change
+                        }
+
+                        // Seleccionar Diagnostico RIPS para AP por defecto
+                        const SeleccionarDiagnosticoRIPSAPPorDefecto2 = Array.from(SelectDiagnosticoRIPSAP2.options).find(option => {
+                            const textoOpcion = option.text.split(' - ')[1]?.trim(); // Usar trim() para eliminar espacios en blanco
+                            return textoOpcion === respuesta[0].Procedimiento2; // Comparar
+                        })
+                        if (SeleccionarDiagnosticoRIPSAPPorDefecto2) {
+                            SelectDiagnosticoRIPSAP2.selectedIndex = SeleccionarDiagnosticoRIPSAPPorDefecto2.index; // Marcar la opción
+                            $(SelectDiagnosticoRIPSAP2).trigger('change'); // Disparar el evento change
+                        }        
                     break;
                 }
             } else {
