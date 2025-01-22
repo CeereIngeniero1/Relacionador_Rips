@@ -21,37 +21,55 @@ router.get('/usuarios/rips/:fechaInicio/:fechaFin/:ResolucionesRips/:documentoEm
     const documentoEmpresaSeleccionada = req.params.documentoEmpresaSeleccionada;
 
     const request = new Request(
-        `SELECT em.NroIDPrestador, EmpV.[Prefijo Resolución Facturación EmpresaV] + fc.[No Factura] AS [numFactura], NULL AS [numNota], NULL AS [tipoNota], tpd.[Tipo de Documento] as [tipoDocumentoIdentificacion],
-        en.[Documento Entidad] as [numDocumentoIdentificacion], '0' + tpe.[Tipo Entidad] as [tipoUsuario],
-        CONVERT(VARCHAR, en3.[Fecha Nacimiento EntidadIII], 23) AS [fechaNacimiento], Sexo.[Sexo] AS [codSexo], 
-        País.País AS [codPaisResidencia], Ciu.[Código Ciudad] AS [codMunicipioResidencia], 
-        '0' + zr.[Código Zona Residencia] as [codZonaTerritorialResidencia], 'NO' AS incapacidad,
-        DENSE_RANK() OVER (ORDER BY en.[Documento Entidad] DESC) AS consecutivo, pais2.País AS [codPaisOrigen], eve.[Id Evaluación Entidad], everips.[Id Tipo de Rips], 
-		CASE
-			WHEN fc.[Documento Responsable] in (select [Documento Entidad] from [Función Por Entidad] where [Id Función] in ( select [Id Función] from Función where Función like ('%eps%' ) or Función like ('%prepa%') )) 
-				THEN 1 
-			ELSE 0
-		END AS 'Prepagada'
-
-        FROM Entidad as en
-
-        LEFT JOIN [Tipo de Documento] as tpd ON en.[Id Tipo de Documento] = tpd.[Id Tipo de Documento]
-        LEFT JOIN [Evaluación Entidad] as eve ON en.[Documento Entidad] = eve.[Documento Entidad]
-        LEFT JOIN Empresa as em ON eve.[Documento Empresa] = em.[Documento Empresa]
-        INNER JOIN [Evaluación Entidad Rips] as everips ON eve.[Id Evaluación Entidad] = everips.[Id Evaluación Entidad]
-        INNER JOIN Factura as fc ON everips.[Id Factura] = fc.[Id Factura]
-        LEFT JOIN EntidadII as en2 ON en.[Documento Entidad] = en2.[Documento Entidad]
-        LEFT JOIN EntidadIII as en3 ON en.[Documento Entidad] = en3.[Documento Entidad]
-        LEFT JOIN [Tipo Entidad] as tpe ON en3.[Id Tipo Entidad] = tpe.[Id Tipo Entidad]
-        LEFT JOIN Sexo ON en3.[Id Sexo] = Sexo.[Id Sexo]
-        LEFT JOIN Ciudad AS Ciu ON en2.[Id Ciudad] = Ciu.[Id Ciudad] 
-        LEFT JOIN Departamento AS Depart ON Ciu.[Id Departamento] = Depart.[Id Departamento] 
-        LEFT JOIN País ON Depart.[Id País] = País.[Id País] 
-        LEFT JOIN [Zona Residencia] AS zr ON en3.[Id Zona Residencia] = zr.[Id Zona Residencia]
-        LEFT JOIN Ciudad AS ciu2 ON en2.[Id Ciudad] = ciu2.[Id Ciudad]
-        LEFT JOIN Departamento AS Depart2 ON ciu2.[Id Departamento] = Depart2.[Id Departamento]
-        LEFT JOIN País AS pais2 ON Depart2.[Id País] = pais2.[Id País]
-        LEFT JOIN EmpresaV AS EmpV ON fc.[Id EmpresaV] = EmpV.[Id EmpresaV] 
+        `SELECT 
+    em.NroIDPrestador, 
+    EmpV.[Prefijo Resolución Facturación EmpresaV] + fc.[No Factura] AS [numFactura], 
+    NULL AS [numNota], 
+    NULL AS [tipoNota], 
+    tpd.[Tipo de Documento] AS [tipoDocumentoIdentificacion],
+    en.[Documento Entidad] AS [numDocumentoIdentificacion], 
+    '0' + tpe.[Tipo Entidad] AS [tipoUsuario],
+    CONVERT(VARCHAR, en3.[Fecha Nacimiento EntidadIII], 23) AS [fechaNacimiento], 
+    Sexo.[Sexo] AS [codSexo], 
+    País.País AS [codPaisResidencia], 
+    Ciu.[Código Ciudad] AS [codMunicipioResidencia], 
+    '0' + zr.[Código Zona Residencia] AS [codZonaTerritorialResidencia], 
+    'NO' AS [incapacidad],
+    DENSE_RANK() OVER (PARTITION BY fc.[No Factura]  ORDER BY fc.[No Factura]) AS [consecutivo], 
+    pais2.País AS [codPaisOrigen], 
+    eve.[Id Evaluación Entidad], 
+    everips.[Id Tipo de Rips], 
+    CASE
+        WHEN fc.[Documento Responsable] IN (
+            SELECT [Documento Entidad] 
+            FROM [Función Por Entidad] 
+            WHERE [Id Función] IN (
+                SELECT [Id Función] 
+                FROM Función 
+                WHERE Función LIKE ('%eps%') OR Función LIKE ('%prepa%')
+            )
+        ) THEN 1 
+        ELSE 0
+    END AS [Prepagada]
+FROM 
+    Entidad AS en
+LEFT JOIN  [Tipo de Documento] AS tpd ON en.[Id Tipo de Documento] = tpd.[Id Tipo de Documento]
+LEFT JOIN  [Evaluación Entidad] AS eve ON en.[Documento Entidad] = eve.[Documento Entidad]
+LEFT JOIN  Empresa AS em ON eve.[Documento Empresa] = em.[Documento Empresa]
+INNER JOIN  [Evaluación Entidad Rips] AS everips ON eve.[Id Evaluación Entidad] = everips.[Id Evaluación Entidad]
+INNER JOIN  Factura AS fc ON everips.[Id Factura] = fc.[Id Factura]
+LEFT JOIN  EntidadII AS en2 ON en.[Documento Entidad] = en2.[Documento Entidad]
+LEFT JOIN  EntidadIII AS en3 ON en.[Documento Entidad] = en3.[Documento Entidad]
+LEFT JOIN  [Tipo Entidad] AS tpe ON en3.[Id Tipo Entidad] = tpe.[Id Tipo Entidad]
+LEFT JOIN  Sexo ON en3.[Id Sexo] = Sexo.[Id Sexo]
+LEFT JOIN  Ciudad AS Ciu ON en2.[Id Ciudad] = Ciu.[Id Ciudad] 
+LEFT JOIN  Departamento AS Depart ON Ciu.[Id Departamento] = Depart.[Id Departamento] 
+LEFT JOIN  País ON Depart.[Id País] = País.[Id País] 
+LEFT JOIN  [Zona Residencia] AS zr ON en3.[Id Zona Residencia] = zr.[Id Zona Residencia]
+LEFT JOIN  Ciudad AS ciu2 ON en2.[Id Ciudad] = ciu2.[Id Ciudad]
+LEFT JOIN  Departamento AS Depart2 ON ciu2.[Id Departamento] = Depart2.[Id Departamento]
+LEFT JOIN  País AS pais2 ON Depart2.[Id País] = pais2.[Id País]
+LEFT JOIN   EmpresaV AS EmpV ON fc.[Id EmpresaV] = EmpV.[Id EmpresaV]
 
         WHERE CONVERT(DATE, eve.[Fecha Evaluación Entidad], 23) BETWEEN @fechaInicio AND @fechaFin
         AND eve.[Documento Empresa] = @documentoEmpresaSeleccionada
@@ -110,7 +128,7 @@ router.get('/usuarios/rips/:fechaInicio/:fechaFin/:ResolucionesRips/:documentoEm
             codMunicipioResidencia: columns[10].value,
             codZonaTerritorialResidencia: columns[11].value,
             incapacidad: columns[12].value,
-            consecutivo: columns[13].value,
+            consecutivo: parseInt(columns[13].value, 10),
             codPaisOrigen: columns[14].value,
             servicios: {
                 consultas: [],
@@ -191,7 +209,7 @@ router.get('/servicios/rips/:numFactura/:numDocumentoIdentificacion/:fechaInicio
     const request = new Request(
         `
         SELECT em2.[Código Empresa] AS codPrestador, 
-        SUBSTRING(CONVERT(VARCHAR, eve.[Fecha Evaluación Entidad], 120), 1, 16) AS fechaInicioAtencion, 
+        SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura] , 120), 1, 16) AS fechaInicioAtencion, 
         NULL AS numAutorizacion, everips.[Codigo RIPS] AS codConsulta,
         '01' AS modalidadGrupoServicioTecSal, '01' AS grupoServicios, Serv.[Código Servicios] AS codServicio,
         everips.[Id Finalidad Consulta] AS finalidadTecnologiaSalud, everips.[Id Causa Externa] AS causaMotivoAtencion,
@@ -293,7 +311,7 @@ router.get('/serviciosAP/rips/:numFactura/:numDocumentoIdentificacion/:fechaInic
 
     const request = new Request(
         `SELECT em2.[Código Empresa] AS codPrestador, 
-        SUBSTRING(CONVERT(VARCHAR, eve.[Fecha Evaluación Entidad], 120), 1, 16) AS fechaInicioAtencion, NULL AS idMIPRES, NULL AS numAutorizacion, 
+        SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura], 120), 1, 16) AS fechaInicioAtencion, NULL AS idMIPRES, NULL AS numAutorizacion, 
         everips.[Codigo RIPS] AS codProcedimiento, '01' AS viaIngresoServicioSalud, '01' AS modalidadGrupoServicioTecSal, 
         '01' AS grupoServicios, '371' AS codServicio, fp.Codigo AS finalidadTecnologiaSalud, 
         tp.[Tipo de Documento] AS tipoDocumentoIdentificacion, eve.[Documento Entidad] AS numDocumentoIdentificacion, 
