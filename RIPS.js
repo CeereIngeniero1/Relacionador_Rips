@@ -1,4 +1,4 @@
-const servidor = "HPGRIS";
+const servidor = "HPRED241";
 
 const checkboxParticular = document.getElementById('checkbox1')
 const checkboxPrepagada = document.getElementById('checkbox2')
@@ -745,7 +745,9 @@ async function DescargarArchivosJSON() {
 
 
     try {
+        // const response = await fetch(`http://${servidor}:3000/RIPS/usuarios/ripsEPS/${fechaInicioValue}/${fechaFinValue}/${SelectResolucionesRips}/${documentoEmpresaSeleccionada}`);
         const response = await fetch(`http://${servidor}:3000/RIPS/usuarios/rips/${fechaInicioValue}/${fechaFinValue}/${SelectResolucionesRips}/${documentoEmpresaSeleccionada}`);
+        
         if (!response.ok) {
             throw new Error(`Error en la solicitud: ${response.status} - ${response.statusText}`);
         }
