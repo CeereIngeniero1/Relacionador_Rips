@@ -1,4 +1,4 @@
-const servidor = "HPRED241";
+const servidor = "HPGRIS";
 
 const checkboxParticular = document.getElementById('checkbox1')
 const checkboxPrepagada = document.getElementById('checkbox2')
@@ -742,9 +742,28 @@ async function DescargarArchivosJSON() {
     let CampoResolucionTexto = CampoResolucion.options[CampoResolucion.selectedIndex].text;
     let TextoPrefijo = CampoResolucionTexto.match(/^[A-Za-z]+/)[0];
 
+    const CamposFaltantes = [];
+    if (!fechaInicioValue) CamposFaltantes.push('Fecha Inicio.');
+    if (!fechaFinValue) CamposFaltantes.push('Fecha Fin.');
+    if (SelectResolucionesRips === null || SelectResolucionesRips === "") CamposFaltantes.push('Resolución RIPS.');
 
+    if (CamposFaltantes.length > 0) {
+        Swal.fire({
+            icon: 'info',
+            html: `
+                <h5 style="color: #ffffff"><b> Los siguientes campos son necesarios: </b></h5>
+                <br>
+                <ul style="color: #FFFFFF; text-align: left;">
+                    ${CamposFaltantes.map((campo) => `<li style="color: #FFFFFF;">${campo}</li>`).join("")}
+                </ul>
+            `
+        })
+        return;
+    }
 
     try {
+        MensajeDeCarga("Descargando JSON...");
+        await Esperar(1000);
         // const response = await fetch(`http://${servidor}:3000/RIPS/usuarios/ripsEPS/${fechaInicioValue}/${fechaFinValue}/${SelectResolucionesRips}/${documentoEmpresaSeleccionada}`);
         const response = await fetch(`http://${servidor}:3000/RIPS/usuarios/rips/${fechaInicioValue}/${fechaFinValue}/${SelectResolucionesRips}/${documentoEmpresaSeleccionada}`);
         
@@ -786,8 +805,8 @@ async function DescargarArchivosJSON() {
 }
 
 document.getElementById('obtenerDatosBtn').addEventListener('click', async () => {
-    MensajeDeCarga("Descargando JSON...");
-    await Esperar(1000);
+    // MensajeDeCarga("Descargando JSON...");
+    // await Esperar(1000);
     DescargarArchivosJSON();
 
 })
@@ -1107,9 +1126,9 @@ async function DescargarXMLSPorLaAPIDeFacturaTech() {
 
     const campos = [
         // { valor: Empresa.value, mensaje: 'Debe seleccionar una empresa.' },
-        { valor: Resolucion.value, mensaje: 'Debe seleccionar una resolución.' },
-        { valor: FechaInicial.value, mensaje: 'Debe ingresar una fecha inicial válida.' },
-        { valor: FechaFinal.value, mensaje: 'Debe ingresar una fecha final válida.' }
+        { valor: Resolucion.value, mensaje: 'Resolución.' },
+        { valor: FechaInicial.value, mensaje: 'Fecha inicial.' },
+        { valor: FechaFinal.value, mensaje: 'Fecha final.' }
     ];
 
     // Realiza las validaciones
@@ -1132,10 +1151,23 @@ async function DescargarXMLSPorLaAPIDeFacturaTech() {
 
     // Muestra los mensajes de error si hay errores
     if (errores.length > 0) {
+        // Swal.fire({
+        //     icon: 'error',
+        //     text: errores.join(' ')
+        // });
+
         Swal.fire({
-            icon: 'error',
-            text: errores.join(' ')
-        });
+            icon: 'info',
+            html: `
+                <h5><b>Los siguientes campos son necesarios</b></h5>
+                <br>
+                <ul style="text-align: left;">
+                    ${errores.map((campo) => `<li style="color: #FFFFFF;">${campo}</li>`).join("")}
+                </ul>
+
+            `
+
+        })
     }
     else {
 
