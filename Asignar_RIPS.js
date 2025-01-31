@@ -1,4 +1,4 @@
-const servidor = "HPGRIS";
+const servidor = "HPRED241";
 
 function VerificarLogin() {
     const TokenLogin = localStorage.getItem('token');
@@ -539,7 +539,7 @@ radioAC.addEventListener('change', async function (e) {
             // Agregar las opciones al select de TipoDiagnosticoPrincipal
             for (let i = 0; i < CargarTipoDiagnosticoPrincipal.length; i+=1) {
                 const option = document.createElement('option');
-                option.value = CargarTipoDiagnosticoPrincipal[i].CódigoTipodeDiagnósticoPrincipal;
+                option.value = CargarTipoDiagnosticoPrincipal[i].IdTipodeDiagnósticoPrincipal;
                 option.textContent = CargarTipoDiagnosticoPrincipal[i].DescripcionTipodeDiagnósticoPrincipal;
                 SelectTipoDiagnosticoPrincipalAC.appendChild(option);
             }
@@ -2633,7 +2633,7 @@ const TraerInfoParaRIPSACPorDefecto = async function() {
     // Agregar las opciones al select de TipoDiagnosticoPrincipal
     for (let i = 0; i < CargarTipoDiagnosticoPrincipal.length; i+=1) {
         const option = document.createElement('option');
-        option.value = CargarTipoDiagnosticoPrincipal[i].CódigoTipodeDiagnósticoPrincipal;
+        option.value = CargarTipoDiagnosticoPrincipal[i].IdTipodeDiagnósticoPrincipal;
         option.textContent = CargarTipoDiagnosticoPrincipal[i].DescripcionTipodeDiagnósticoPrincipal;
         SelectPorDefectoTipoDiagnosticoPrincipalAC.appendChild(option);
     }

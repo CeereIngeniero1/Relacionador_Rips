@@ -26,7 +26,10 @@ router.get('/usuarios/rips/:fechaInicio/:fechaFin/:ResolucionesRips/:documentoEm
         CONVERT(VARCHAR, en3.[Fecha Nacimiento EntidadIII], 23) AS [fechaNacimiento], Sexo.[Sexo] AS [codSexo], 
         País.País AS [codPaisResidencia], Ciu.[Código Ciudad] AS [codMunicipioResidencia], 
         '0' + zr.[Código Zona Residencia] as [codZonaTerritorialResidencia], 'NO' AS incapacidad,
-        DENSE_RANK() OVER (ORDER BY en.[Documento Entidad] DESC) AS consecutivo, pais2.País AS [codPaisOrigen], eve.[Id Evaluación Entidad], everips.[Id Tipo de Rips], 
+        --DENSE_RANK() OVER (ORDER BY en.[Documento Entidad] DESC) AS consecutivo, 
+        5 AS consecutivo, 
+        
+        pais2.País AS [codPaisOrigen], eve.[Id Evaluación Entidad], everips.[Id Tipo de Rips], 
 		CASE
 			WHEN fc.[Documento Responsable] in (select [Documento Entidad] from [Función Por Entidad] where [Id Función] in ( select [Id Función] from Función where Función like ('%eps%' ) or Función like ('%prepa%') )) 
 				THEN 1 
@@ -110,7 +113,8 @@ router.get('/usuarios/rips/:fechaInicio/:fechaFin/:ResolucionesRips/:documentoEm
             codMunicipioResidencia: columns[10].value,
             codZonaTerritorialResidencia: columns[11].value,
             incapacidad: columns[12].value,
-            consecutivo: columns[13].value,
+            // consecutivo: parseInt(columns[13].value, 10), // Convertir a entero,
+             consecutivo: 6, // Convertir a entero,
             codPaisOrigen: columns[14].value,
             servicios: {
                 consultas: [],
@@ -262,7 +266,8 @@ router.get('/servicios/rips/:numFactura/:numDocumentoIdentificacion/:fechaInicio
             conceptoRecaudo: columns[17].value,
             valorPagoModerador: parseInt(columns[18].value, 10),
             numFEVPagoModerador: columns[19].value,
-            consecutivo: parseInt(columns[20].value, 10) // Convertir a entero
+            consecutivo: 6,
+            // consecutivo: parseInt(columns[20].value, 10) // Convertir a entero
         };
 
         resultadosServicios.push(servicio);
@@ -357,7 +362,8 @@ router.get('/serviciosAP/rips/:numFactura/:numDocumentoIdentificacion/:fechaInic
             conceptoRecaudo: columns[16].value,
             valorPagoModerador: parseInt(columns[17].value, 10),
             numFEVPagoModerador: columns[18].value,
-            consecutivo: parseInt(columns[19].value, 10) // Convertir a entero
+            consecutivo: 6
+            // consecutivo: parseInt(columns[19].value, 10) // Convertir a entero
         };
 
         resultadosServicios.push(servicio);
