@@ -58,7 +58,7 @@ router.get('/usuarios/rips/:fechaInicio/:fechaFin/:ResolucionesRips/:documentoEm
 
         WHERE CONVERT(DATE, eve.[Fecha Evaluación Entidad], 23) BETWEEN @fechaInicio AND @fechaFin
         AND eve.[Documento Empresa] = @documentoEmpresaSeleccionada
-        ORDER BY en.[Documento Entidad] DESC
+        ORDER BY eve.[Documento Entidad] DESC
         `,
         (err) => {
             if (err) {
