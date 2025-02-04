@@ -1,5 +1,19 @@
 const servidor = "HPGRIS";
 
+// Funcionalidad para incorporar buscador en el select de los pacientes
+$(document).ready(function(e) {
+    $('#listaPaciente').select2({
+        width: '100%', // Ajusta el ancho al contenedor
+        dropdownAutoWidth: true, // Ajusta automáticamente el ancho del menú
+        // placeholder: "Buscar",
+        templateSelection: function (data) {
+            // Truncar el texto a 50 caracteres y añadir puntos suspensivos
+            var truncatedText = data.text.length > 50 ? data.text.substring(0, 50) + '...' : data.text;
+            return $('<span>' + truncatedText + '</span>');
+        }
+    })
+})
+
 const checkboxParticular = document.getElementById('checkbox1')
 const checkboxPrepagada = document.getElementById('checkbox2')
 const span_paciente = document.getElementById('span_paciente')
@@ -38,6 +52,24 @@ if (checkboxParticular.checked) {
 
 }
 
+// const updatePacientesSelect = (pacientes) => {
+//     const selectPaciente = document.querySelector('#listaPaciente');
+//     selectPaciente.innerHTML = ""; // Limpiar opciones antiguas
+
+//     // Agregar opción "Sin Seleccionar" al principio
+//     const optionSinSeleccionar = document.createElement("option");
+//     optionSinSeleccionar.value = "Sin Seleccionar";
+//     optionSinSeleccionar.text = "Sin Seleccionar";
+//     selectPaciente.appendChild(optionSinSeleccionar);
+
+//     // Agregar opciones al select
+//     pacientes.forEach((paciente) => {
+//         const option = document.createElement("option");
+//         option.value = paciente.documento;
+//         option.text = `${paciente.nombre} - ${paciente.tipoDocumento} ${paciente.documento} `;
+//         selectPaciente.appendChild(option);
+//     });
+// };
 const updatePacientesSelect = (pacientes) => {
     const selectPaciente = document.querySelector('#listaPaciente');
     selectPaciente.innerHTML = ""; // Limpiar opciones antiguas
@@ -48,11 +80,20 @@ const updatePacientesSelect = (pacientes) => {
     optionSinSeleccionar.text = "Sin Seleccionar";
     selectPaciente.appendChild(optionSinSeleccionar);
 
-    // Agregar opciones al select
-    pacientes.forEach((paciente) => {
+    // Crear un array de opciones con texto y documento
+    const opciones = pacientes.map((paciente) => ({
+        value: paciente.documento,
+        text: `${paciente.nombre} - ${paciente.tipoDocumento} ${paciente.documento}`
+    }));
+
+    // Ordenar el array de opciones por el texto
+    opciones.sort((a, b) => a.text.localeCompare(b.text));
+
+    // Agregar opciones ordenadas al select
+    opciones.forEach((opcion) => {
         const option = document.createElement("option");
-        option.value = paciente.documento;
-        option.text = `${paciente.nombre} - ${paciente.tipoDocumento} ${paciente.documento} `;
+        option.value = opcion.value;
+        option.text = opcion.text;
         selectPaciente.appendChild(option);
     });
 };
@@ -207,25 +248,48 @@ const getFacturas = async (documento) => {
     }
 };
 
-const selectPaciente = document.querySelector('#listaPaciente');
+// const selectPaciente = document.querySelector('#listaPaciente');
 
-// Agrega este evento change
-selectPaciente.addEventListener('change', async () => {
+// // Agrega este evento change
+// selectPaciente.addEventListener('change', async () => {
 
-    if (checkboxParticular.checked) {
-        const documentoSeleccionado = selectPaciente.value;
-        await getEvaluaciones(documentoSeleccionado, fechaInicio, fechaFin);
-        await getFacturas(documentoSeleccionado);
-        document.querySelector('#documentoInput').value = '';
-    }
+//     if (checkboxParticular.checked) {
+//         const documentoSeleccionado = selectPaciente.value;
+//         await getEvaluaciones(documentoSeleccionado, fechaInicio, fechaFin);
+//         await getFacturas(documentoSeleccionado);
+//         document.querySelector('#documentoInput').value = '';
+//     }
 
-    if (checkboxPrepagada.checked) {
-        const idFacturaSeleccionada = selectPaciente.value;
-        await getPacientesEPS(idFacturaSeleccionada);
+//     if (checkboxPrepagada.checked) {
+//         const idFacturaSeleccionada = selectPaciente.value;
+//         await getPacientesEPS(idFacturaSeleccionada);
 
 
-    }
+//     }
+// });
+
+$(document).ready(function() {
+
+    $('#listaPaciente').on('change', async function() {
+        const documentoSeleccionado = $(this).val(); // Obtener el valor seleccionado
+        console.log(documentoSeleccionado);
+
+        // Usar .prop() para acceder a la propiedad checked
+        if ($('#checkboxParticular').prop('checked', true)) {
+            console.log("ESTA MARCADOOO");
+            await getEvaluaciones(documentoSeleccionado, fechaInicio, fechaFin);
+            await getFacturas(documentoSeleccionado);
+            document.querySelector('#documentoInput').value = '';
+        } else {
+            console.log("NO ESTA MARCADOOO");
+        }
+
+        if ($('#checkboxPrepagada').prop('checked', true)) {
+            await getPacientesEPS(documentoSeleccionado);
+        }
+    });
 });
+
 
 const relacionarDatosFacturaCero = async () => {
     const evaluacionesSeleccionadas = obtenerFilasSeleccionadas('#tablaFilas');
