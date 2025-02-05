@@ -248,7 +248,7 @@ const getFacturas = async (documento) => {
     }
 };
 
-// const selectPaciente = document.querySelector('#listaPaciente');
+const selectPaciente = document.querySelector('#listaPaciente');
 
 // // Agrega este evento change
 // selectPaciente.addEventListener('change', async () => {
