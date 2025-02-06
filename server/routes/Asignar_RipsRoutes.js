@@ -133,7 +133,8 @@ router.get('/UsuariosHC/:DocumentoUsuario/:fechaInicio/:fechaFin', async (req, r
         request.on('row', (columns) => {
             const row = {};
             columns.forEach((column) => {
-                row[column.metadata.colName] = column.value;
+                // row[column.metadata.colName] = column.value;
+                row[column.metadata.colName] = String(column.value).replace(/[\n\r\t]/g, '');
             });
             resultados.push(row);
         });
@@ -160,7 +161,7 @@ router.get('/DatosdeUsuarioHC/:DocumentoPaciente', async (req, res) => {
         SegundoApellidoPaciente, PrimerNombrePaciente, SegundoNombrePaciente, 
         NombreCompletoPaciente, Sexo, Edad, Direccion, Tel, DocumentoTipoDOC
         FROM            [Cnsta Relacionador Usuarios Info]
-        WHERE        (DocumentoPaciente = N'${DocumentoPaciente}')
+        WHERE        (DocumentoPaciente like '%${DocumentoPaciente}%')
         `,
             (err) => {
                 if (err) {
@@ -211,7 +212,7 @@ router.get('/DatosdeHC/:DocumentoPaciente/:DocumentoUsuario/:fechaInicio/:fechaF
                 ,[IdEvaluaciónEntidad]
                 ,[HoraEvaluacion]
         FROM            [Cnsta Relacionador Info Historias]
-        WHERE        (DocumentoPaciente = N'${DocumentoPaciente}') 
+        WHERE        (DocumentoPaciente  like '%${DocumentoPaciente}%') 
         AND (CAST(FechaEvaluacion AS DATE) BETWEEN '${fechaInicio}' AND '${fechaFin}') 
         AND (DocumentoUsuario = N'${DocumentoUsuario}')
 
