@@ -1779,30 +1779,59 @@ document.addEventListener('DOMContentLoaded', () => {
         const descargarRIPSButton = document.getElementById('descargarRIPS');
         const generadorRIPSLink = document.getElementById('generadorRIPS');
         const asignarRIPSLink = document.querySelector('a[href="Asignar_RIPS.html"]');
+        const descargarXMLS = document.getElementById('XMLS');
 
-        switch (level) {
-            case 1:
-                // Nivel 1: Mostrar todos los botones y enlaces
-                descargarRIPSButton.style.display = 'flex';
-                generadorRIPSLink.style.display = 'None';
-                // generadorRIPSLink.style.display = 'flex';
-                // asignarRIPSLink.style.display = 'none';
-                asignarRIPSLink.style.display = 'flex';
-                break;
-            case 2:
-                // Nivel 2: Mostrar solo enlaces
-                descargarRIPSButton.style.display = 'none';
-                generadorRIPSLink.style.display = 'flex';
-                asignarRIPSLink.style.display = 'flex';
-                break;
-            case 3:
-                // Nivel 3: No mostrar ninguno
-                descargarRIPSButton.style.display = 'none';
-                generadorRIPSLink.style.display = 'none';
-                asignarRIPSLink.style.display = 'none';
-                break;
-            default:
-                console.error('Nivel de usuario no reconocido');
+        // switch (level) {
+        //     case 1:
+        //         // Nivel 1: Mostrar todos los botones y enlaces
+        //         descargarRIPSButton.style.display = 'flex';
+        //         generadorRIPSLink.style.display = 'None';
+        //         // generadorRIPSLink.style.display = 'flex';
+        //         // asignarRIPSLink.style.display = 'none';
+        //         asignarRIPSLink.style.display = 'flex';
+        //         break;
+        //     case 2:
+        //         // Nivel 2: Mostrar solo enlaces
+        //         descargarRIPSButton.style.display = 'none';
+        //         generadorRIPSLink.style.display = 'flex';
+        //         asignarRIPSLink.style.display = 'flex';
+        //         break;
+        //     case 3:
+        //         // Nivel 3: No mostrar ninguno
+        //         descargarRIPSButton.style.display = 'none';
+        //         generadorRIPSLink.style.display = 'none';
+        //         asignarRIPSLink.style.display = 'none';
+        //         break;
+        //     default:
+        //         console.error('Nivel de usuario no reconocido');
+        // }
+        if (level === 1) {
+            generadorRIPSLink.style.display = 'none';
+        } else {
+            generadorRIPSLink.style.display = 'none';            
+            const ElementosABloquear = {
+                'descargarRIPS': 'Descargar RIPS (Deshabilitado)',
+                'XMLS': 'XMLS (Deshabilitado)',
+                'checkbox1': '',
+                'checkbox2': '',
+                'documentoInput': '',
+                'listaPaciente': '',
+                'checkboxFacturaCero': '',
+                'btnRelacionar': '',
+                'AsignarFacturaManual': ''
+            }
+        
+            for (let key in ElementosABloquear) {
+                const elemento = document.getElementById(key); // Obtener el elemento del DOM usando el ID
+        
+                if (elemento) { // Verificar que el elemento exista
+                    elemento.disabled = true;
+                    elemento.classList.remove('btn-primary');
+                    elemento.classList.add('btn-danger');
+                    elemento.textContent = ElementosABloquear[key]; // Cambia el texto del botón
+                    elemento.style.pointerEvents = "none"; 
+                }
+            }
         }
     } else {
         console.error('No se pudo obtener el nivel de usuario');

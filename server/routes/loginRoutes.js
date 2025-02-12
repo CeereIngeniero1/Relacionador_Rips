@@ -50,9 +50,9 @@ router.post('/login', (req, res) => {
         const documentousuariologeado = documentoEntidadColumn.value;
 
         // Verificar el nivel de usuario
-        if (![1, 2, 3].includes(userLevel)) {
+        if (![1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(userLevel)) {
             if (!res.headersSent) {
-                return res.status(403).json({ error: 'Nivel de usuario no reconocido' });
+                return res.status(403).json({ error: 'Nivel de usuario no reconocido'});
             }
         }
 
