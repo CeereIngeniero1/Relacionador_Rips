@@ -109,6 +109,13 @@ app.use('/api', epsRoutes);
 
 app.use('/api', AsignarRips);
 
+// Aumentar timeout a 2 minutos
+app.use((req, res, next) => {
+    req.setTimeout(120000); // 120,000 ms = 2 minutos
+    res.setTimeout(120000);
+    next();
+});
+
 const port = 3000;
 // app.listen(port, () => {
 //     console.log(`Servidor escuchando en http://localhost:${port}`);

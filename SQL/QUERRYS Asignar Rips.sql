@@ -446,3 +446,17 @@ FROM     dbo.API_RIPS_POR_DEFECTO AS APIRPD LEFT OUTER JOIN
                   dbo.[RIPS Causa Externa Version2] AS RCEV2 ON APIRPD.CausaMotivoAtencion = RCEV2.Codigo LEFT OUTER JOIN
                   dbo.[Tipo de Diagnóstico Principal] AS TDP ON APIRPD.TipoDiagnosticoPrincipal = TDP.[Código Tipo de Diagnóstico Principal]
 GO
+
+
+CREATE VIEW [dbo].[Cnsta Relacionador Info Pacientes Facturas]
+AS
+SELECT        en.[Nombre Completo Entidad] AS [Nombre Paciente], tp.[Tipo de Documento], eve.[Documento Entidad], eve.[Fecha Evaluación Entidad], fc.[Id Factura], eve.[Id Evaluación Entidad], 
+                         em.[Documento Empresa]
+FROM            dbo.[Evaluación Entidad Rips] AS everips INNER JOIN
+                         dbo.[Evaluación Entidad] AS eve ON eve.[Id Evaluación Entidad] = everips.[Id Evaluación Entidad] INNER JOIN
+                         dbo.Entidad AS en ON eve.[Documento Entidad] = en.[Documento Entidad] LEFT OUTER JOIN
+                         dbo.Factura AS fc ON eve.[Documento Entidad] = fc.[Documento Paciente] INNER JOIN
+                         dbo.[Tipo de Documento] AS tp ON en.[Id Tipo de Documento] = tp.[Id Tipo de Documento] LEFT OUTER JOIN
+                         dbo.Empresa AS em ON eve.[Documento Empresa] = em.[Documento Empresa]
+
+GO
