@@ -11,7 +11,7 @@ const os = require('os');
     console.log(Servidor);
 
     // Nombre/Ruta de los archivos que se van a modificar
-    const ArchivosAModificar = ['../RIPS.js', '../script.js','../Asignar_RIPS.js'];
+    const ArchivosAModificar = ['../RIPS.js', '../script.js','../Asignar_RIPS.js','../MaestroListasRIPS.js'];
 
 
 

@@ -1,4 +1,4 @@
-const servidor = "HPRED241";
+const servidor = "HPGRIS";
 
 // Funcionalidad para incorporar buscador en el select de los pacientes
 $(document).ready(function(e) {
@@ -111,7 +111,7 @@ const getPacientes = async (fechaInicio, fechaFin) => {
 
     } catch (ex) {
         console.error(ex);
-        alert(`Error: ${ex.message}`);
+        alert(`Error: ${ex.message} - ${response}`);
     }
 };
 
