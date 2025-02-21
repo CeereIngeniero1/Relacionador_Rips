@@ -194,7 +194,69 @@ router.post('/ActualizarElemento', async (req, res) => {
     connection.execSql(request);
 });
 
+router.post('/ActualizarTodo', async (req, res) => {
+    const { Tabla: TablaAActualizar, Estado: EstadoAAsignar} = req.body;
+    // Verificar si la conexión está en el estado correcto
+    if (connection.state.name !== 'LoggedIn') {
+        return res.status(500).json({ error: 'La conexión a la base de datos no está lista.' });
+    }
 
+    console.log(`Tabla => ${TablaAActualizar} Estdo => ${EstadoAAsignar}`);
+    
+    let Query;
+    switch (TablaAActualizar) {
+        case 'ModalidadGrupoServicioTecSal':
+            Query = `UPDATE [RIPS Modalidad Atención] SET [Id Estado] = @EstadoAAsignar`;
+        break;
+        case 'GrupoServicios':
+            Query = `UPDATE [RIPS Grupo Servicios] SET [Id Estado] = @EstadoAAsignar`;
+        break;
+        case 'CodServicio':
+            Query = `UPDATE [RIPS Servicios] SET [Id Estado] = @EstadoAAsignar`;
+        break;
+        case 'FinalidadTecnologiaSalud':
+            Query = `UPDATE [RIPS Finalidad Consulta Version2] SET [Id Estado] = @EstadoAAsignar`;
+        break;
+        case 'CausaMotivoAtencion':
+            Query = `UPDATE [RIPS Causa Externa Version2] SET [Id Estado] = @EstadoAAsignar`;
+        break;
+        case 'ViaIngresoServicioSalud':
+            Query = `UPDATE [RIPS Via Ingreso Usuario] SET [Id Estado] = @EstadoAAsignar`;
+        break;
+        default:
+            return res.status(400).json({ error: 'Tabla no válida', consulta: `${Query}` });
+    }
+
+    const request = new Request(Query, (err) => {
+        if (err) {
+            console.error(`Error de ejecución: ${err}`);
+            if (!res.headersSent) {
+                res.status(500).json({ error: 'Error ejecutando la consulta.' });
+            }
+        }
+    });
+
+    // Agregar parámetros
+    request.addParameter('EstadoAAsignar', TYPES.Int, EstadoAAsignar);
+    // request.addParameter('IdElementoAActualizar', TYPES.Int, IdElementoAActualizar);
+
+    request.on('requestCompleted', () => {
+        console.log('Elemento actualizado correctamente');
+        if (!res.headersSent) {
+            res.status(200).json({ message: 'Elemento actualizado correctamente' });
+        }
+    });
+
+    request.on('error', (err) => {
+        console.error('Error en la consulta:', err);
+        if (!res.headersSent) {
+            res.status(500).json({ error: 'Error interno del servidor' });
+        }
+    });
+
+    // Ejecutar la consulta con la conexión global
+    connection.execSql(request);
+});
 
 
 module.exports = router;

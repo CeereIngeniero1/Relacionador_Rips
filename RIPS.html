@@ -40,7 +40,7 @@
     <div class="navbar">
         <img src="images/Ceere_logo.png" alt="">
         <h2 id="nombreUsuarioLink"></h2>
-        <button type="button" data-bs-toggle="modal" data-bs-target="#ModalParaMaestro">Maestro</button>
+        <button type="button" id="BotonMaestro" data-bs-toggle="modal" data-bs-target="#ModalParaMaestro">Maestro</button>
         <button type="button" id="descargarRIPS" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Descargar RIPS JSON</button>
         <button type="button" id="XMLS" data-bs-toggle="modal" data-bs-target="#ModalEmpresasResolucionVigente">XMLS</button>
         <a href="./GENERADOR_ARCHIVOS_RIPS_PART/index.php" id="generadorRIPS">GENERADOR INFORMES RIPS</a>
@@ -156,6 +156,12 @@
                             <option value="CausaMotivoAtencion">Causa Motivo Atención - [AC y AP]</option>
                             <option value="ViaIngresoServicioSalud">Via Ingreso Servicio Salud - [AP]</option>
                         </select>
+                        <label id="LabelActivarTodo">
+                            Activar Todo <input type="checkbox" id="toggleActivate">
+                        </label>
+                        <label id="LabelDesactivarTodo">
+                            Desactivar Todo <input type="checkbox" id="toggleDeactivate">
+                        </label>
 
                         <!-- Contenedor para Modalidad Grupo Servicio Tecnología Salud -->
                         <div class="form-control w-100 d-block">
