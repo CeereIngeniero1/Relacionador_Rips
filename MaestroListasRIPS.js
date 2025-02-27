@@ -21,8 +21,6 @@ $(document).ready((e) => {
     });
     
     if ($('#SelectListarDatosRIPS').val() === "") {
-        console.log("EL ELMENTO NO TIENE NINGUNA OPCIÓN SELECCIONADA");
-
         $('#LabelActivarTodo').css('display', 'none');
         $('#LabelDesactivarTodo').css("display", "none");
     }

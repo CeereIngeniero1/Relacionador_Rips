@@ -40,7 +40,7 @@ body {
 }
 
 #generadorRIPS {
-    width: 250px;
+    width: 150px;
     height: 40px;
     text-decoration: none;
     border: 1px solid #fff;
@@ -290,7 +290,7 @@ tr:hover {
 }
 
 #BotonMaestro {
-    width: 150px;
+    width: 200px;
     height: 40px;
     border: 1px solid #fff;
     color: #fff;

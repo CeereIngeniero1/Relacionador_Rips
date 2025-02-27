@@ -1810,6 +1810,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             generadorRIPSLink.style.display = 'none';            
             const ElementosABloquear = {
+                'BotonMaestro': 'Maestro (Deshabilitado)',
                 'descargarRIPS': 'Descargar RIPS (Deshabilitado)',
                 'XMLS': 'XMLS (Deshabilitado)',
                 'checkbox1': '',
