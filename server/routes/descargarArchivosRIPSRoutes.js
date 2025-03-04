@@ -23,12 +23,16 @@ router.get('/usuarios/rips/:fechaInicio/:fechaFin/:ResolucionesRips/:documentoEm
     const documentoEmpresaSeleccionada = req.params.documentoEmpresaSeleccionada;
 
     const request = new Request(
-        `SELECT em.NroIDPrestador, EmpV.[Prefijo Resolución Facturación EmpresaV] + fc.[No Factura] AS [numFactura], NULL AS [numNota], NULL AS [tipoNota], tpd.[Tipo de Documento] as [tipoDocumentoIdentificacion],
+        `SELECT   em.NroIDPrestador, EmpV.[Prefijo Resolución Facturación EmpresaV] + fc.[No Factura] AS [numFactura], NULL AS [numNota], NULL AS [tipoNota], tpd.[Tipo de Documento] as [tipoDocumentoIdentificacion],
         en.[Documento Entidad] as [numDocumentoIdentificacion], '0' + tpe.[Tipo Entidad] as [tipoUsuario],
         CONVERT(VARCHAR, en3.[Fecha Nacimiento EntidadIII], 23) AS [fechaNacimiento], Sexo.[Sexo] AS [codSexo], 
-        País.País AS [codPaisResidencia], Ciu.[Código Ciudad] AS [codMunicipioResidencia], 
-        '0' + zr.[Código Zona Residencia] as [codZonaTerritorialResidencia], 'NO' AS incapacidad,
-        DENSE_RANK() OVER (ORDER BY en.[Documento Entidad] DESC) AS consecutivo, pais2.País AS [codPaisOrigen], eve.[Id Evaluación Entidad], everips.[Id Tipo de Rips], 
+        País.País AS [codPaisResidencia], Dep.[Código Departamento] +  Ciu.[Código Ciudad] AS [codMunicipioResidencia], 
+		CASE WHEN zr.[Código Zona Residencia]  IS NULL THEN '02' ELSE  '0' + zr.[Código Zona Residencia] END AS  [codZonaTerritorialResidencia], 
+		'NO' AS incapacidad,
+
+        --DENSE_RANK() OVER (ORDER BY en.[Documento Entidad] DESC) 
+        --CAST(DENSE_RANK() OVER (ORDER BY en.[Documento Entidad] DESC) AS INT)
+        1 AS consecutivo, pais2.País AS [codPaisOrigen], eve.[Id Evaluación Entidad], everips.[Id Tipo de Rips], 
 		CASE
 			WHEN fc.[Documento Responsable] in (select [Documento Entidad] from [Función Por Entidad] where [Id Función] in ( select [Id Función] from Función where Función like ('%eps%' ) or Función like ('%prepa%') )) 
 				THEN 1 
@@ -47,6 +51,7 @@ router.get('/usuarios/rips/:fechaInicio/:fechaFin/:ResolucionesRips/:documentoEm
         LEFT JOIN [Tipo Entidad] as tpe ON en3.[Id Tipo Entidad] = tpe.[Id Tipo Entidad]
         LEFT JOIN Sexo ON en3.[Id Sexo] = Sexo.[Id Sexo]
         LEFT JOIN Ciudad AS Ciu ON en2.[Id Ciudad] = Ciu.[Id Ciudad] 
+        LEFT JOIN Departamento AS Dep ON Dep.[Id Departamento] = Ciu.[Id Departamento]  
         LEFT JOIN Departamento AS Depart ON Ciu.[Id Departamento] = Depart.[Id Departamento] 
         LEFT JOIN País ON Depart.[Id País] = País.[Id País] 
         LEFT JOIN [Zona Residencia] AS zr ON en3.[Id Zona Residencia] = zr.[Id Zona Residencia]
@@ -201,8 +206,8 @@ router.get('/usuarios/ripsEPS/:fechaInicio/:fechaFin/:ResolucionesRips/:document
     CONVERT(VARCHAR, en3.[Fecha Nacimiento EntidadIII], 23) AS [fechaNacimiento], 
     Sexo.[Sexo] AS [codSexo], 
     País.País AS [codPaisResidencia], 
-    Ciu.[Código Ciudad] AS [codMunicipioResidencia], 
-    '0' + zr.[Código Zona Residencia] AS [codZonaTerritorialResidencia], 
+    Dep.[Código Departamento] +  Ciu.[Código Ciudad] AS [codMunicipioResidencia], 
+    CASE WHEN zr.[Código Zona Residencia]  IS NULL THEN '02' ELSE  '0' + zr.[Código Zona Residencia] END AS  [codZonaTerritorialResidencia],  
     'NO' AS [incapacidad],
     DENSE_RANK() OVER (ORDER BY en.[Documento Entidad]) AS [consecutivo],
     pais2.País AS [codPaisOrigen], 
@@ -236,6 +241,7 @@ LEFT JOIN  Departamento AS Depart ON Ciu.[Id Departamento] = Depart.[Id Departam
 LEFT JOIN  País ON Depart.[Id País] = País.[Id País] 
 LEFT JOIN  [Zona Residencia] AS zr ON en3.[Id Zona Residencia] = zr.[Id Zona Residencia]
 LEFT JOIN  Ciudad AS ciu2 ON en2.[Id Ciudad] = ciu2.[Id Ciudad]
+LEFT JOIN Departamento AS Depart2 ON ciu2.[Id Departamento] = Depart2.[Id Departamento]
 LEFT JOIN  Departamento AS Depart2 ON ciu2.[Id Departamento] = Depart2.[Id Departamento]
 LEFT JOIN  País AS pais2 ON Depart2.[Id País] = pais2.[Id País]
 LEFT JOIN   EmpresaV AS EmpV ON fc.[Id EmpresaV] = EmpV.[Id EmpresaV]
@@ -397,7 +403,7 @@ router.get('/servicios/rips/:numFactura/:numDocumentoIdentificacion/:fechaInicio
         SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura] , 120), 1, 16) AS fechaInicioAtencion, 
         NULL AS numAutorizacion, everips.[Codigo RIPS] AS codConsulta,
         '01' AS modalidadGrupoServicioTecSal, '01' AS grupoServicios, Serv.[Código Servicios] AS codServicio,
-        everips.[Id Finalidad Consulta] AS finalidadTecnologiaSalud, everips.[Id Causa Externa] AS causaMotivoAtencion,
+        everips.[Id Finalidad Consulta] AS finalidadTecnologiaSalud, CASE WHEN CAU.Codigo IS NULL THEN 38 ELSE Cau.Codigo END AS causaMotivoAtencion,
         everips.[Diagnostico Rips] AS codDiagnosticoPrincipal, 
         CASE WHEN everips.[Diagnostico Rips2] = 'Null' THEN NULL ELSE everips.[Diagnostico Rips2] END AS codDiagnosticoRelacionado1, 
         NULL AS codDiagnosticoRelacionado2, NULL AS codDiagnosticoRelacionado3, 
@@ -407,7 +413,9 @@ router.get('/servicios/rips/:numFactura/:numDocumentoIdentificacion/:fechaInicio
 
         tp.[Tipo de Documento] AS tipoDocumentoIdentificacion, eve.[Documento Entidad] AS numDocumentoIdentificacion, 
         fc.[Total Factura] AS vrServicio, '05' AS tipoPagoModerador, '0' AS valorPagoModerador, 
-        NULL  AS numFEVPagoModerador, ROW_NUMBER() OVER (ORDER BY everips.[Id Evaluación Entidad RIPS]) AS consecutivo
+        NULL  AS numFEVPagoModerador, 
+        -- ROW_NUMBER() OVER (ORDER BY everips.[Id Evaluación Entidad RIPS]) 
+        1 AS consecutivo
 
         FROM [Evaluación Entidad] as eve
 
@@ -419,8 +427,9 @@ router.get('/servicios/rips/:numFactura/:numDocumentoIdentificacion/:fechaInicio
 		LEFT JOIN Empresa as em2 ON eve.[Documento Empresa] = em2.[Documento Empresa]
         INNER JOIN EmpresaV as EmpV ON Empresa.[Documento Empresa] = EmpV.[Documento Empresa]
         LEFT JOIN [Tipo de Diagnóstico Principal] as tdp ON everips.[Id Tipo de Diagnóstico Principal] = tdp.[Id Tipo de Diagnóstico Principal]
+		LEFT JOIN [RIPS Causa Externa Version2] as Cau on Cau.[Id RIPS Causa Externa Version2] = everips.[Id Causa Externa]
 
-		left join [RIPS Servicios] AS Serv ON serv.[Id Servicios]  = everips.[Id Servicios]
+		left join [RIPS Servicios] AS Serv ON serv.[Id Servicios]  = everips.[Id Servicios] 
 
         
         WHERE everips.[Id Acto Quirúrgico] = 1 
@@ -468,7 +477,8 @@ router.get('/servicios/rips/:numFactura/:numDocumentoIdentificacion/:fechaInicio
             conceptoRecaudo: columns[17].value,
             valorPagoModerador: parseInt(columns[18].value, 10),
             numFEVPagoModerador: columns[19].value,
-            consecutivo: 6,
+            consecutivo: 1,
+            // consecutivo: 6,
             // consecutivo: parseInt(columns[20].value, 10) // Convertir a entero
         };
 
@@ -505,7 +515,7 @@ router.get('/servicios/ripsEPSAC/:numFactura/:numDocumentoIdentificacion/:fechaI
         SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura] , 120), 1, 16) AS fechaInicioAtencion, 
         NULL AS numAutorizacion, everips.[Codigo RIPS] AS codConsulta,
         '01' AS modalidadGrupoServicioTecSal, '01' AS grupoServicios, Serv.[Código Servicios] AS codServicio,
-        everips.[Id Finalidad Consulta] AS finalidadTecnologiaSalud, everips.[Id Causa Externa] AS causaMotivoAtencion,
+        everips.[Id Finalidad Consulta] AS finalidadTecnologiaSalud, CASE WHEN CAU.Codigo IS NULL THEN 38 ELSE Cau.Codigo END AS causaMotivoAtencion,
         everips.[Diagnostico Rips] AS codDiagnosticoPrincipal, 
         CASE WHEN everips.[Diagnostico Rips2] = 'Null' THEN NULL ELSE everips.[Diagnostico Rips2] END AS codDiagnosticoRelacionado1, 
         NULL AS codDiagnosticoRelacionado2, NULL AS codDiagnosticoRelacionado3, 
@@ -529,7 +539,7 @@ router.get('/servicios/ripsEPSAC/:numFactura/:numDocumentoIdentificacion/:fechaI
 		left join [Plan de Tratamiento Items] PT ON PT.[Id Plan de Tratamiento] = FII.[Id Plan de Tratamiento]
 		left join [Plan de Tratamiento] Tr ON Tr.[Id Plan de Tratamiento] = fii.[Id Plan de Tratamiento]
 		left join [RIPS Servicios] AS Serv ON serv.[Id Servicios]  = everips.[Id Servicios]
-
+        LEFT JOIN [RIPS Causa Externa Version2] as Cau on Cau.[Id RIPS Causa Externa Version2] = everips.[Id Causa Externa]
         
         WHERE everips.[Id Acto Quirúrgico] = 1 
         AND EmpV.[Prefijo Resolución Facturación EmpresaV] + fc.[No Factura] = @numFactura

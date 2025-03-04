@@ -297,6 +297,44 @@ BEGIN
 END;
 
 
+-----------------------------------------FUNCION PARA TRIGER DE LAS PREPAGADAS EN PLAN DE TRATAMIENTO
+
+
+CREATE FUNCTION [dbo].[FuncionBuscarRelaciontratamientoRips]
+(
+	@DocumentoPaciente NVARCHAR(50),
+	@FechaInicioTratamiento DATE,
+	@Documentoeps NVARCHAR(50)
+)
+RETURNS INT
+AS
+BEGIN 
+	DECLARE @IdEvaluacionEntidad INT;  -- VARIABLE PARA ALMACENAR EL ID DE LA EVALUACIÓN ENTIDAD
+	DECLARE @ResultadoExisteRelacionRips INT;
+
+	-- SE CAPTURA EL ID DE LA EVALUACIÓN ENTIDAD
+	SELECT 
+		@IdEvaluacionEntidad = [Evaluación Entidad].[Id Evaluación Entidad] 
+	FROM 
+		[Evaluación Entidad]
+	INNER JOIN 
+		[Evaluación Entidad Rips] ON [Evaluación Entidad].[Id Evaluación Entidad] = [Evaluación Entidad Rips].[Id Evaluación Entidad]
+	WHERE 
+		[Documento Entidad] = @DocumentoPaciente 
+		AND CONVERT(DATE, [Fecha Evaluación Entidad]) = @FechaInicioTratamiento
+		AND [Evaluación Entidad Rips].[Id Plan de Tratamiento] IS NULL
+		AND [Documento Tipo Rips] = @Documentoeps
+		AND ([Evaluación Entidad Rips].[Id Tipo de Rips] = 3 OR [Evaluación Entidad Rips].[Id Tipo de Rips] = 4);
+
+	-- ASIGNA EL RESULTADO (1 SI EXISTE, 0 SI NO EXISTE) A LA VARIABLE
+	SET @ResultadoExisteRelacionRips = CASE WHEN @IdEvaluacionEntidad IS NOT NULL THEN 1 ELSE 0 END;
+
+	-- RETORNA EL ID DE LA EVALUACIÓN ENTIDAD SI LA RELACIÓN EXISTE, DE LO CONTRARIO, RETORNA 0
+	RETURN CASE WHEN @ResultadoExisteRelacionRips = 1 THEN @IdEvaluacionEntidad ELSE 0 END;
+END;
+GO
+
+
 -------------------TRIGER PARA FACTURAII DONDE SE ADJUNTA AL FACTURA A LOS RIPS QUE ESTAN CON LOS TRATAMIENTOS D ELA PREPAGADAS 
 
 
