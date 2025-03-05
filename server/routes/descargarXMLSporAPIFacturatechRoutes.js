@@ -127,7 +127,7 @@ router.post('/descargarxmls-api-facturatech/:prefijo/:fechainicial/:fechafinal',
                 Empresa Emp ON EmpV.[Documento Empresa] = Emp.[Documento Empresa]
             WHERE 
                 EmpV.[Id Estado] = 7 AND
-                Fac.EstadoFacturaElectronica = 1 AND
+                Fac.EstadoFacturaElectronica >= 1 AND
                 CAST(Fac.[Fecha Factura] AS DATE) BETWEEN @FechaInicial AND @FechaFinal AND 
                 EmpV.[Prefijo Resolución Facturación EmpresaV] = @Prefijo
         `;
@@ -275,7 +275,7 @@ router.post('/descargarxmls-api-facturatech/:prefijo/:fechainicial/:fechafinal/:
                 Empresa Emp ON EmpV.[Documento Empresa] = Emp.[Documento Empresa]
             WHERE 
                 ( EmpV.[Id Estado] = 7 ) AND
-                ( Fac.EstadoFacturaElectronica = 1 ) AND
+                ( Fac.EstadoFacturaElectronica >= 1 ) AND
                 ( CAST(Fac.[Fecha Factura] AS DATE) BETWEEN @FechaInicial AND @FechaFinal ) AND 
                 ( EmpV.[Prefijo Resolución Facturación EmpresaV] = @Prefijo ) AND
 				( EXISTS ( SELECT 1 FROM [Evaluación Entidad Rips] RIPS WHERE RIPS.[Id Factura] = Fac.[Id Factura] ) )
