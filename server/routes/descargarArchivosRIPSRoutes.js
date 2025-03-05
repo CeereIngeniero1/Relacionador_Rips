@@ -627,7 +627,8 @@ router.get('/serviciosAP/rips/:numFactura/:numDocumentoIdentificacion/:fechaInic
 		CASE WHEN fp.Codigo IS NULL THEN '44' ELSE fp.Codigo END AS finalidadTecnologiaSalud, 
         tp.[Tipo de Documento] AS tipoDocumentoIdentificacion, eve.[Documento Entidad] AS numDocumentoIdentificacion, 
         everips.[Diagnostico Rips] AS codDiagnosticoPrincipal, 
-        CASE WHEN everips.[Diagnostico Rips2] = 'Null' THEN NULL ELSE everips.[Diagnostico Rips2] END AS codDiagnosticoRelacionado, 
+        'Null'   AS codDiagnosticoRelacionado, 
+        --CASE WHEN everips.[Diagnostico Rips2] = 'Null' THEN NULL ELSE everips.[Diagnostico Rips2] END AS codDiagnosticoRelacionado, 
         NULL AS codComplicacion, fc.[Total Factura] AS vrServicio, '05' AS tipoPagoModerador, 
         '0' AS valorPagoModerador, NULL AS numFEVPagoModerador,  ROW_NUMBER() OVER (ORDER BY everips.[Id Evaluación Entidad RIPS]) AS consecutivo, eve.[Id Evaluación Entidad]
 
@@ -724,7 +725,8 @@ router.get('/servicios/ripsEPSAP/:numFactura/:numDocumentoIdentificacion/:fechaI
 		CASE WHEN fp.Codigo IS NULL THEN '44' ELSE fp.Codigo END AS finalidadTecnologiaSalud, 
         tp.[Tipo de Documento] AS tipoDocumentoIdentificacion, eve.[Documento Entidad] AS numDocumentoIdentificacion, 
         everips.[Diagnostico Rips] AS codDiagnosticoPrincipal, 
-        CASE WHEN everips.[Diagnostico Rips2] = 'Null' THEN NULL ELSE everips.[Diagnostico Rips2] END AS codDiagnosticoRelacionado, 
+        'Null' AS codDiagnosticoRelacionado, 
+        --CASE WHEN everips.[Diagnostico Rips2] = 'Null' THEN NULL ELSE everips.[Diagnostico Rips2] END AS codDiagnosticoRelacionado, 
         NULL AS codComplicacion, fc.[Total Factura] AS vrServicio, '05' AS tipoPagoModerador, 
         '0' AS valorPagoModerador, NULL AS numFEVPagoModerador,  ROW_NUMBER() OVER (ORDER BY everips.[Id Evaluación Entidad RIPS]) AS consecutivo, eve.[Id Evaluación Entidad]
 
