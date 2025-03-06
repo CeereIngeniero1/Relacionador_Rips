@@ -16,14 +16,17 @@ const router = Router();
 // Endpoint para obtener datos de usuarios RIPS
 
 router.get('/usuarios/rips/:fechaInicio/:fechaFin/:ResolucionesRips/:documentoEmpresaSeleccionada', async (req, res) => {
-    console.log ("Bro si estoy entrando sisabe rips");
+   
     const fechaInicio = new Date(req.params.fechaInicio).toISOString().split('T')[0];
     const fechaFin = new Date(req.params.fechaFin).toISOString().split('T')[0];
     const ResolucionesRips = req.params.ResolucionesRips;
     const documentoEmpresaSeleccionada = req.params.documentoEmpresaSeleccionada;
 
     const request = new Request(
-        `SELECT   em.NroIDPrestador, EmpV.[Prefijo Resolución Facturación EmpresaV] + fc.[No Factura] AS [numFactura], NULL AS [numNota], NULL AS [tipoNota], tpd.[Tipo de Documento] as [tipoDocumentoIdentificacion],
+        `SELECT  
+em.NroIDPrestador, EmpV.[Prefijo Resolución Facturación EmpresaV] + fc.[No Factura] AS [numFactura], 
+CASE WHEN EmpV.[Prefijo Resolución Facturación EmpresaV] + fc.[No Factura] = 'FE0000000' THEN '111111' ELSE NULL END AS [numNota],
+CASE WHEN EmpV.[Prefijo Resolución Facturación EmpresaV] + fc.[No Factura] = 'FE0000000' THEN 'RS' ELSE NULL END [tipoNota], tpd.[Tipo de Documento] as [tipoDocumentoIdentificacion],
         en.[Documento Entidad] as [numDocumentoIdentificacion], '0' + tpe.[Tipo Entidad] as [tipoUsuario],
         CONVERT(VARCHAR, en3.[Fecha Nacimiento EntidadIII], 23) AS [fechaNacimiento], Sexo.[Sexo] AS [codSexo], 
         País.País AS [codPaisResidencia], Dep.[Código Departamento] +  Ciu.[Código Ciudad] AS [codMunicipioResidencia], 
@@ -400,7 +403,11 @@ router.get('/servicios/rips/:numFactura/:numDocumentoIdentificacion/:fechaInicio
     const request = new Request(
         `
         SELECT em2.[Código Empresa] AS codPrestador, 
-        SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura] , 120), 1, 16) AS fechaInicioAtencion, 
+        --SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura] , 120), 1, 16) AS fechaInicioAtencion, 
+
+        CASE WHEN SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura] , 120), 1, 16) IS NULL THEN SUBSTRING(CONVERT(VARCHAR, EVE.[Fecha Evaluación Entidad] , 120), 1, 16)
+        ELSE SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura] , 120), 1, 16) END  AS fechaInicioAtencion, 
+        
         NULL AS numAutorizacion, everips.[Codigo RIPS] AS codConsulta,
         '01' AS modalidadGrupoServicioTecSal, '01' AS grupoServicios, Serv.[Código Servicios] AS codServicio,
         everips.[Id Finalidad Consulta] AS finalidadTecnologiaSalud, CASE WHEN CAU.Codigo IS NULL THEN 38 ELSE Cau.Codigo END AS causaMotivoAtencion,
@@ -456,7 +463,7 @@ router.get('/servicios/rips/:numFactura/:numDocumentoIdentificacion/:fechaInicio
 
     request.on('row', (columns) => {
         // console.log('Fila de servicios:', columns);
-
+        
         const servicio = {
             codPrestador: columns[0].value,
             fechaInicioAtencion: columns[1].value,
@@ -513,7 +520,11 @@ router.get('/servicios/ripsEPSAC/:numFactura/:numDocumentoIdentificacion/:fechaI
     const request = new Request(
         `
         SELECT em2.[Código Empresa] AS codPrestador, 
-        SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura] , 120), 1, 16) AS fechaInicioAtencion, 
+        --SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura] , 120), 1, 16) AS fechaInicioAtencion, 
+
+        CASE WHEN SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura] , 120), 1, 16) IS NULL THEN SUBSTRING(CONVERT(VARCHAR, EVE.[Fecha Evaluación Entidad] , 120), 1, 16)
+        ELSE SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura] , 120), 1, 16) END  AS fechaInicioAtencion, 
+
         NULL AS numAutorizacion, everips.[Codigo RIPS] AS codConsulta,
         '01' AS modalidadGrupoServicioTecSal, '01' AS grupoServicios, Serv.[Código Servicios] AS codServicio,
         everips.[Id Finalidad Consulta] AS finalidadTecnologiaSalud, CASE WHEN CAU.Codigo IS NULL THEN 38 ELSE Cau.Codigo END AS causaMotivoAtencion,
@@ -620,7 +631,10 @@ router.get('/serviciosAP/rips/:numFactura/:numDocumentoIdentificacion/:fechaInic
 
     const request = new Request(
         `SELECT em2.[Código Empresa] AS codPrestador, 
-        SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura], 120), 1, 16) AS fechaInicioAtencion, NULL AS idMIPRES, NULL AS numAutorizacion, 
+        --SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura], 120), 1, 16) AS fechaInicioAtencion,
+        CASE WHEN  SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura], 120), 1, 16) IS NULL THEN  SUBSTRING(CONVERT(VARCHAR, EVE.[Fecha Evaluación Entidad], 120), 1, 16)
+        ELSE  SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura], 120), 1, 16) END  AS fechaInicioAtencion, 
+        NULL AS idMIPRES, NULL AS numAutorizacion, 
         everips.[Codigo RIPS] AS codProcedimiento, '01' AS viaIngresoServicioSalud, '01' AS modalidadGrupoServicioTecSal, 
         '01' AS grupoServicios, '371' AS codServicio, 
 		--fp.Codigo AS finalidadTecnologiaSalud, 
@@ -718,7 +732,10 @@ router.get('/servicios/ripsEPSAP/:numFactura/:numDocumentoIdentificacion/:fechaI
 
     const request = new Request(
         `SELECT em2.[Código Empresa] AS codPrestador, 
-        SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura], 120), 1, 16) AS fechaInicioAtencion, NULL AS idMIPRES, NULL AS numAutorizacion, 
+        --SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura], 120), 1, 16) AS fechaInicioAtencion,
+        CASE WHEN  SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura], 120), 1, 16) IS NULL THEN  SUBSTRING(CONVERT(VARCHAR, EVE.[Fecha Evaluación Entidad], 120), 1, 16)
+        ELSE  SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura], 120), 1, 16) END  AS fechaInicioAtencion, 
+        NULL AS idMIPRES, NULL AS numAutorizacion, 
         everips.[Codigo RIPS] AS codProcedimiento, '01' AS viaIngresoServicioSalud, '01' AS modalidadGrupoServicioTecSal, 
         '01' AS grupoServicios, '371' AS codServicio, 
 		--fp.Codigo AS finalidadTecnologiaSalud, 
