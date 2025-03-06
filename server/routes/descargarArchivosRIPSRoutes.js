@@ -25,8 +25,8 @@ router.get('/usuarios/rips/:fechaInicio/:fechaFin/:ResolucionesRips/:documentoEm
     const request = new Request(
         `SELECT  
 em.NroIDPrestador, EmpV.[Prefijo Resolución Facturación EmpresaV] + fc.[No Factura] AS [numFactura], 
-CASE WHEN EmpV.[Prefijo Resolución Facturación EmpresaV] + fc.[No Factura] = 'FE0000000' THEN '111111' ELSE NULL END AS [numNota],
-CASE WHEN EmpV.[Prefijo Resolución Facturación EmpresaV] + fc.[No Factura] = 'FE0000000' THEN 'RS' ELSE NULL END [tipoNota], tpd.[Tipo de Documento] as [tipoDocumentoIdentificacion],
+CASE WHEN  fc.[No Factura] = '0000000' THEN '111111' ELSE NULL END AS [numNota],
+CASE WHEN  fc.[No Factura] = '0000000' THEN 'RS' ELSE NULL END [tipoNota], tpd.[Tipo de Documento] as [tipoDocumentoIdentificacion],
         en.[Documento Entidad] as [numDocumentoIdentificacion], '0' + tpe.[Tipo Entidad] as [tipoUsuario],
         CONVERT(VARCHAR, en3.[Fecha Nacimiento EntidadIII], 23) AS [fechaNacimiento], Sexo.[Sexo] AS [codSexo], 
         País.País AS [codPaisResidencia], Dep.[Código Departamento] +  Ciu.[Código Ciudad] AS [codMunicipioResidencia], 
