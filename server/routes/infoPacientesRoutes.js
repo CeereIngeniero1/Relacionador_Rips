@@ -3,7 +3,7 @@ const Router = require('express').Router;
 const connection = require('../db');
 
 const router = Router();
-/*
+
 router.get('/pacientes/:fechaInicio/:fechaFin/:documentoEmpresaSeleccionada', (req, res) => {
     const fechaInicio = req.params.fechaInicio;
     const fechaFin = req.params.fechaFin;
@@ -73,86 +73,87 @@ router.get('/pacientes/:fechaInicio/:fechaFin/:documentoEmpresaSeleccionada', (r
     });
 
     connection.execSql(request);
-});*/
+});
 
-router.get('/pacientes/:fechaInicio/:fechaFin/:documentoEmpresaSeleccionada', (req, res) => {
-    const fechaInicio = req.params.fechaInicio;
-    const fechaFin = req.params.fechaFin;
-    const documentoEmpresaSeleccionada = req.params.documentoEmpresaSeleccionada;
-    const pacientesData = [];
-    const nombresVistos = new Set(); // Utilizar un conjunto para rastrear nombres únicos
+// router.get('/pacientes/:fechaInicio/:fechaFin/:documentoEmpresaSeleccionada', (req, res) => {
+//     const fechaInicio = req.params.fechaInicio;
+//     const fechaFin = req.params.fechaFin;
+//     const documentoEmpresaSeleccionada = req.params.documentoEmpresaSeleccionada;
+//     const pacientesData = [];
+//     const nombresVistos = new Set(); // Utilizar un conjunto para rastrear nombres únicos
 
-      // Parámetros de paginación con valores por defecto
-      const page = parseInt(req.query.page) || 1;   // Página actual (por defecto 1)
-      const limit = parseInt(req.query.limit) || 100; // Registros por página (por defecto 100)
-      const offset = (page - 1) * limit; // Calcular desde qué registro comenzar
+//       // Parámetros de paginación con valores por defecto
+//       const page = parseInt(req.query.page) || 1;   // Página actual (por defecto 1)
+//       const limit = parseInt(req.query.limit) || 100; // Registros por página (por defecto 100)
+//       const offset = (page - 1) * limit; // Calcular desde qué registro comenzar
   
 
-    const request = new Request(`SELECT   [Nombre Paciente]
-    ,[Tipo de Documento]
-    ,[Documento Entidad]
-    ,[Fecha Evaluación Entidad]
-    ,[Id Factura]
-    ,[Id Evaluación Entidad]
-    ,[Documento Empresa]
-FROM  [Cnsta Relacionador Info Pacientes Facturas] Const
+//     const request = new Request(`
+//         SELECT   [Nombre Paciente]
+//     ,[Tipo de Documento]
+//     ,[Documento Entidad]
+//     ,[Fecha Evaluación Entidad]
+//     ,[Id Factura]
+//     ,[Id Evaluación Entidad]
+//     ,[Documento Empresa]
+// FROM  [Cnsta Relacionador Info Pacientes Facturas] Const
 
-  WHERE CONVERT(DATE, Const.[Fecha Evaluación Entidad],101) BETWEEN @FechaInicio AND @FechaFin 
-  AND EXISTS (SELECT 1 FROM [Evaluación Entidad Rips] AS rips WHERE rips.[Id Evaluación Entidad] = Const.[Id Evaluación Entidad]) 
-  --AND NOT EXISTS (SELECT 1 FROM [RIPS Unión AC] AS ripsAC WHERE ripsAC.[Id Evaluación Entidad] = eve.[Id Evaluación Entidad]) 
-  --AND NOT EXISTS (SELECT 1 FROM [RIPS Unión AP] AS rips WHERE rips.[Id Evaluación Entidad] = eve.[Id Evaluación Entidad]) 
-  AND Const.[Id Factura] IS NULL 
-  AND Const.[Documento Empresa] = @documentoEmpresaSeleccionada
-  ORDER BY [Nombre Paciente] ASC
-  OFFSET @Offset ROWS FETCH NEXT @Limit ROWS ONLY;`, (err, rowCount) => {
+//   WHERE CONVERT(DATE, Const.[Fecha Evaluación Entidad],101) BETWEEN @FechaInicio AND @FechaFin 
+//   AND EXISTS (SELECT 1 FROM [Evaluación Entidad Rips] AS rips WHERE rips.[Id Evaluación Entidad] = Const.[Id Evaluación Entidad]) 
+//   --AND NOT EXISTS (SELECT 1 FROM [RIPS Unión AC] AS ripsAC WHERE ripsAC.[Id Evaluación Entidad] = eve.[Id Evaluación Entidad]) 
+//   --AND NOT EXISTS (SELECT 1 FROM [RIPS Unión AP] AS rips WHERE rips.[Id Evaluación Entidad] = eve.[Id Evaluación Entidad]) 
+//   AND Const.[Id Factura] IS NULL 
+//   AND Const.[Documento Empresa] = @documentoEmpresaSeleccionada
+//   ORDER BY [Nombre Paciente] ASC
+//   OFFSET @Offset ROWS FETCH NEXT @Limit ROWS ONLY;`, (err, rowCount) => {
 
-        if (err) {
-            console.error('Error al ejecutar la consulta de pacientes:', err.message);
-            res.status(500).json({ error: 'Error al obtener datos de pacientes' });
-        }
-        else {
-            console.log(`Consulta de pacientes ejecutada con éxito. Filas afectadas: ${rowCount}`);
+//         if (err) {
+//             console.error('Error al ejecutar la consulta de pacientes:', err.message);
+//             res.status(500).json({ error: 'Error al obtener datos de pacientes' });
+//         }
+//         else {
+//             console.log(`Consulta de pacientes ejecutada con éxito. Filas afectadas: ${rowCount}`);
 
-            // Filtrar duplicados basados en el nombre
-            const pacientesUnicos = pacientesData.filter(paciente => {
-                if (!nombresVistos.has(paciente['Nombre Paciente'])) {
-                    nombresVistos.add(paciente['Nombre Paciente']);
-                    return true;
-                }
-                return false;
-            });
+//             // Filtrar duplicados basados en el nombre
+//             const pacientesUnicos = pacientesData.filter(paciente => {
+//                 if (!nombresVistos.has(paciente['Nombre Paciente'])) {
+//                     nombresVistos.add(paciente['Nombre Paciente']);
+//                     return true;
+//                 }
+//                 return false;
+//             });
 
-            // Enviar los datos de pacientes únicos como respuesta JSON
-            res.json(pacientesUnicos.map(row => ({
-                nombre: row['Nombre Paciente'],
-                tipoDocumento: row['Tipo de Documento'],
-                documento: row['Documento Entidad'],
-                fechaEvaluacion: row['Fecha Evaluación Entidad']
+//             // Enviar los datos de pacientes únicos como respuesta JSON
+//             res.json(pacientesUnicos.map(row => ({
+//                 nombre: row['Nombre Paciente'],
+//                 tipoDocumento: row['Tipo de Documento'],
+//                 documento: row['Documento Entidad'],
+//                 fechaEvaluacion: row['Fecha Evaluación Entidad']
 
-            })));
+//             })));
 
-            // console.log(pacientesUnicos);
-        }
-    });
+//             // console.log(pacientesUnicos);
+//         }
+//     });
 
-    // Ajustar los parámetros según las columnas y datos que estás insertando
-    request.addParameter('FechaInicio', TYPES.DateTime, fechaInicio);
-    request.addParameter('FechaFin', TYPES.DateTime, fechaFin);
-    request.addParameter('documentoEmpresaSeleccionada', TYPES.VarChar, documentoEmpresaSeleccionada);
-    request.addParameter('Offset', TYPES.Int, offset);
-    request.addParameter('Limit', TYPES.Int, limit);
+//     // Ajustar los parámetros según las columnas y datos que estás insertando
+//     request.addParameter('FechaInicio', TYPES.DateTime, fechaInicio);
+//     request.addParameter('FechaFin', TYPES.DateTime, fechaFin);
+//     request.addParameter('documentoEmpresaSeleccionada', TYPES.VarChar, documentoEmpresaSeleccionada);
+//     request.addParameter('Offset', TYPES.Int, offset);
+//     request.addParameter('Limit', TYPES.Int, limit);
 
-    // Manejar cada fila de resultados
-    request.on('row', (columns) => {
-        const paciente = {};
-        columns.forEach((column) => {
-            paciente[column.metadata.colName] = column.value;
-        });
-        pacientesData.push(paciente);
-    });
+//     // Manejar cada fila de resultados
+//     request.on('row', (columns) => {
+//         const paciente = {};
+//         columns.forEach((column) => {
+//             paciente[column.metadata.colName] = column.value;
+//         });
+//         pacientesData.push(paciente);
+//     });
 
-    connection.execSql(request);
-});
+//     connection.execSql(request);
+// });
 
 router.get('/evaluaciones/:documento/:fechaInicio/:fechaFin', (req, res) => {
     const documento = req.params.documento;
