@@ -1,4 +1,4 @@
-const servidor = "HPRED241";
+const servidor = "HPGRIS";
 
 function VerificarLogin() {
     const TokenLogin = localStorage.getItem('token');
@@ -590,6 +590,11 @@ radioAC.addEventListener('change', async function (e) {
             defaultOption20.textContent = 'Seleccione un servicio';
             defaultOption20.value = '';
             SelectServiciosAC.appendChild(defaultOption20);
+            CargarServiciosAC.sort((a, b) => {
+                if (a['Nombre Servicios'] < b['Nombre Servicios']) return -1;
+                if (a['Nombre Servicios'] > b['Nombre Servicios']) return 1;
+                return 0;
+            });
             // Ordenar el array por el nombre del servicio
             CargarServiciosAC.sort((a, b) => {
                 if (a['Nombre Servicios'] < b['Nombre Servicios']) return -1;
@@ -875,6 +880,31 @@ SelectTipoDeUsuarioRIPS.addEventListener('change', async function (e) {
 // Funcionalidad para el llenado del select Servicios (CodServicio)
 const SelectGrupoServiciosAC = document.getElementById('SelectGrupoServiciosAC');
 const SelectServiciosAC = document.getElementById('SelectServiciosAC');
+// Bloquea cualquier entrada de teclado
+SelectServiciosAC.addEventListener('keydown', function(event) {
+    event.preventDefault(); 
+});
+
+// Manejo de cambio para opciones ocultas
+SelectServiciosAC.addEventListener('change', function() {
+    const selectedOption = SelectServiciosAC.options[SelectServiciosAC.selectedIndex];
+    
+    if (selectedOption.style.display === 'none') {
+        // alert("Esta opción no está disponible."); // Mensaje de advertencia
+        Swal.fire({
+            icon: 'warning',
+            html: `
+                <strong style="color: #FFFFFF;">Esta opción no está disponible para el grupo servicio seleccionado.</strong>
+            `,
+            showCloseButton: true,
+            showCancelButton: false,
+            showConfirmButton: false,
+            timer: 5000
+        })
+        this.selectedIndex = 0; // Volver a la opción por defecto
+    }
+});
+
 SelectGrupoServiciosAC.addEventListener('change', async function (e) {
     try {
         const selectedCategory = this.value;
