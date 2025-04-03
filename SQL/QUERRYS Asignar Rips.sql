@@ -460,3 +460,21 @@ FROM            dbo.[Evaluación Entidad Rips] AS everips INNER JOIN
                          dbo.Empresa AS em ON eve.[Documento Empresa] = em.[Documento Empresa]
 
 GO
+
+-- CREACIÓN DE VISTAS PARA CONSULTAR LAS FACTURAS DE PACIENTE
+CREATE VIEW [dbo].[ConsultaFacturasPaciente]
+AS
+SELECT Fac.[Documento Paciente] AS DocumentoPaciente, Fac.[Documento Responsable] AS DocumentoResponsable, Fac.[Id Factura] AS Value, EmpV.[Prefijo Resolución Facturación EmpresaV] + Fac.[No Factura] + ' - ' + DATENAME(WEEKDAY, 
+                  Fac.[Fecha Factura]) + ' ' + CAST(DAY(Fac.[Fecha Factura]) AS VARCHAR) + ' de ' + DATENAME(MONTH, Fac.[Fecha Factura]) + ' del ' + CAST(YEAR(Fac.[Fecha Factura]) AS VARCHAR) AS Text
+FROM     dbo.Factura AS Fac INNER JOIN
+                  dbo.EmpresaV AS EmpV ON Fac.[Id EmpresaV] = EmpV.[Id EmpresaV]
+GO
+
+-- CREACIÓN DE VISTAS PARA CONSULTAR LOS PRESUPUESTOS DE PACIENTE
+CREATE VIEW [dbo].[ConsultaPresupuestosPaciente]
+AS
+SELECT 
+    --A SFKASL FJLASJ FKLASF
+FROM
+    --ASDFKLAJSDKLFJAKLSF
+GO

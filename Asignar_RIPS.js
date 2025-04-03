@@ -288,6 +288,18 @@ const SelectPacientes = document.getElementById('listaHC');
 SelectPacientes.addEventListener('change', async function (e) {
     // console.log(this.value);
 
+    if (document.getElementById('BuscarPorFacturas').checked === true) {
+        document.getElementById('BuscarPorFacturas').click();
+    }
+
+    if (document.getElementById('BuscarPorPresupuestos').checked === true) {
+        document.getElementById('BuscarPorPresupuestos').click();
+    }
+    // document.getElementById('BuscarPorFacturas').checked = false;
+    // document.getElementById('BuscarPorPresupuestos').checked = false;
+    // document.getElementById('BuscarPorFacturas').click();
+
+
     const NombrePaciente = document.getElementById('NombrePaciente');
     const DcoumentoPaciente = document.getElementById('DocumentoPaciente');
     const EdadPaciente = document.getElementById('EdadPaciente');
@@ -4208,3 +4220,141 @@ radioAP.addEventListener('click', function(e) {
         radioAC.checked = false;
     }
 })
+
+
+// FUNCIONALIDAD PARA LA BÚSQUEDA DE FACTURAS Y PRESUPUESTOS
+const BuscarPorFacturas = document.getElementById('BuscarPorFacturas');
+const BuscarPorPresupuestos = document.getElementById('BuscarPorPresupuestos');
+const Facturas = document.getElementById('Facturas');
+const Presupuestos = document.getElementById('Presupuestos');
+
+Facturas.style.display = 'none';
+Presupuestos.style.display = 'none'
+
+// BuscarPorFacturas.addEventListener('click', function(e) {
+//     if (BuscarPorFacturas.checked) {
+//         BuscarPorPresupuestos.checked = false;
+//         Facturas.style.display = 'block';
+//         Presupuestos.style.display = 'none';
+//     } else {
+//         Facturas.style.display = 'none';
+//     }    
+// });
+
+// BuscarPorPresupuestos.addEventListener('click', function(e) {
+//     if (BuscarPorPresupuestos.checked) {
+//         BuscarPorFacturas.checked = false;
+//         Presupuestos.style.display = 'block';
+//         Facturas.style.display = 'none';
+//     } else {
+//         Presupuestos.style.display = 'none';
+//     }
+// });
+
+
+const CamposCheckBox = {
+    BuscarPorFacturas: 'Facturas',
+    BuscarPorPresupuestos: 'Presupuestos'
+};
+
+const FacturaARelacionar = document.getElementById('FacturaARelacionar');
+const PresupuestoARelacionar = document.getElementById('PresupuestoARelacionar');
+Object.keys(CamposCheckBox).forEach(id => {
+    document.getElementById(id).addEventListener('click', function() {
+        Object.keys(CamposCheckBox).forEach(key => {
+            const isChecked = key === id && this.checked;
+            document.getElementById(key).checked = isChecked;
+            document.getElementById(CamposCheckBox[key]).style.display = isChecked ? 'block' : 'none';
+
+            if (isChecked && key === 'BuscarPorFacturas') {
+                // for (let i = 0; i < 20; i+=1) {
+                //     const option = document.createElement('option');
+                //     option.textContent = `Factura ${i+1}`;
+                //     FacturaARelacionar.appendChild(option);
+                // }
+                // FacturaARelacionar.
+
+                TraerFacturasPaciente(FacturaARelacionar, SelectPacientes.value);
+                console.log(SelectPacientes.value);
+            }
+
+            if (isChecked && key === 'BuscarPorPresupuestos') {
+                for (let i = 0; i < 20; i+=1) {
+                    const option = document.createElement('option');
+                    option.textContent = `Presupuesto ${i+1}`;
+                    PresupuestoARelacionar.appendChild(option);
+                }
+            }
+        });
+    });
+});
+
+// async function TraerFacturasPaciente(Select, DocumentoPaciente){
+//     try {
+//         console.log(DocumentoPaciente);
+//         const FacturasPaciente = await fetch(`http://${servidor}:3000/api/ConsultarFacturas/${DocumentoPaciente}`);
+    
+//         if (!FacturasPaciente) {
+//             throw new Error(`Error al obtener las entidades responsables: ${FacturasPaciente.statusText}`);
+//         };
+    
+//         const respuesta = await FacturasPaciente.json();
+//         console.log(respuesta);
+//         Select.innerHTML = '';
+//         const OpcionPorDefecto = document.createElement('option');
+//         OpcionPorDefecto.textContent = 'Sin Seleccionar';
+//         OpcionPorDefecto.value = 'Sin Seleccionar';
+//         Select.appendChild(OpcionPorDefecto);
+//         respuesta.forEach(factura => {
+//             const option = document.createElement('option');
+//             option.textContent = factura.Text;
+//             option.value = factura.Value;
+//             Select.appendChild(option);
+//         });
+//     } catch (error) {
+//         console.error('Error en la solicitud:', error);
+//         throw new Error('Error al obtener las entidades responsables');
+//     }
+// };
+
+async function TraerFacturasPaciente(Select, DocumentoPaciente) {
+    try {
+        console.log(DocumentoPaciente);
+        const FacturasPaciente = await fetch(`http://${servidor}:3000/api/ConsultarFacturas/${DocumentoPaciente}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                // body: JSON.stringify(ParametrosParaConsulta)
+            }
+        );
+
+        if (!FacturasPaciente.ok) {
+            throw new Error(`Error al obtener las entidades responsables: ${FacturasPaciente.statusText}`);
+        }
+
+        const respuesta = await FacturasPaciente.json();
+        console.log(respuesta);
+        Select.innerHTML = '';
+        const OpcionPorDefecto = document.createElement('option');
+        OpcionPorDefecto.textContent = 'Sin Seleccionar';
+        OpcionPorDefecto.value = 'Sin Seleccionar';
+        Select.appendChild(OpcionPorDefecto);
+
+        respuesta.forEach(factura => {
+            const option = document.createElement('option');
+            option.textContent = factura.Text; // Valor por defecto
+            option.value = factura.Value; // Valor por defecto
+            Select.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        throw new Error(`Error al obtener las entidades responsables: ${error.message}`);
+    }
+}
+
+async function TraerPresupuestosPaciente(Select, DocumentoPaciente){
+    // const PresupuestosPaciente = 
+};
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

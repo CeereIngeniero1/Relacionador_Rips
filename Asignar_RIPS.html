@@ -44,15 +44,52 @@
         
 
         <div class="form-control shadow mt-3">
-            <div class="row align-items-center">
-                <h5 class="mb-2"><b>Selección de paciente</b></h5>
-                <div class="col-md-6 col-lg-4">
-                    <label for="listaHC">Seleccionar paciente</label><br>
+            <div class="row align-items-center justify-content-center">
+                <h5><b>Selección de paciente</b></h5>
+                <!-- <div class="col-md-6 col-lg-12 border border-secondary d-flex"> -->
+                <div class="row g-0">
+                    <div class="col-md-4 p-3 pt-0">
+                        <label for="listaHC">Seleccionar paciente</label><br>
+                        <select id="listaHC" class="form-select-sm border-secondary">
+                            <option value="Sin Seleccionar">Sin Seleccionar</option>
+                        </select>
+                        <button class="btn btn-success btn-sm mt-md-3 mt-lg-0 fw-bolder" id="BotonConsultar">Consultar</button>
+                    </div>
+                    <!-- <label for="listaHC">Seleccionar paciente</label><br>
                     <select id="listaHC" class="form-select-sm border-secondary">
                         <option value="Sin Seleccionar">Sin Seleccionar</option>
-                    </select>
+                    </select> -->
                     <!-- <button class="btn btn-success btn-sm mt-md-3 mt-lg-0" data-bs-toggle="modal" data-bs-target="#exampleModal" id="BotonConsultar">Consultar</button> -->
-                    <button class="btn btn-success btn-sm mt-md-3 mt-lg-0 fw-bolder" id="BotonConsultar">Consultar</button>
+                    <!-- <button class="btn btn-success btn-sm mt-md-3 mt-lg-0 fw-bolder" id="BotonConsultar">Consultar</button> -->
+                    <div class="col-md-4  p-3 pt-0">
+                        <label for="listaHC">Buscar:</label><br>
+                        <input class="form-check-input" type="checkbox" value="" id="BuscarPorFacturas">
+                        <label class="form-check-label" for="flexCheckDefault">
+                          Facturas
+                        </label>
+
+                        <input class="form-check-input" type="checkbox" value="" id="BuscarPorPresupuestos">
+                        <label class="form-check-label" for="flexCheckDefault">
+                          Presupuestos
+                        </label>
+                    </div>
+
+                    <!-- CONTENEDOR PARA SELECT DE FACTURAS Y PRESUPUESTOS DEL PACIENTE -->
+                    <div class="col-md-4 p-2 p-3 pt-0">
+                        <div class="Facturas" id="Facturas">
+                            <label for="listaHC">Seleccionar factura</label><br>
+                            <select id="FacturaARelacionar" class="form-select-sm border-secondar w-100">
+                                <option value="Sin Seleccionar">Sin Seleccionar</option>
+                            </select>
+                        </div>
+
+                        <div class="Presupuestos" id="Presupuestos">
+                            <label for="listaHC">Seleccionar presupuesto</label><br>
+                            <select id="PresupuestoARelacionar" class="form-select-sm border-secondary w-100">
+                                <option value="Sin Seleccionar">Sin Seleccionar</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>                  
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
