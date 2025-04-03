@@ -310,6 +310,8 @@ SelectPacientes.addEventListener('change', async function (e) {
 
 
     if (this.value !== "") {
+        document.getElementById('BuscarPorFacturas').disabled = false;
+        document.getElementById('BuscarPorPresupuestos').disabled = false;
         try {
             const DatosPaciente = await fetch(`http://${servidor}:3000/api/DatosdeUsuarioHC/${this.value}`);
             if (!DatosPaciente.ok) {
@@ -4227,30 +4229,13 @@ const BuscarPorFacturas = document.getElementById('BuscarPorFacturas');
 const BuscarPorPresupuestos = document.getElementById('BuscarPorPresupuestos');
 const Facturas = document.getElementById('Facturas');
 const Presupuestos = document.getElementById('Presupuestos');
-
+BuscarPorFacturas.disabled = true;
+BuscarPorPresupuestos.disabled = true;
 Facturas.style.display = 'none';
 Presupuestos.style.display = 'none'
 
-// BuscarPorFacturas.addEventListener('click', function(e) {
-//     if (BuscarPorFacturas.checked) {
-//         BuscarPorPresupuestos.checked = false;
-//         Facturas.style.display = 'block';
-//         Presupuestos.style.display = 'none';
-//     } else {
-//         Facturas.style.display = 'none';
-//     }    
-// });
-
-// BuscarPorPresupuestos.addEventListener('click', function(e) {
-//     if (BuscarPorPresupuestos.checked) {
-//         BuscarPorFacturas.checked = false;
-//         Presupuestos.style.display = 'block';
-//         Facturas.style.display = 'none';
-//     } else {
-//         Presupuestos.style.display = 'none';
-//     }
-// });
-
+document.getElementById('ContenedorDeCheckBox').style.display = 'none';
+document.getElementById('ContenedorDeSelects').style.display = 'none';
 
 const CamposCheckBox = {
     BuscarPorFacturas: 'Facturas',
