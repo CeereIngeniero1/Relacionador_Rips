@@ -1445,121 +1445,6 @@ router.post('/EliminarRIPSPorDefecto', async (req, res) => {
 
 
 // FUNCIONALIDAD PARA CONUSLTAR FACTURAS Y PRESUPUESTOS DEL PACIENTE
-// router.get('/ConsultarFacturas/:DocumentoPaciente', async (req, res) => {
-//     try {
-//         const DocumentoPaciente = req.params.DocumentoPaciente;
-    
-//         // Crear la consulta
-//         const request = new Request(`
-//             SELECT
-//                 *
-//             FROM
-//                 [ConsultaFacturasPaciente]
-//             WHERE
-//                 [DocumentoPaciente] = @DocumentoPaciente
-//         `,
-//         (err) => {
-//             if (err) {
-//                 // console.error('Error al ejecutar la consulta:', err.message);
-//                 console.error(`Error al traer los facturas del paciente con documento ${DocumentoPaciente}.. => [${err}]`)
-//                 // return res.status(500).json({ error: 'Error al ejecutar la consulta' });
-//                 if (!res.headersSent) {
-//                     res.status(500).send(`Error interno de servidor... ${err} `);
-//                 }
-//             }
-//         });
-    
-//         // Agregar el parámetro a la consulta
-//         request.addParameter('DocumentoPaciente', TYPES.VarChar, DocumentoPaciente); // Asegúrate de importar TYPES de tu librería de base de datos
-    
-//         const resultados = [];
-//         request.on('row', (columns) => {
-//             const row = {};
-//             columns.forEach((column) => {
-//                 row[column.metadata.colName] = column.value;
-//             });
-//             resultados.push(row);
-//         });
-
-//         request.on('requestCompleted', () => {
-//             console.log(DocumentoPaciente);
-//             console.log('Resultados de la consulta');
-//             console.log(resultados);
-//             if (!res.headersSent) {
-//                 res.json(resultados);
-//             }
-//             // connection.close(); // Cerrar conexión después de procesar resultados
-//         });
-
-//         request.on('error', (err) => {
-//             console.error(' Error en la consulta:', err);
-//             if (!res.headersSent) {
-//                 res.status(500).send('Error interno del servidor');
-//             }
-//         });
-
-//         // Ejecutar la consulta
-//         connection.execSql(request);
-//     } catch (Error) {
-//         // console.error('Error en la consulta de facturas:', Error);
-//         // return res.status(500).json({ error: `Error en la consulta de facturas => ${Error}` });
-//         console.error('Error en la consulta de facturas:', Error);
-//         if (!res.headersSent) {
-//             res.status(500).json({ error: `Error en la consulta de facturas => ${Error}` });
-//         }
-//         // connection.close(); // Cerrar conexión en caso de error
-//     }
-// });
-
-
-// router.get('/ConsultarFacturas/:DocumentoPaciente', async (req, res) => {
-//     const DocumentoPaciente = req.params.DocumentoPaciente;
-
-//     // Crear la consulta
-//     const request = new Request(`
-//         SELECT *
-//         FROM [ConsultaFacturasPaciente]
-//         WHERE [DocumentoPaciente] = @DocumentoPaciente
-//     `, (err) => {
-//         if (err) {
-//             console.error(`Error al traer los facturas del paciente con documento ${DocumentoPaciente}.. => [${err}]`);
-//             if (!res.headersSent) {
-//                 res.status(500).send(`Error interno del servidor... ${err}`);
-//             }
-//         }
-//     });
-
-//     // Agregar el parámetro a la consulta
-//     request.addParameter('DocumentoPaciente', TYPES.VarChar, DocumentoPaciente);
-
-//     const resultados = [];
-//     request.on('row', (columns) => {
-//         const row = {};
-//         columns.forEach((column) => {
-//             row[column.metadata.colName] = column.value;
-//         });
-//         resultados.push(row);
-//     });
-
-//     request.on('requestCompleted', () => {
-//         console.log('Resultados de la consulta:', resultados);
-//         if (!res.headersSent) {
-//             res.json(resultados);
-//         }
-//     });
-
-//     request.on('error', (err) => {
-//         console.error('Error en la consulta:', err);
-//         if (!res.headersSent) {
-//             res.status(500).send('Error interno del servidor');
-//         }
-//     });
-
-//     // Ejecutar la consulta
-//     connection.execSql(request);
-// });
-
-
 router.get('/ConsultarFacturas/:DocumentoPaciente', (req, res) => {
     const DocumentoPaciente = req.params.DocumentoPaciente;
 
@@ -1568,11 +1453,12 @@ router.get('/ConsultarFacturas/:DocumentoPaciente', (req, res) => {
         SELECT *
         FROM [ConsultaFacturasPaciente]
         WHERE [DocumentoPaciente] = @DocumentoPaciente
+        ORDER BY [FechaFactura] DESC
     `, (err) => {
         if (err) {
-            console.error(`Error al traer las facturas del paciente con documento ${DocumentoPaciente}.. => [${err}]`);
+            console.error(`Error al traer las facturas del paciente con documento ${DocumentoPaciente}. => [${err}]`);
             if (!res.headersSent) {
-                res.status(500).send(`Error interno del servidor... ${err}`);
+                res.status(500).json(`Error al consultar las facturas del paciente con documento => ${DocumentoPaciente}. Error => ${err.message}`);
             }
         }
     });
@@ -1608,9 +1494,55 @@ router.get('/ConsultarFacturas/:DocumentoPaciente', (req, res) => {
 });
 
 
-router.get('/ConsultarPresupuestos', async (req, res) => {
+router.get('/ConsultarPresupuestos/:DocumentoPaciente', async (req, res) => {
     try {
+        const DocumentoPaciente = req.params.DocumentoPaciente;
+        const request = new Request(`
+            SELECT 
+                *
+            FROM 
+                [ConsultaPresupuestosPaciente]
+            WHERE
+                ( [DocumentoPaciente] = @DocumentoPaciente ) AND
+                ( [FormaDePago] = 5 )
+            ORDER BY
+                [FechaPresupuesto] DESC
+        `, (err) => {
+            if (err) {
+                console.error(`Error al traer los presupuestos del paciente con documento ${req.params.DocumentoPaciente}. => [${err}]`);
+                if (!res.headersSent) {
+                    res.status(500).json(`Error al consultar los presupuestos del paciente con documento => ${req.params.DocumentoPaciente}. Error => ${err.message}`);
+                }
+            }
+        });
 
+        // Agregar el parámetro a la consulta
+        request.addParameter('DocumentoPaciente', TYPES.VarChar, DocumentoPaciente);
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
+            });
+            resultados.push(row);
+        });
+
+        request.on('requestCompleted', () => {
+            console.log('Resultados de la consulta:', resultados);
+            if (!res.headersSent) {
+                res.json(resultados);
+            }
+        });
+
+        request.on('error', (err) => {
+            console.error('Error en la consulta:', err);
+            if (!res.headersSent) {
+                res.status(500).send('Error interno del servidor');
+            }
+        });
+
+        // Ejecutar la consulta usando el pool
+        pool.execSql(request);
     } catch (Error) {
         console.error('Error en la consulta de presupuestos:', Error);
         return res.status(500).json({ error: `Error en la consulta de presupuestos => ${Error}` });

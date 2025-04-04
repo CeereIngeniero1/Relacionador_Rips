@@ -31,7 +31,8 @@ const config = {
         port: 1433,
         database: CatalogLineValue,
         encrypt: false,
-        requestTimeout: 30000000
+        requestTimeout: 30000000,
+        language: 'Spanish' // Esto puede no funcionar en todas las versiones
     }
 };
 

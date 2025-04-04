@@ -464,8 +464,9 @@ GO
 -- CREACIÓN DE VISTAS PARA CONSULTAR LAS FACTURAS DE PACIENTE
 CREATE VIEW [dbo].[ConsultaFacturasPaciente]
 AS
-SELECT Fac.[Documento Paciente] AS DocumentoPaciente, Fac.[Documento Responsable] AS DocumentoResponsable, Fac.[Id Factura] AS Value, EmpV.[Prefijo Resolución Facturación EmpresaV] + Fac.[No Factura] + ' - ' + DATENAME(WEEKDAY, 
-                  Fac.[Fecha Factura]) + ' ' + CAST(DAY(Fac.[Fecha Factura]) AS VARCHAR) + ' de ' + DATENAME(MONTH, Fac.[Fecha Factura]) + ' del ' + CAST(YEAR(Fac.[Fecha Factura]) AS VARCHAR) AS Text
+SELECT Fac.[Documento Paciente] AS DocumentoPaciente, Fac.[Documento Responsable] AS DocumentoResponsable, Fac.[Id Factura] AS Value, Fac.[Fecha Factura] AS FechaFactura, 
+                  EmpV.[Prefijo Resolución Facturación EmpresaV] + Fac.[No Factura] + ' - ' + DATENAME(WEEKDAY, Fac.[Fecha Factura]) + ' ' + CAST(DAY(Fac.[Fecha Factura]) AS VARCHAR) + ' de ' + DATENAME(MONTH, Fac.[Fecha Factura]) 
+                  + ' del ' + CAST(YEAR(Fac.[Fecha Factura]) AS VARCHAR) AS Text, Fac.[Total Factura] AS TotalFactura
 FROM     dbo.Factura AS Fac INNER JOIN
                   dbo.EmpresaV AS EmpV ON Fac.[Id EmpresaV] = EmpV.[Id EmpresaV]
 GO
@@ -473,8 +474,13 @@ GO
 -- CREACIÓN DE VISTAS PARA CONSULTAR LOS PRESUPUESTOS DE PACIENTE
 CREATE VIEW [dbo].[ConsultaPresupuestosPaciente]
 AS
-SELECT 
-    --A SFKASL FJLASJ FKLASF
-FROM
-    --ASDFKLAJSDKLFJAKLSF
+SELECT Presupuesto.[Id Plan de Tratamiento] AS Value, Presupuesto.[Fecha Inicio Plan de Tratamiento] AS FechaPresupuesto, Presupuesto.[Documento Paciente] AS DocumentoPaciente, 
+                  Presupuesto.[Nro Plan de Tratamiento] + ' - ' + DATENAME(WEEKDAY, Presupuesto.[Fecha Inicio Plan de Tratamiento]) + ' ' + CAST(DAY(Presupuesto.[Fecha Inicio Plan de Tratamiento]) AS VARCHAR) 
+                  + ' del ' + CAST(YEAR(Presupuesto.[Fecha Inicio Plan de Tratamiento]) AS VARCHAR) AS Text, SUM(PresupuestoItems.[Valor Plan de Tratamiento Items]) AS TotalPresupuesto, 
+                  PresupuestoTratamientos.[Id Forma de Pago Tratamiento] AS FormaDePago
+FROM     dbo.[Plan de Tratamiento] AS Presupuesto INNER JOIN
+                  dbo.[Plan de Tratamiento Items] AS PresupuestoItems ON Presupuesto.[Id Plan de Tratamiento] = PresupuestoItems.[Id Plan de Tratamiento] INNER JOIN
+                  dbo.[Plan de Tratamiento Tratamientos] AS PresupuestoTratamientos ON Presupuesto.[Id Plan de Tratamiento] = PresupuestoTratamientos.[Id Plan de Tratamiento]
+GROUP BY PresupuestoItems.[Id Plan de Tratamiento], Presupuesto.[Id Plan de Tratamiento], Presupuesto.[Fecha Inicio Plan de Tratamiento], Presupuesto.[Documento Paciente], Presupuesto.[Nro Plan de Tratamiento], 
+                  PresupuestoTratamientos.[Id Forma de Pago Tratamiento]
 GO
