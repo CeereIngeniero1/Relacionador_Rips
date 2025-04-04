@@ -288,6 +288,18 @@ const SelectPacientes = document.getElementById('listaHC');
 SelectPacientes.addEventListener('change', async function (e) {
     // console.log(this.value);
 
+    if (document.getElementById('BuscarPorFacturas').checked === true) {
+        document.getElementById('BuscarPorFacturas').click();
+    }
+
+    if (document.getElementById('BuscarPorPresupuestos').checked === true) {
+        document.getElementById('BuscarPorPresupuestos').click();
+    }
+    // document.getElementById('BuscarPorFacturas').checked = false;
+    // document.getElementById('BuscarPorPresupuestos').checked = false;
+    // document.getElementById('BuscarPorFacturas').click();
+
+
     const NombrePaciente = document.getElementById('NombrePaciente');
     const DcoumentoPaciente = document.getElementById('DocumentoPaciente');
     const EdadPaciente = document.getElementById('EdadPaciente');
@@ -297,7 +309,13 @@ SelectPacientes.addEventListener('change', async function (e) {
     const SelectHistoriasSinRIPS = document.getElementById('HistoriasSinRIPS');
 
 
+    if (this.value === "") {
+        document.getElementById('BuscarPorFacturas').disabled = true;
+        document.getElementById('BuscarPorPresupuestos').disabled = true;
+    }
     if (this.value !== "") {
+        document.getElementById('BuscarPorFacturas').disabled = false;
+        document.getElementById('BuscarPorPresupuestos').disabled = false;
         try {
             const DatosPaciente = await fetch(`http://${servidor}:3000/api/DatosdeUsuarioHC/${this.value}`);
             if (!DatosPaciente.ok) {
@@ -312,35 +330,7 @@ SelectPacientes.addEventListener('change', async function (e) {
             SexoPaciente.value = CargarDatosPaciente[0].Sexo;
             DireccionPaciente.value = CargarDatosPaciente[0].Direccion;
             TelefonoPaciente.value = CargarDatosPaciente[0].Tel;
-
             LlenarSelectDeHistoriasClinicas();
-
-            // // Funcionalidad para el llenado del select de las historias/evoluciones sin RIPS
-            // const RangoInicio = document.getElementById('FechaInicioConsulta').value;
-            // const RangoFin = document.getElementById('FechaFinConsulta').value;
-            // const documentoUsuarioLogeado = sessionStorage.getItem('documentousuariologeado');
-            // const HCsinRIPS = await fetch(`http://${servidor}:3000/api/DatosdeHC/${this.value}/${documentoUsuarioLogeado}/${RangoInicio}/${RangoFin}`);
-            // if (!HCsinRIPS.ok) {
-            //     throw new Error(`Error al obtener las historias/evoluciones sin RIPS: ${HCsinRIPS.statusText}`);
-            // }
-            // const HistoriasEvolucionesSinRIPS = await HCsinRIPS.json();
-            // console.log('Historias/Evoluciones sin RIPS: ', HistoriasEvolucionesSinRIPS);
-
-            // console.log('Rango: ' + RangoInicio + ' ' + RangoFin)
-
-            
-            // SelectHistoriasSinRIPS.innerHTML = '';
-            // // Opción por defecto
-            // const defaultOption = document.createElement('option');
-            // defaultOption.textContent = 'Seleccione una historia/evolución';
-            // defaultOption.value = '';
-            // SelectHistoriasSinRIPS.appendChild(defaultOption);
-            // for (let i = 0; i < HistoriasEvolucionesSinRIPS.length; i+=1) {
-            //     const option = document.createElement('option');
-            //     option.value = HistoriasEvolucionesSinRIPS[i].IdEvaluaciónEntidad;
-            //     option.textContent = HistoriasEvolucionesSinRIPS[i].DescripcionTipodeEvaluación + " [ " +  HistoriasEvolucionesSinRIPS[i].Formato_Diagnostico + " - " + HistoriasEvolucionesSinRIPS[i].FechaEvaluacionTexto + " " + HistoriasEvolucionesSinRIPS[i].HoraEvaluacion + " ]";
-            //     SelectHistoriasSinRIPS.appendChild(option);
-            // }
         } catch (error) {
             console.error(error);
         }
@@ -4208,3 +4198,155 @@ radioAP.addEventListener('click', function(e) {
         radioAC.checked = false;
     }
 })
+
+
+// FUNCIONALIDAD PARA LA BÚSQUEDA DE FACTURAS Y PRESUPUESTOS
+const BuscarPorFacturas = document.getElementById('BuscarPorFacturas');
+const BuscarPorPresupuestos = document.getElementById('BuscarPorPresupuestos');
+const Facturas = document.getElementById('Facturas');
+const Presupuestos = document.getElementById('Presupuestos');
+BuscarPorFacturas.disabled = true;
+BuscarPorPresupuestos.disabled = true;
+Facturas.style.display = 'none';
+Presupuestos.style.display = 'none'
+
+const LabelFacturas = document.getElementById('LabelFacturas');
+const LabelPresupuestos = document.getElementById('LabelPresupuestos');
+LabelFacturas.addEventListener('click', function() {
+    BuscarPorFacturas.click();
+});
+LabelPresupuestos.addEventListener('click', function() {
+    BuscarPorPresupuestos.click();
+});
+// document.getElementById('ContenedorDeCheckBox').style.display = 'none';
+// document.getElementById('ContenedorDeSelects').style.display = 'none';
+
+const CamposCheckBox = {
+    BuscarPorFacturas: 'Facturas',
+    BuscarPorPresupuestos: 'Presupuestos'
+};
+
+const FacturaARelacionar = document.getElementById('FacturaARelacionar');
+const PresupuestoARelacionar = document.getElementById('PresupuestoARelacionar');
+Object.keys(CamposCheckBox).forEach(id => {
+    document.getElementById(id).addEventListener('click', function() {
+        Object.keys(CamposCheckBox).forEach(key => {
+            const isChecked = key === id && this.checked;
+            document.getElementById(key).checked = isChecked;
+            document.getElementById(CamposCheckBox[key]).style.display = isChecked ? 'block' : 'none';
+
+            if (isChecked && key === 'BuscarPorFacturas') {
+                TraerFacturasPaciente(FacturaARelacionar, SelectPacientes.value);
+            }
+
+            if (isChecked && key === 'BuscarPorPresupuestos') {
+                TraerPresupuestosPaciente(PresupuestoARelacionar, SelectPacientes.value);
+            }
+        });
+    });
+});
+
+async function TraerFacturasPaciente(Select, DocumentoPaciente) {
+    try {
+        console.log(DocumentoPaciente);
+        const FacturasPaciente = await fetch(`http://${servidor}:3000/api/ConsultarFacturas/${DocumentoPaciente}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        if (!FacturasPaciente.ok) {
+            const errorResponse = await FacturasPaciente.text(); // Obtener el cuerpo de la respuesta
+            console.log(errorResponse); // Para depuración
+            Swal.fire({
+                icon: 'error',
+                html: `
+                    <!-- <strong>Error: ${FacturasPaciente.status} - ${FacturasPaciente.statusText}</strong><br> -->
+                    <!-- <pre>${errorResponse}</pre> -->
+                    <span style="color: #ffffff;">${errorResponse}</span>
+                `
+            });
+            AgregarOpcionPorDefecto(Select);
+            return; // Salir de la función si hay un error
+        }
+
+        const respuesta = await FacturasPaciente.json();
+        // console.log(respuesta);
+        AgregarOpcionPorDefecto(Select);
+        respuesta.forEach(factura => {
+            const option = document.createElement('option');
+            option.textContent = `${factura.Text} - $${factura.TotalFactura}`; // Valor por defecto
+            option.value = factura.Value; // Valor por defecto
+            Select.appendChild(option);
+        });
+        
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        throw new Error(`Error al obtener las entidades responsables: ${error.message}`);
+    }
+}
+
+async function TraerPresupuestosPaciente(Select, DocumentoPaciente){
+    try {
+        const PresupuestosPaciente = await fetch(`http://${servidor}:3000/api/ConsultarPresupuestos/${DocumentoPaciente}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        if (!PresupuestosPaciente.ok) {
+            const errorResponse = await PresupuestosPaciente.text(); // Obtener el cuerpo de la respuesta
+            console.log(errorResponse); // Para depuración
+            Swal.fire({
+                icon: 'error',
+                html: `
+                    <!-- <strong>Error: ${PresupuestosPaciente.status} - ${PresupuestosPaciente.statusText}</strong><br> -->
+                    <!-- <pre>${errorResponse}</pre> -->
+                    <span style="color: #ffffff;">${errorResponse}</span>
+                `
+            });
+            AgregarOpcionPorDefecto(Select);
+            return; // Salir de la función si hay un error
+        }
+        const respuesta = await PresupuestosPaciente.json();
+        // console.log(respuesta);
+        AgregarOpcionPorDefecto(Select);
+        respuesta.forEach(presupuesto => {
+            const option = document.createElement('option');
+            option.textContent = `${presupuesto.Text} - $${presupuesto.TotalPresupuesto}`; // Valor por defecto
+            option.value = presupuesto.Value; // Valor por defecto
+            Select.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        throw new Error(`Error al obtener las entidades responsables: ${error.message}`);
+    }
+};
+
+async function AgregarOpcionPorDefecto(Select) {
+    Select.innerHTML = '';
+    const OpcionPorDefecto = document.createElement('option');
+    OpcionPorDefecto.textContent = 'Sin Seleccionar';
+    OpcionPorDefecto.value = 'Sin Seleccionar';
+    Select.appendChild(OpcionPorDefecto);
+};
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// PARA PROBAR_SOLO PRUEBAS EN DESARROLLO
+document.body.onload = function ()  {
+    const Inicio = document.getElementById('FechaInicioConsulta');
+    const Fin = document.getElementById('FechaFinConsulta');
+    const Cargar = document.getElementById('CargarPacientesConHCSinRIPS');
+
+    Inicio.value = "2000-01-01";
+    Fin.value = "2025-04-04";
+    Cargar.click();
+}
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

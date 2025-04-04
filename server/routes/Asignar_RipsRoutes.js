@@ -1,6 +1,7 @@
 const { Request, TYPES } = require('tedious');
 const Router = require('express').Router;
 const connection = require('../db');
+const pool = require('../db2');
 
 const router = Router();
 
@@ -1443,4 +1444,110 @@ router.post('/EliminarRIPSPorDefecto', async (req, res) => {
     }
 })
 
+
+// FUNCIONALIDAD PARA CONUSLTAR FACTURAS Y PRESUPUESTOS DEL PACIENTE
+router.get('/ConsultarFacturas/:DocumentoPaciente', (req, res) => {
+    const DocumentoPaciente = req.params.DocumentoPaciente;
+
+    // Crear la consulta
+    const request = new Request(`
+        SELECT *
+        FROM [ConsultaFacturasPaciente]
+        WHERE [DocumentoPaciente] = @DocumentoPaciente
+        ORDER BY [FechaFactura] DESC
+    `, (err) => {
+        if (err) {
+            console.error(`Error al traer las facturas del paciente con documento ${DocumentoPaciente}. => [${err}]`);
+            if (!res.headersSent) {
+                res.status(500).json(`Error al consultar las facturas del paciente con documento => ${DocumentoPaciente}. Error => ${err.message}`);
+            }
+        }
+    });
+
+    // Agregar el parámetro a la consulta
+    request.addParameter('DocumentoPaciente', TYPES.VarChar, DocumentoPaciente);
+
+    const resultados = [];
+    request.on('row', (columns) => {
+        const row = {};
+        columns.forEach((column) => {
+            row[column.metadata.colName] = column.value;
+        });
+        resultados.push(row);
+    });
+
+    request.on('requestCompleted', () => {
+        console.log('Resultados de la consulta:', resultados);
+        if (!res.headersSent) {
+            res.json(resultados);
+        }
+    });
+
+    request.on('error', (err) => {
+        console.error('Error en la consulta:', err);
+        if (!res.headersSent) {
+            res.status(500).send('Error interno del servidor');
+        }
+    });
+
+    // Ejecutar la consulta usando el pool
+    pool.execSql(request);
+});
+
+
+router.get('/ConsultarPresupuestos/:DocumentoPaciente', async (req, res) => {
+    try {
+        const DocumentoPaciente = req.params.DocumentoPaciente;
+        const request = new Request(`
+            SELECT 
+                *
+            FROM 
+                [ConsultaPresupuestosPaciente]
+            WHERE
+                ( [DocumentoPaciente] = @DocumentoPaciente ) AND
+                ( [FormaDePago] = 5 )
+            ORDER BY
+                [FechaPresupuesto] DESC
+        `, (err) => {
+            if (err) {
+                console.error(`Error al traer los presupuestos del paciente con documento ${req.params.DocumentoPaciente}. => [${err}]`);
+                if (!res.headersSent) {
+                    res.status(500).json(`Error al consultar los presupuestos del paciente con documento => ${req.params.DocumentoPaciente}. Error => ${err.message}`);
+                }
+            }
+        });
+
+        // Agregar el parámetro a la consulta
+        request.addParameter('DocumentoPaciente', TYPES.VarChar, DocumentoPaciente);
+        const resultados = [];
+        request.on('row', (columns) => {
+            const row = {};
+            columns.forEach((column) => {
+                row[column.metadata.colName] = column.value;
+            });
+            resultados.push(row);
+        });
+
+        request.on('requestCompleted', () => {
+            console.log('Resultados de la consulta:', resultados);
+            if (!res.headersSent) {
+                res.json(resultados);
+            }
+        });
+
+        request.on('error', (err) => {
+            console.error('Error en la consulta:', err);
+            if (!res.headersSent) {
+                res.status(500).send('Error interno del servidor');
+            }
+        });
+
+        // Ejecutar la consulta usando el pool
+        pool.execSql(request);
+    } catch (Error) {
+        console.error('Error en la consulta de presupuestos:', Error);
+        return res.status(500).json({ error: `Error en la consulta de presupuestos => ${Error}` });
+    }
+});
+// =================================================================================================
 module.exports = router;
