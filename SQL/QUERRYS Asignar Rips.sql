@@ -460,3 +460,17 @@ FROM            dbo.[Evaluación Entidad Rips] AS everips INNER JOIN
                          dbo.Empresa AS em ON eve.[Documento Empresa] = em.[Documento Empresa]
 
 GO
+
+
+ALTER VIEW [dbo].[Cnsta Relacionador Usuarios Info]
+AS
+SELECT        REPLACE(REPLACE(dbo.Entidad.[Documento Entidad], CHAR(13), ''), CHAR(10), '') AS DocumentoPaciente, dbo.Entidad.[Primer Apellido Entidad] AS PrimerApellidoPaciente, 
+                         dbo.Entidad.[Segundo Apellido Entidad] AS SegundoApellidoPaciente, dbo.Entidad.[Primer Nombre Entidad] AS PrimerNombrePaciente, dbo.Entidad.[Segundo Nombre Entidad] AS SegundoNombrePaciente, 
+                         dbo.Entidad.[Nombre Completo Entidad] AS NombreCompletoPaciente, dbo.Sexo.[Descripción Sexo] AS Sexo, dbo.EntidadIII.[Edad EntidadIII] AS Edad, dbo.EntidadII.[Dirección EntidadII] AS Direccion, 
+                         dbo.EntidadII.[Teléfono Celular EntidadII] AS Tel, dbo.[Tipo de Documento].[Tipo de Documento] + N' ' + dbo.Entidad.[Documento Entidad] AS DocumentoTipoDOC
+FROM            dbo.Entidad INNER JOIN
+                         dbo.EntidadII ON dbo.Entidad.[Documento Entidad] = dbo.EntidadII.[Documento Entidad] INNER JOIN
+                         dbo.EntidadIII ON dbo.Entidad.[Documento Entidad] = dbo.EntidadIII.[Documento Entidad] INNER JOIN
+                         dbo.Sexo ON dbo.EntidadIII.[Id Sexo] = dbo.Sexo.[Id Sexo] INNER JOIN
+                         dbo.[Tipo de Documento] ON dbo.Entidad.[Id Tipo de Documento] = dbo.[Tipo de Documento].[Id Tipo de Documento]
+GO

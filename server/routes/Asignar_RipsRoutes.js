@@ -154,6 +154,7 @@ router.get('/UsuariosHC/:DocumentoUsuario/:fechaInicio/:fechaFin', async (req, r
 router.get('/DatosdeUsuarioHC/:DocumentoPaciente', async (req, res) => {
     try {
         const DocumentoPaciente = req.params.DocumentoPaciente;
+        
 
         const request = new Request(
             `
@@ -161,7 +162,7 @@ router.get('/DatosdeUsuarioHC/:DocumentoPaciente', async (req, res) => {
         SegundoApellidoPaciente, PrimerNombrePaciente, SegundoNombrePaciente, 
         NombreCompletoPaciente, Sexo, Edad, Direccion, Tel, DocumentoTipoDOC
         FROM            [Cnsta Relacionador Usuarios Info]
-        WHERE        (DocumentoPaciente like '%${DocumentoPaciente}%')
+        WHERE        (DocumentoPaciente = '${DocumentoPaciente}')
         `,
             (err) => {
                 if (err) {

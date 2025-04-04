@@ -190,7 +190,7 @@ CASE WHEN  fc.[No Factura] = '0000000' THEN 'RS' ELSE NULL END [tipoNota], tpd.[
 });
 
 
-router.get('/usuarios/ripsEPS/:fechaInicio/:fechaFin/:ResolucionesRips/:documentoEmpresaSeleccionada', async (req, res) => {
+router.get('/usuarios/ripsEps/:fechaInicio/:fechaFin/:ResolucionesRips/:documentoEmpresaSeleccionada', async (req, res) => {
     console.log ("Bro si estoy entrando sisabe ripsEPS");
     const fechaInicio = new Date(req.params.fechaInicio).toISOString().split('T')[0];
     const fechaFin = new Date(req.params.fechaFin).toISOString().split('T')[0];
@@ -209,7 +209,7 @@ router.get('/usuarios/ripsEPS/:fechaInicio/:fechaFin/:ResolucionesRips/:document
     CONVERT(VARCHAR, en3.[Fecha Nacimiento EntidadIII], 23) AS [fechaNacimiento], 
     Sexo.[Sexo] AS [codSexo], 
     País.País AS [codPaisResidencia], 
-    Dep.[Código Departamento] +  Ciu.[Código Ciudad] AS [codMunicipioResidencia], 
+    Depart.[Código Departamento] +  Ciu.[Código Ciudad] AS [codMunicipioResidencia], 
     CASE WHEN zr.[Código Zona Residencia]  IS NULL THEN '02' ELSE  '0' + zr.[Código Zona Residencia] END AS  [codZonaTerritorialResidencia],  
     'NO' AS [incapacidad],
     DENSE_RANK() OVER (ORDER BY en.[Documento Entidad]) AS [consecutivo],
@@ -245,7 +245,7 @@ LEFT JOIN  País ON Depart.[Id País] = País.[Id País]
 LEFT JOIN  [Zona Residencia] AS zr ON en3.[Id Zona Residencia] = zr.[Id Zona Residencia]
 LEFT JOIN  Ciudad AS ciu2 ON en2.[Id Ciudad] = ciu2.[Id Ciudad]
 LEFT JOIN Departamento AS Depart2 ON ciu2.[Id Departamento] = Depart2.[Id Departamento]
-LEFT JOIN  Departamento AS Depart2 ON ciu2.[Id Departamento] = Depart2.[Id Departamento]
+--LEFT JOIN  Departamento AS Depart2 ON ciu2.[Id Departamento] = Depart2.[Id Departamento]
 LEFT JOIN  País AS pais2 ON Depart2.[Id País] = pais2.[Id País]
 LEFT JOIN   EmpresaV AS EmpV ON fc.[Id EmpresaV] = EmpV.[Id EmpresaV]
 
@@ -515,7 +515,50 @@ router.get('/servicios/ripsEPSAC/:numFactura/:numDocumentoIdentificacion/:fechaI
     const fechaFin = req.params.fechaFin;
     const ResolucionesRips = req.params.ResolucionesRips;
 
-    // console.log(`En AC el num factura es: ${numFactura}`)
+      console.log(`
+        SELECT em2.[Código Empresa] AS codPrestador, 
+        --SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura] , 120), 1, 16) AS fechaInicioAtencion, 
+
+        CASE WHEN SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura] , 120), 1, 16) IS NULL THEN SUBSTRING(CONVERT(VARCHAR, EVE.[Fecha Evaluación Entidad] , 120), 1, 16)
+        ELSE SUBSTRING(CONVERT(VARCHAR, fc.[Fecha Factura] , 120), 1, 16) END  AS fechaInicioAtencion, 
+
+        NULL AS numAutorizacion, everips.[Codigo RIPS] AS codConsulta,
+        '01' AS modalidadGrupoServicioTecSal, '01' AS grupoServicios, Serv.[Código Servicios] AS codServicio,
+        everips.[Id Finalidad Consulta] AS finalidadTecnologiaSalud, CASE WHEN CAU.Codigo IS NULL THEN 38 ELSE Cau.Codigo END AS causaMotivoAtencion,
+        everips.[Diagnostico Rips] AS codDiagnosticoPrincipal, 
+        Null  AS codDiagnosticoRelacionado1, 
+        --CASE WHEN everips.[Diagnostico Rips2] = NULL THEN NULL ELSE everips.[Diagnostico Rips2] END AS codDiagnosticoRelacionado1,  
+        NULL AS codDiagnosticoRelacionado2, NULL AS codDiagnosticoRelacionado3, 
+        --tdp.[Código Tipo de Diagnóstico Principal] AS tipoDiagnosticoPrincipal,
+		Case when tdp.[Código Tipo de Diagnóstico Principal] IS NULL THEN '02' ELSE tdp.[Código Tipo de Diagnóstico Principal] END AS tipoDiagnosticoPrincipal,
+        tp.[Tipo de Documento] AS tipoDocumentoIdentificacion, eve.[Documento Entidad] AS numDocumentoIdentificacion, 
+        PT.[Valor Plan de Tratamiento Items] AS vrServicio, '05' AS tipoPagoModerador, '0' AS valorPagoModerador, 
+        NULL  AS numFEVPagoModerador, ROW_NUMBER() OVER (ORDER BY everips.[Id Evaluación Entidad RIPS]) AS consecutivo
+
+        FROM [Evaluación Entidad] as eve
+
+        INNER JOIN [Evaluación Entidad Rips] as everips ON eve.[Id Evaluación Entidad] = everips.[Id Evaluación Entidad]
+        LEFT JOIN Entidad ON eve.[Documento Entidad] = Entidad.[Documento Entidad]
+        LEFT JOIN [Tipo de Documento] as tp ON Entidad.[Id Tipo de Documento] = tp.[Id Tipo de Documento]
+        LEFT JOIN Factura as fc ON everips.[Id Factura] = fc.[Id Factura]
+		LEFT JOIN Empresa ON fc.[Documento Empresa] = Empresa.[Documento Empresa]
+		LEFT JOIN Empresa as em2 ON eve.[Documento Empresa] = em2.[Documento Empresa]
+        INNER JOIN EmpresaV as EmpV ON fc.[Documento Empresa] = EmpV.[Documento Empresa]
+        LEFT JOIN [Tipo de Diagnóstico Principal] as tdp ON everips.[Id Tipo de Diagnóstico Principal] = tdp.[Id Tipo de Diagnóstico Principal]
+		LEFT JOIN FacturaII FII ON FII.[Id Factura] = FC.[Id Factura] 
+		left join [Plan de Tratamiento Items] PT ON PT.[Id Plan de Tratamiento] = FII.[Id Plan de Tratamiento]
+		left join [Plan de Tratamiento] Tr ON Tr.[Id Plan de Tratamiento] = fii.[Id Plan de Tratamiento]
+		left join [RIPS Servicios] AS Serv ON serv.[Id Servicios]  = everips.[Id Servicios]
+        LEFT JOIN [RIPS Causa Externa Version2] as Cau on Cau.[Id RIPS Causa Externa Version2] = everips.[Id Causa Externa]
+        
+        WHERE everips.[Id Acto Quirúrgico] = 1 
+        AND EmpV.[Prefijo Resolución Facturación EmpresaV] + fc.[No Factura] = ${numFactura}
+        AND eve.[Documento Entidad] = ${numDocumentoIdentificacion}
+        AND CONVERT(DATE, eve.[Fecha Evaluación Entidad]) BETWEEN ${fechaInicio} AND ${fechaFin}
+        AND EmpV.[Resolución Facturación EmpresaV] = ${ResolucionesRips}
+        AND Tr.[Documento Paciente] = eve.[Documento Entidad]
+
+        `)
 
     const request = new Request(
         `
@@ -627,7 +670,6 @@ router.get('/serviciosAP/rips/:numFactura/:numDocumentoIdentificacion/:fechaInic
     const fechaFin = req.params.fechaFin;
     const ResolucionesRips = req.params.ResolucionesRips
 
-    // console.log(`En AP el num factura es: ${numFactura}`)
 
     const request = new Request(
         `SELECT em2.[Código Empresa] AS codPrestador, 

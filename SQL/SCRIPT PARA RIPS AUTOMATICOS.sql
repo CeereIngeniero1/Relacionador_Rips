@@ -176,7 +176,12 @@ BEGIN
 						AND DATEADD(DAY, 15, @FechaInicioRIPS)
 			AND [Documento Paciente] = @documentoPaciente 
 			AND [Id Tipo Responsable] = 5 
-			AND [Documento Responsable] = @documentoEps;
+			AND [Documento Responsable] = @documentoEps
+			AND NOT EXISTS (
+				SELECT 1 
+				FROM [Evaluación Entidad Rips] EER
+				WHERE EER.[Id Plan de Tratamiento] = [Plan de Tratamiento].[Id Plan de Tratamiento]
+			);;
 		  
 
 		  -- Verificar si se obtuvo un documento de EPS válido
