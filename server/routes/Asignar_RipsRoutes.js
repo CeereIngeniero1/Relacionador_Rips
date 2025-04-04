@@ -1040,6 +1040,8 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
     const CausaMotivoAtencion = req.params.CausaMotivoAtencion;
     const TipoDiagnosticoPrincipal = req.params.TipoDiagnosticoPrincipal;
     const ViaIngresoServicioSalud = req.params.ViaIngresoServicioSalud;
+    const idfactura = req.params.Idfactura;
+    const Idpresupuesto = req.params.Idpresupuesto;
     const Cups1 = req.params.Cups1;
     let Cups2 = req.params.Cups2;
     //Se evalua si viene = 0 para hacerlo NULL
@@ -1089,7 +1091,9 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
     [Id Modalidad Atencion],
     [Id Grupo Servicios],
     [Id Servicios],
-    [Id Via Ingreso Usuario] 
+    [Id Via Ingreso Usuario], 
+    [Id Factura],
+    [Id Plan de Tratamiento] 
     )
     VALUES 
     (
@@ -1107,7 +1111,9 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
     @ModalidadGrupoServicioTecSal,
     @GrupoServicios,
     @CodServicio,
-    @ViaIngresoServicioSalud
+    @ViaIngresoServicioSalud,
+    @idfactura,
+    @idpresupuesto
     ) 
     `, (err) => {
         if (err) {
@@ -1135,6 +1141,8 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
     requestInsert.addParameter('Cie1', TYPES.NVarChar, Cie1);
     requestInsert.addParameter('Cie2', TYPES.NVarChar, Cie2);
     requestInsert.addParameter('Actoquirurgico', TYPES.Int, Actoquirurgico);
+    requestInsert.addParameter('idfactura', TYPES.Int, idfactura);
+    requestInsert.addParameter('Idpresupuesto', TYPES.Int, Idpresupuesto);
 
     
 connection.execSql(requestInsert);
