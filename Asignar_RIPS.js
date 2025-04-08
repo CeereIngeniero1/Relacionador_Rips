@@ -1,4 +1,4 @@
-const servidor = "HPRED241";
+const servidor = "HPGRIS";
 
 function VerificarLogin() {
     const TokenLogin = localStorage.getItem('token');
@@ -1408,6 +1408,23 @@ const AsignarRIPS = async () => {
         const Cie1RIPSAP = document.getElementById("SelectDiagnosticoRIPSAP1").value;
         let Cie2RIPSAP = document.getElementById("SelectDiagnosticoRIPSAP2").value;
         const TipoRipsRIPSAP = "AP";
+        const IdFactura = document.getElementById("FacturaARelacionar");
+        const IdPresupuesto = document.getElementById("PresupuestoARelacionar");
+        const PorFactura = document.getElementById("BuscarPorFacturas");
+        const PorPresupuesto = document.getElementById("BuscarPorPresupuestos");
+        let ValorIdFactura;
+        let ValorIdPresupuesto;
+        if (PorFactura.checked === true) {
+            ValorIdFactura = IdFactura.value === "Sin Seleccionar" ? null : IdFactura.value;
+        }else {
+            ValorIdFactura = null;
+        }
+
+        if (PorPresupuesto.checked === true) {
+            ValorIdPresupuesto = IdPresupuesto.value === "Sin Seleccionar" ? null : IdPresupuesto.value;
+        }else {
+            ValorIdPresupuesto = null;
+        }
 
         // Logica para campos vacíos
         let RIPSAPCAMPOSVACIOS = [];
@@ -1456,6 +1473,8 @@ const AsignarRIPS = async () => {
                 "Diagnóstico1 RIPS": Cie1RIPSAP,
                 "Diagnóstico2 RIPS": Cie2RIPSAP,
                 "Tipo de RIPS": TipoRipsRIPSAP,
+                "Id Factura": ValorIdFactura,
+                "Id Presupuesto": ValorIdPresupuesto
             }
 
             // console.log(InformacionParaRIPSAP);
@@ -1467,9 +1486,21 @@ const AsignarRIPS = async () => {
             }
 
 
+            // Swal.fire({
+            //     icon: "info",
+            //     html: `
+            // <ul style="text-align: left; color: #ffffff;">
+            //     ${Object.entries(InformacionParaRIPSAP)
+            //         .map(([clave, valor]) => `<li><strong>${clave}:</strong> ${valor}</li>`)
+            //         .join("")}
+            // </ul>
+            //     `
+            // });
+            // return;
+            
             const AsignarRIPSAP = await fetch(`http://${servidor}:3000/api/RegistrarRips/${IdEvaluacionRIPSAP}/${TipoUsuarioRIPSAP}/${EntidadRIPSAP}/${ModalidadGrupoServicioTecSalRIPSAP}/${GrupoServiciosRIPSAP}/
                 ${CodServicioRIPSAP}/${FinalidadTecnologiaSaludRIPSAP}/${CausaMotivoAtencionRIPSAP}/${TipoDiagnosticoPrincipalRIPSAP}/${ViaIngresoServicioSaludRIPSAP}/${Cups1RIPSAP}/${Cups2RIPSAP}/${Cie1RIPSAP}/
-                ${Cie2RIPSAP}/${TipoRipsRIPSAP}`,
+                ${Cie2RIPSAP}/${TipoRipsRIPSAP}/${ValorIdFactura}/${ValorIdPresupuesto}`,
                 {
                     method: 'POST',
                     headers: {
@@ -1515,24 +1546,55 @@ const AsignarRIPS = async () => {
         let SelectDiagnosticoRIPSAC2 = document.getElementById("SelectDiagnosticoRIPSAC2").value;
         const TipoRipsRIPSAC = "AC";
         const ViaIngresoAC = "0";
-
-        let ValoresCapturados = {
-            "Id de historia clinica": IdEvaluacionRIPSAC,
-            "Tipo de usuario": SelectTipoUsuarioRIPSAC,
-            "Entidad": SelectEntidadAC,
-            "Modalidad de grupo de servicios técnico salud": SelectModalidadGrupoServicioTecnologiaSaludAC,
-            "Grupo servicios": SelectGrupoServiciosAC,
-            "Servicio": SelectServiciosAC,
-            "Finalidad técnica de salud": SelectFinalidadTecnologiaSaludAC,
-            "Causa motivo atención": SelectCausaMotivoAtencion,
-            "Tipo diagnóstico principal": SelectTipoDiagnosticoPrincipalAC,
-            "Consulta1 RIPS": SelectConsultaRIPSAC1,
-            "Consulta2 RIPS": SelectConsultaRIPSAC2,
-            "Diagnóstico1 RIPS": SelectDiagnosticoRIPSAC1,
-            "Diagnóstico2 RIPS": SelectDiagnosticoRIPSAC2,
+        const IdFactura = document.getElementById("FacturaARelacionar");
+        const IdPresupuesto = document.getElementById("PresupuestoARelacionar");
+        const PorFactura = document.getElementById("BuscarPorFacturas");
+        const PorPresupuesto = document.getElementById("BuscarPorPresupuestos");
+        let ValorIdFactura;
+        let ValorIdPresupuesto;
+        if (PorFactura.checked === true) {
+            ValorIdFactura = IdFactura.value === "Sin Seleccionar" ? null : IdFactura.value;
+        }else {
+            ValorIdFactura = null;
         }
 
-        console.log(ValoresCapturados);
+        if (PorPresupuesto.checked === true) {
+            ValorIdPresupuesto = IdPresupuesto.value === "Sin Seleccionar" ? null : IdPresupuesto.value;
+        }else {
+            ValorIdPresupuesto = null;
+        }
+
+        // let ValoresCapturados = {
+        //     "Id de historia clinica": IdEvaluacionRIPSAC,
+        //     "Tipo de usuario": SelectTipoUsuarioRIPSAC,
+        //     "Entidad": SelectEntidadAC,
+        //     "Modalidad de grupo de servicios técnico salud": SelectModalidadGrupoServicioTecnologiaSaludAC,
+        //     "Grupo servicios": SelectGrupoServiciosAC,
+        //     "Servicio": SelectServiciosAC,
+        //     "Finalidad técnica de salud": SelectFinalidadTecnologiaSaludAC,
+        //     "Causa motivo atención": SelectCausaMotivoAtencion,
+        //     "Tipo diagnóstico principal": SelectTipoDiagnosticoPrincipalAC,
+        //     "Consulta1 RIPS": SelectConsultaRIPSAC1,
+        //     "Consulta2 RIPS": SelectConsultaRIPSAC2,
+        //     "Diagnóstico1 RIPS": SelectDiagnosticoRIPSAC1,
+        //     "Diagnóstico2 RIPS": SelectDiagnosticoRIPSAC2,
+        //     "Id Factura": ValorIdFactura,
+        //     "Id Presupuesto": ValorIdPresupuesto
+        // }
+
+        // Swal.fire({
+        //     icon: "info",
+        //     html: `
+        // <ul style="text-align: left; color: #ffffff;">
+        //     ${Object.entries(ValoresCapturados)
+        //         .map(([clave, valor]) => `<li><strong>${clave}:</strong> ${valor}</li>`)
+        //         .join("")}
+        // </ul>
+        //     `
+        // });
+        // return;
+
+        // console.log(ValoresCapturados);
         let CamposSinLlenar = [];
         if (!SelectTipoUsuarioRIPSAC) CamposSinLlenar.push("Tipo de usuario.");
         if (!SelectEntidadAC || SelectEntidadAC === "" || SelectEntidadAC === "Sin Seleccionar") CamposSinLlenar.push("Entidad.");
@@ -1571,7 +1633,7 @@ const AsignarRIPS = async () => {
             }
             const AsignarRIPSAC = await fetch(`http://${servidor}:3000/api/RegistrarRips/${IdEvaluacionRIPSAC}/${SelectTipoUsuarioRIPSAC}/${SelectEntidadAC}/${SelectModalidadGrupoServicioTecnologiaSaludAC}/
                 ${SelectGrupoServiciosAC}/${SelectServiciosAC}/${SelectFinalidadTecnologiaSaludAC}/${SelectCausaMotivoAtencion}/${SelectTipoDiagnosticoPrincipalAC}/${ViaIngresoAC}/${SelectConsultaRIPSAC1}/${SelectConsultaRIPSAC2}/
-                ${SelectDiagnosticoRIPSAC1}/${SelectDiagnosticoRIPSAC2}/${TipoRipsRIPSAC}`,
+                ${SelectDiagnosticoRIPSAC1}/${SelectDiagnosticoRIPSAC2}/${TipoRipsRIPSAC}/${ValorIdFactura}/${ValorIdPresupuesto}`,
                 {
                     method: 'POST',
                     headers: {
@@ -1580,6 +1642,11 @@ const AsignarRIPS = async () => {
                 }
             );
 
+            Swal.fire({
+                icon: "info",
+                text: AsignarRIPSAC
+            })
+            return;
             if (!AsignarRIPSAC) {
                 throw new Error(`Error al obtener las entidades de RIPS: ${AsignarRIPSAC.statusText}`);
             }
