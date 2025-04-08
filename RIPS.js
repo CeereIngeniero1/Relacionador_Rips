@@ -1571,15 +1571,16 @@ const updatePacientesEPS = (pacientesPre) => {
     // Agregar opciones al select
     pacientesPre.forEach((PacientePre) => {
         const option = document.createElement("option");
-        option.value = PacientePre.documentoPacienteEPS;
-        option.text = `${PacientePre.nombrePacienteEPS}`;
+        option.value = `${PacientePre.DocumentoPaciente}|${PacientePre.DocumentoEps}` ;
+        option.text = `${PacientePre.NombrePaciente}`;
         listaPacientePrepagada.appendChild(option);
     });
 };
 
 const getPacientesEPS = async (idFacturaEPS) => {
     try {
-        const response = await fetch(`http://${servidor}:3000/api/pacientesEPS/${idFacturaEPS}`);
+        // const response = await fetch(`http://${servidor}:3000/api/pacientesEPS/${idFacturaEPS}`);
+        const response = await fetch(`http://${servidor}:3000/api/PacientesTratamientosFacturaEps/${idFacturaEPS}`);
         if (!response.ok) {
             throw new Error(`Error al obtener los datos de evaluaciones: ${response.statusText}`);
         }
@@ -1608,14 +1609,15 @@ const updateHistoriasEPS = (historiasPre) => {
     historiasPre.forEach((historiaPre) => {
         const option = document.createElement("option");
         option.value = historiaPre.idEveRips;
-        option.text = `${historiaPre.fechaEveRips}`;
+        option.text = `${historiaPre.TipoEvaluacion} ${historiaPre.fechaEveRips}`;
         listaHistoriaClinica.appendChild(option);
     });
 };
 
-const getHistoriasEPS = async (documentoPacienteEPS) => {
+const getHistoriasEPS = async (documentoPacienteEPS, DocumentoEPS) => {
     try {
-        const response = await fetch(`http://${servidor}:3000/api/hcPacientesEPS/${documentoPacienteEPS}`);
+        // const response = await fetch(`http://${servidor}:3000/api/hcPacientesEPS/${documentoPacienteEPS}`);
+        const response = await fetch(`http://${servidor}:3000/api/RipsPacientesTratamientosEps/${documentoPacienteEPS}/${DocumentoEPS}`);
         if (!response.ok) {
             throw new Error(`Error al obtener los datos de las historias clinicas EPS: ${response.statusText}`);
         }
@@ -1631,12 +1633,20 @@ const getHistoriasEPS = async (documentoPacienteEPS) => {
 };
 
 document.getElementById('listaPacientePrepagada').addEventListener('change', async () => {
-    const selectHistoriaClinicaEPS = document.getElementById('listaPacientePrepagada')
-    const documentoPacienteSeleecionado = selectHistoriaClinicaEPS.value;
-    await getHistoriasEPS(documentoPacienteSeleecionado);
-})
+    const selectHistoriaClinicaEPS = document.getElementById('listaPacientePrepagada');
+    const documentoPacienteSeleccionado = selectHistoriaClinicaEPS.value;
 
-const relacionarRIPSEPS = async (idFactura, idEveRips) => {
+    console.log(documentoPacienteSeleccionado);
+
+    const [documentoPaciente, documentoEps] = documentoPacienteSeleccionado.split('|');
+
+    console.log("Documento del Paciente:", documentoPaciente);
+    console.log("Documento de la EPS:", documentoEps);
+
+    await getHistoriasEPS(documentoPaciente, documentoEps);
+});
+
+const relacionarRIPSEPS = async (idFactura, relacionarEPS) => {
 
     try {
         const response = await fetch(`http://${servidor}:3000/api/relacionarEPS/${idFactura}/${idEveRips}`, {
