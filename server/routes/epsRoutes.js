@@ -11,7 +11,7 @@ router.get('/EPS/:fechaInicio/:fechaFin', (req, res) => {
     const EPSData = [];
     const EPSVistos = new Set(); // Utilizar un conjunto para rastrear nombres únicos
 
-    const request = new Request(`SELECT fc.[Id Factura], en.[Nombre Completo Entidad] as [Nombre EPS]
+    const request = new Request(`SELECT fc.[Id Factura], en.[Nombre Completo Entidad] + ' ' + EV.[Prefijo Resolución Facturación EmpresaV]+ fc.[No Factura] as [Nombre EPS]
 
     FROM Factura as fc
     
@@ -20,6 +20,7 @@ router.get('/EPS/:fechaInicio/:fechaFin', (req, res) => {
     INNER JOIN [Plan de Tratamiento] as pt ON fc2.[Id Plan de Tratamiento] = pt.[Id Plan de Tratamiento]
     INNER JOIN [Plan de Tratamiento Tratamientos] as ptt ON pt.[Id Plan de Tratamiento] = ptt.[Id Plan de Tratamiento]
     INNER JOIN [Tipo Responsable] as tr ON ptt.[Id Tipo Responsable] = tr.[Id Tipo Responsable]
+	INNER JOIN  EmpresaV EV ON EV.[Id EmpresaV] = FC.[Id EmpresaV] 
     
     WHERE tr.[Tipo Responsable] IN ('Entidad Prepagada', 'EPS') AND fc.[Fecha Factura] BETWEEN @fechaInicio AND @fechaFin
     `, (err, rowCount) => {
@@ -185,5 +186,100 @@ router.post('/relacionarEPS/:idFacturaEPS/:idEveRips', (req, res) => {
     // Ejecutar la solicitud de inserción
     connection.execSql(requestInsert);
 });
+
+
+//Actualizaciones Fernando
+//Este endpoint es para consultar los pacientes de los tratamientos que se encuentran dentro de la factura seleccionada
+router.get('/PacientesTratamientosFacturaEps/:IdFactura', (req, res) => {
+    const IdFactura = req.params.IdFactura;
+
+    const PacientesData = []; // Crear un array para almacenar los resultados
+
+    const request = new Request(`SELECT ENT.[Nombre Completo Entidad] AS [NombrePaciente],  PTT.[Documento Responsable] AS [DocumentoEPS], PT.[Documento Paciente] AS [DocumentoPaciente], COUNT(PT.[Documento Paciente]) FROM FacturaII FII
+    INNER JOIN [Plan de Tratamiento] PT ON PT.[Id Plan de Tratamiento] = FII.[Id Plan de Tratamiento]
+    INNER JOIN [Plan de Tratamiento Tratamientos] PTT ON PTT.[Id Plan de Tratamiento] = PT.[Id Plan de Tratamiento]
+    INNER JOIN Entidad ENT ON ENT.[Documento Entidad] = PT.[Documento Paciente]
+    WHERE FII.[Id Factura] = @idfactura
+    GROUP BY PT.[Documento Paciente], PTT.[Documento Responsable], ENT.[Nombre Completo Entidad] `, (err, rowCount) => {
+        if (err) {
+            console.error('Error al ejecutar la consulta de historias clinicas EPS:', err.message);
+            res.status(500).json({ error: 'Error al obtener datos de historias clinicas EPS' });
+        } else {
+            console.log(`Consulta de historias clinicas EPS ejecutada con éxito. Filas afectadas: ${rowCount}`);
+
+            // Enviar los datos de evaluaciones como respuesta JSON
+            res.json(PacientesData.map(row => ({
+                DocumentoPaciente: row['DocumentoPaciente'],
+                NombrePaciente: row['NombrePaciente'],
+                DocumentoEps: row['DocumentoEPS']
+            })));
+        }
+    });
+
+    
+    request.addParameter('idfactura', TYPES.Int, IdFactura);
+    
+    // Manejar cada fila de resultados
+    request.on('row', (columns) => {
+        const Pacientes = {};
+        columns.forEach((column) => {
+            Pacientes[column.metadata.colName] = column.value;
+        });
+        PacientesData.push(Pacientes);
+    });
+
+    connection.execSql(request);
+});
+
+
+//aca seran las hc con rips de los pacientes de la anterior consulta  que tambien tengan documentotipo rips la entidad prepagada
+router.get('/RipsPacientesTratamientosEps/:DocumentoPaciente/:DocumentoEPS', (req, res) => {
+    const DocumentoPaciente = req.params.DocumentoPaciente;
+    const DocumentoEPS = req.params.DocumentoEPS;
+
+    const PacienteRipsData = []; // Crear un array para almacenar los resultados
+    
+
+    const request = new Request(`SELECT EVR.[Id Evaluación Entidad Rips] AS [idEveRips], EVA.[Fecha Evaluación Entidad] AS [FechaHC], TE.[Tipo de Evaluación] AS [TipoEvaluacion]
+        FROM [Evaluación Entidad Rips] EVR 
+        INNER JOIN [Evaluación Entidad] EVA ON EVA.[Id Evaluación Entidad] = EVR.[Id Evaluación Entidad]
+        INNER JOIN [Tipo de Evaluación] TE ON TE.[Id Tipo de Evaluación] = EVA.[Id Tipo de Evaluación]
+        WHERE EVA.[Documento Entidad] = @DocumentoPaciente AND EVR.[Documento Tipo Rips] = @DocumentoEPS
+        AND EVR.[Id Factura] IS NULL AND EVR.[Id Plan de Tratamiento] IS NULL`, (err, rowCount) => {
+        if (err) {
+            console.error('Error al ejecutar la consulta de historias clinicas EPS:', err.message);
+            res.status(500).json({ error: 'Error al obtener datos de historias clinicas EPS' });
+        } else {
+            console.log(`Consulta de historias clinicas EPS ejecutada con éxito. Filas afectadas: ${rowCount}`);
+
+            // Enviar los datos de evaluaciones como respuesta JSON
+            res.json(PacienteRipsData.map(row => ({
+                idEveRips: row['idEveRips'],
+                fechaEveRips: row['FechaHC'],
+                TipoEvaluacion: row['TipoEvaluacion'] 
+            })));
+        }
+    });
+
+    
+    request.addParameter('DocumentoPaciente', TYPES.VarChar, DocumentoPaciente);
+    request.addParameter('DocumentoEPS', TYPES.VarChar, DocumentoEPS);
+    
+    // Manejar cada fila de resultados
+    request.on('row', (columns) => {
+        const PacienteRips = {};
+        columns.forEach((column) => {
+            PacienteRips[column.metadata.colName] = column.value;
+        });
+        PacienteRipsData.push(PacienteRips);
+    });
+
+    connection.execSql(request);
+});
+
+
+
+
+
 
 module.exports = router;
