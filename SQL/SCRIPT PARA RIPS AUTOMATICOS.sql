@@ -117,17 +117,24 @@ declare @IdEvaluacion  int;
 
 select  @documentoPaciente = [Evaluación Entidad].[Documento Entidad],
 @FechaEvaluacionEntidad = [Evaluación Entidad].[Fecha Evaluación Entidad],
-@IdEvaluacion = inserted.[Id Evaluación Entidad Rips]
+@IdEvaluacion = inserted.[Id Evaluación Entidad Rips],
+@IDFactura = inserted.[Id Factura]
 from Inserted inner join [Evaluación Entidad Rips] on [Evaluación Entidad Rips].[Id Evaluación Entidad rips] = inserted.[Id Evaluación Entidad Rips]
 inner join [Evaluación Entidad] on [Evaluación Entidad Rips].[Id Evaluación Entidad] = [Evaluación Entidad].[Id Evaluación Entidad]
 
-SELECT @IDFactura =   dbo.FuncionBuscarFacturaPaciente(@documentoPaciente, @FechaEvaluacionEntidad) ;	
+	if(@IDFactura IS NULL) 
+	BEGIN
 
+		SELECT @IDFactura =   dbo.FuncionBuscarFacturaPaciente(@documentoPaciente, @FechaEvaluacionEntidad) ;	
+	
+		IF(@IDFactura IS NOT NULL)
+		BEGIN
+			update [Evaluación Entidad Rips] set [Id Factura] = @IDFactura
+			where [Id Evaluación Entidad Rips] = @IdEvaluacion
+		END
 
-	update [Evaluación Entidad Rips] set [Id Factura] = @IDFactura
-	where [Id Evaluación Entidad Rips] = @IdEvaluacion
-
-
+	
+	END
 END;
 GO
 

@@ -1040,7 +1040,9 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
     const CausaMotivoAtencion = req.params.CausaMotivoAtencion;
     const TipoDiagnosticoPrincipal = req.params.TipoDiagnosticoPrincipal;
     const ViaIngresoServicioSalud = req.params.ViaIngresoServicioSalud;
+
     const idfactura = req.params.Idfactura;
+    
     const Idpresupuesto = req.params.Idpresupuesto;
     const Cups1 = req.params.Cups1;
     let Cups2 = req.params.Cups2;
@@ -1056,21 +1058,21 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
     } else if(TipoRips == 'AP') {
         Actoquirurgico = 2;
     }
-    console.log(`IdEvaluacion ${IdEvaluacion}`);
-    console.log(`TipoUsuario ${TipoUsuario}`);
-    console.log(`Entidad ${Entidad}`);
-    console.log(`ModalidadGrupoServicioTecSal ${ModalidadGrupoServicioTecSal}`);
-    console.log(`GrupoServicios ${GrupoServicios}`);
-    console.log(`CodServicio ${CodServicio}`);
-    console.log(`FinalidadTecnologiaSalud ${FinalidadTecnologiaSalud}`);
-    console.log(`CausaMotivoAtencion ${CausaMotivoAtencion}`);
-    console.log(`TipoDiagnosticoPrincipal ${TipoDiagnosticoPrincipal}`);
-    console.log(`ViaIngresoServicioSalud ${ViaIngresoServicioSalud}`);
-    console.log(`Cups1 ${Cups1}`);
-    console.log(`Cups2 ${Cups2}`);
-    console.log(`Cie1 ${Cie1}`);
-    console.log(`Cie2 ${Cie2}`);
-    console.log(`TipoRips ${TipoRips}`);
+    // console.log(`IdEvaluacion ${IdEvaluacion}`);
+    // console.log(`TipoUsuario ${TipoUsuario}`);
+    // console.log(`Entidad ${Entidad}`);
+    // console.log(`ModalidadGrupoServicioTecSal ${ModalidadGrupoServicioTecSal}`);
+    // console.log(`GrupoServicios ${GrupoServicios}`);
+    // console.log(`CodServicio ${CodServicio}`);
+    // console.log(`FinalidadTecnologiaSalud ${FinalidadTecnologiaSalud}`);
+    // console.log(`CausaMotivoAtencion ${CausaMotivoAtencion}`);
+    // console.log(`TipoDiagnosticoPrincipal ${TipoDiagnosticoPrincipal}`);
+    // console.log(`ViaIngresoServicioSalud ${ViaIngresoServicioSalud}`);
+    // console.log(`Cups1 ${Cups1}`);
+    // console.log(`Cups2 ${Cups2}`);
+    // console.log(`Cie1 ${Cie1}`);
+    // console.log(`Cie2 ${Cie2}`);
+    // console.log(`TipoRips ${TipoRips}`);
     // console.log(`IdEvaluacion ${IdEvaluacion}`);
 
     const requestInsert = new Request(
@@ -1112,7 +1114,7 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
     @GrupoServicios,
     @CodServicio,
     @ViaIngresoServicioSalud,
-    @idfactura,
+    @IdFactura,
     @idpresupuesto
     ) 
     `, (err) => {
@@ -1141,7 +1143,8 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
     requestInsert.addParameter('Cie1', TYPES.NVarChar, Cie1);
     requestInsert.addParameter('Cie2', TYPES.NVarChar, Cie2);
     requestInsert.addParameter('Actoquirurgico', TYPES.Int, Actoquirurgico);
-    requestInsert.addParameter('idfactura', TYPES.Int, idfactura);
+    console.log(idfactura);
+    requestInsert.addParameter('IdFactura', TYPES.Int, idfactura);
     requestInsert.addParameter('Idpresupuesto', TYPES.Int, Idpresupuesto);
 
     
