@@ -1144,8 +1144,13 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
     requestInsert.addParameter('Cie2', TYPES.NVarChar, Cie2);
     requestInsert.addParameter('Actoquirurgico', TYPES.Int, Actoquirurgico);
     console.log(idfactura);
-    requestInsert.addParameter('IdFactura', TYPES.Int, idfactura  ?? null);
-    requestInsert.addParameter('Idpresupuesto', TYPES.Int, Idpresupuesto);
+    const idFacturaValor = Number.isInteger(idfactura) ? idfactura : null;
+    requestInsert.addParameter('IdFactura', TYPES.Int, idFacturaValor);
+
+    // requestInsert.addParameter('IdFactura', TYPES.Int, idfactura  ?? NULL);
+    const IdPresupuestoValor = Number.isInteger(Idpresupuesto) ? Idpresupuesto : null;
+    requestInsert.addParameter('Idpresupuesto', TYPES.Int, IdPresupuestoValor);
+    // requestInsert.addParameter('Idpresupuesto', TYPES.Int, Idpresupuesto);
 
     
 connection.execSql(requestInsert);
