@@ -1646,7 +1646,7 @@ document.getElementById('listaPacientePrepagada').addEventListener('change', asy
     await getHistoriasEPS(documentoPaciente, documentoEps);
 });
 
-const relacionarRIPSEPS = async (idFactura, relacionarEPS) => {
+const relacionarRIPSEPS = async (idFactura, idEveRips) => {
 
     try {
         const response = await fetch(`http://${servidor}:3000/api/relacionarEPS/${idFactura}/${idEveRips}`, {

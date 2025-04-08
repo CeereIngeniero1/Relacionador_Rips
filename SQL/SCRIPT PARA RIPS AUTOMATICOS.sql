@@ -108,6 +108,8 @@ AS
 begin
 
 declare @IDFactura int;
+declare @IDpresupuesto int;
+declare @IDpresupues int;
 declare  @documentoPaciente nvarchar(50);
 declare @FechaEvaluacionEntidad datetime;
 declare @IdEvaluacion  int;
@@ -118,9 +120,18 @@ declare @IdEvaluacion  int;
 select  @documentoPaciente = [Evaluación Entidad].[Documento Entidad],
 @FechaEvaluacionEntidad = [Evaluación Entidad].[Fecha Evaluación Entidad],
 @IdEvaluacion = inserted.[Id Evaluación Entidad Rips],
-@IDFactura = inserted.[Id Factura]
+@IDFactura = inserted.[Id Factura],
+@IDpresupuesto = inserted.[Id Plan de Tratamiento]
 from Inserted inner join [Evaluación Entidad Rips] on [Evaluación Entidad Rips].[Id Evaluación Entidad rips] = inserted.[Id Evaluación Entidad Rips]
 inner join [Evaluación Entidad] on [Evaluación Entidad Rips].[Id Evaluación Entidad] = [Evaluación Entidad].[Id Evaluación Entidad]
+
+	
+	IF (@IDFactura = 0)
+	BEGIN
+		update [Evaluación Entidad Rips] set [Id Factura] = NULL
+			where [Id Evaluación Entidad Rips] = @IdEvaluacion
+	END
+	
 
 	if(@IDFactura IS NULL) 
 	BEGIN
@@ -136,7 +147,6 @@ inner join [Evaluación Entidad] on [Evaluación Entidad Rips].[Id Evaluación E
 	
 	END
 END;
-GO
 
 ALTER TABLE [dbo].[Evaluación Entidad Rips] ENABLE TRIGGER [Relacion_Factura_Rips]
 GO
@@ -160,13 +170,27 @@ BEGIN
 			  @IdEvaluacionentidad int,
 			  @TipoRips int;
 
+
+
+
+
 			 
       -- Asignar valores desde la tabla inserted (solo se espera una fila)
       SELECT @IdEvaluacionentidad = [Id Evaluación Entidad],
 	  @TipoRips = [Id Tipo de Rips],
-	  @documentoEps = [Documento Tipo Rips]
+	  @documentoEps = [Documento Tipo Rips],
+	  @idPlandetratamiento = [Id Plan de Tratamiento]
       FROM inserted;
+	
+	if(@idPlandetratamiento IS NULL)
+	BEGIN
+		IF (@idPlandetratamiento = 0)
+		BEGIN
+			update [Evaluación Entidad Rips] set [Id Plan de Tratamiento] = NULL
+				where [Id Evaluación Entidad Rips] = @IdEvaluacion
+		END
 
+			
 	    IF @TipoRips = 3
 	   BEGIN
 		  SELECT @FechaInicioRIPS = CONVERT (DATE,[Fecha Evaluación Entidad], 101),
@@ -183,12 +207,7 @@ BEGIN
 						AND DATEADD(DAY, 15, @FechaInicioRIPS)
 			AND [Documento Paciente] = @documentoPaciente 
 			AND [Id Tipo Responsable] = 5 
-			AND [Documento Responsable] = @documentoEps
-			AND NOT EXISTS (
-				SELECT 1 
-				FROM [Evaluación Entidad Rips] EER
-				WHERE EER.[Id Plan de Tratamiento] = [Plan de Tratamiento].[Id Plan de Tratamiento]
-			);;
+			AND [Documento Responsable] = @documentoEps;
 		  
 
 		  -- Verificar si se obtuvo un documento de EPS válido
@@ -204,6 +223,7 @@ BEGIN
 			     
 		  END 
 		END
+	END	  
 END;
 
 

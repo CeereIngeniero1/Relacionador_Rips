@@ -1044,6 +1044,7 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
     const idfactura = req.params.Idfactura;
     
     const Idpresupuesto = req.params.Idpresupuesto;
+
     const Cups1 = req.params.Cups1;
     let Cups2 = req.params.Cups2;
     //Se evalua si viene = 0 para hacerlo NULL
@@ -1143,14 +1144,15 @@ router.post('/RegistrarRips/:IdEvaluacion/:TipoUsuario/:Entidad/:ModalidadGrupoS
     requestInsert.addParameter('Cie1', TYPES.NVarChar, Cie1);
     requestInsert.addParameter('Cie2', TYPES.NVarChar, Cie2);
     requestInsert.addParameter('Actoquirurgico', TYPES.Int, Actoquirurgico);
-    console.log(idfactura);
-    const idFacturaValor = Number.isInteger(idfactura) ? idfactura : null;
-    requestInsert.addParameter('IdFactura', TYPES.Int, idFacturaValor);
+    // console.log(idfactura);
+    // const idFacturaValor = Number.isInteger(idfactura) ? idfactura : 0;
+    // requestInsert.addParameter('IdFactura', TYPES.Int, idFacturaValor);
+    let IdPresupuestoValor = (Idpresupuesto?.toLowerCase?.() === 'null' || Idpresupuesto == null) ? 0 : Idpresupuesto;
+    let idFacturaValor     = (idfactura?.toLowerCase?.() === 'null' || idfactura == null) ? 0 : idfactura;
 
-    // requestInsert.addParameter('IdFactura', TYPES.Int, idfactura  ?? NULL);
-    const IdPresupuestoValor = Number.isInteger(Idpresupuesto) ? Idpresupuesto : null;
+    console.log(IdPresupuestoValor);
+    requestInsert.addParameter('IdFactura', TYPES.Int, idFacturaValor);
     requestInsert.addParameter('Idpresupuesto', TYPES.Int, IdPresupuestoValor);
-    // requestInsert.addParameter('Idpresupuesto', TYPES.Int, Idpresupuesto);
 
     
 connection.execSql(requestInsert);
