@@ -1,4 +1,4 @@
-const servidor = "HPRED241";
+const servidor = "HPGRIS";
 
 function VerificarLogin() {
     const TokenLogin = localStorage.getItem('token');
@@ -130,11 +130,10 @@ async function MostrarMensajeDeCarga(MensajeDetalle) {
         // timer: 3000
     })
 }
-function Consultar() {
-    // var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
-    // myModal.show();
 
-    var myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {
+// var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+function Consultar() {
+    const myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {
         backdrop: 'static', // Evita el cierre al hacer clic fuera del modal
         keyboard: false // Impide el cierre con la tecla Escape
     });
@@ -148,9 +147,6 @@ BotonConsultar.addEventListener('click', function (e) {
 async function Cargar() {
     // Recuperar la variable
     const documentoUsuarioLogeado = sessionStorage.getItem('documentousuariologeado');
-
-    // // Imprimir en la consola
-    // console.log(documentoUsuarioLogeado);
 
     let FechaInicioConsulta = document.getElementById('FechaInicioConsulta').value;
     let FechaFinConsulta = document.getElementById('FechaFinConsulta').value;
@@ -202,7 +198,6 @@ async function Cargar() {
             throw new Error(`Error al obtener los datos de Pacientes con HC sin RIPS: ${PacienteConHCSinRIPS.statusText}`);
         }
         const PacientesConHCSinRIPS = await PacienteConHCSinRIPS.json();
-        // console.log('Datos: ', PacientesConHCSinRIPS);
 
         Swal.fire({
             allowOutsideClick: false,
@@ -1525,6 +1520,13 @@ const AsignarRIPS = async () => {
             }).then(
                 function(respuesta) {
                     LlenarSelectDeHistoriasClinicas();
+                    if (document.getElementById('BuscarPorFacturas').checked === true) {
+                        document.getElementById('BuscarPorFacturas').click();
+                    }
+                
+                    if (document.getElementById('BuscarPorPresupuestos').checked === true) {
+                        document.getElementById('BuscarPorPresupuestos').click();
+                    }
                 }
             )
         }
@@ -1642,11 +1644,6 @@ const AsignarRIPS = async () => {
                 }
             );
 
-            Swal.fire({
-                icon: "info",
-                text: AsignarRIPSAC
-            })
-            return;
             if (!AsignarRIPSAC) {
                 throw new Error(`Error al obtener las entidades de RIPS: ${AsignarRIPSAC.statusText}`);
             }
@@ -1664,6 +1661,13 @@ const AsignarRIPS = async () => {
             }).then(
                 function(respuesta) {
                     LlenarSelectDeHistoriasClinicas();
+                    if (document.getElementById('BuscarPorFacturas').checked === true) {
+                        document.getElementById('BuscarPorFacturas').click();
+                    }
+                
+                    if (document.getElementById('BuscarPorPresupuestos').checked === true) {
+                        document.getElementById('BuscarPorPresupuestos').click();
+                    }
                 }
             )
         }
@@ -4407,13 +4411,13 @@ async function AgregarOpcionPorDefecto(Select) {
 
 
 // PARA PROBAR_SOLO PRUEBAS EN DESARROLLO
-document.body.onload = function ()  {
-    const Inicio = document.getElementById('FechaInicioConsulta');
-    const Fin = document.getElementById('FechaFinConsulta');
-    const Cargar = document.getElementById('CargarPacientesConHCSinRIPS');
+// document.body.onload = function ()  {
+//     const Inicio = document.getElementById('FechaInicioConsulta');
+//     const Fin = document.getElementById('FechaFinConsulta');
+//     const Cargar = document.getElementById('CargarPacientesConHCSinRIPS');
 
-    Inicio.value = "2000-01-01";
-    Fin.value = "2025-04-04";
-    Cargar.click();
-}
+//     Inicio.value = "2000-01-01";
+//     Fin.value = "2025-04-04";
+//     Cargar.click();
+// }
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

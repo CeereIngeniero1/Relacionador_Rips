@@ -1,8 +1,8 @@
 const { Request, TYPES } = require('tedious');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 const Router = require('express').Router;
 const connection = require('../db');
-const dbConfig = require('../db'); // Asegúrate de importar tu configuración de la BD
+// const dbConfig = require('../db'); // Asegúrate de importar tu configuración de la BD
 
 const router = Router();
 
