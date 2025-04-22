@@ -522,12 +522,19 @@ radioAC.addEventListener('change', async function (e) {
                 return 0;
             });
 
-            for (let i = 0; i < CargarModalidadGrupoServicioTecnologiaSalud.length; i+=1) {
+            // for (let i = 0; i < CargarModalidadGrupoServicioTecnologiaSalud.length; i+=1) {
+            //     const option = document.createElement('option');
+            //     option.value = CargarModalidadGrupoServicioTecnologiaSalud[i].Codigo;
+            //     option.textContent = CargarModalidadGrupoServicioTecnologiaSalud[i].NombreModalidadAtencion;
+            //     SelectModalidadGrupoServicioTecnologiaSalud.appendChild(option);
+            // }
+            for (const modalidad of CargarModalidadGrupoServicioTecnologiaSalud) {
                 const option = document.createElement('option');
-                option.value = CargarModalidadGrupoServicioTecnologiaSalud[i].Codigo;
-                option.textContent = CargarModalidadGrupoServicioTecnologiaSalud[i].NombreModalidadAtencion;
+                option.value = modalidad.Codigo;
+                option.textContent = modalidad.NombreModalidadAtencion;
                 SelectModalidadGrupoServicioTecnologiaSalud.appendChild(option);
             }
+            
 
             // Funcionalidad para el llenado del select de GrupoServiciosAC
             const GrupoServiciosAC = await fetch(`http://${servidor}:3000/api/GrupoServicios`);
